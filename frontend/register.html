@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register – Student Learning Portal</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .register-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #4f46e5, #9333ea);
+            padding: 40px 20px;
+        }
+
+        .register-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 44px 40px;
+            width: 100%;
+            max-width: 520px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .register-card .brand-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .register-card h2 {
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 6px;
+        }
+
+        .register-card .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        .form-floating {
+            margin-bottom: 14px;
+        }
+
+        .form-floating .form-control {
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+            padding: 16px 14px;
+            font-size: 15px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-floating .form-control:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .form-row .form-floating {
+            flex: 1;
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            width: 100%;
+            margin-top: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+            color: white;
+        }
+
+        .btn-register:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 22px 0;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        .divider span {
+            padding: 0 16px;
+        }
+
+        .register-card .links {
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .register-card .links a {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .register-card .links a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s;
+        }
+
+        .back-home:hover {
+            color: white;
+        }
+
+        .password-hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: -8px;
+            margin-bottom: 14px;
+            padding-left: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-page">
+        <a href="index.html" class="back-home">← Back to Home</a>
+
+        <div class="register-card text-center">
+            <div class="brand-icon">🚀</div>
+            <h2>Create Account</h2>
+            <p class="subtitle">Join CRISMATECH and start your learning journey</p>
+
+            <form id="registerForm">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="fullName" placeholder="Full Name" required>
+                    <label for="fullName">Full Name</label>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="collegeName" placeholder="College Name" required>
+                        <label for="collegeName">College Name</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="branch" placeholder="Branch" required>
+                        <label for="branch">Branch</label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-floating">
+                        <select class="form-control form-select" id="semester" required>
+                            <option value="" disabled selected></option>
+                            <option value="1">Semester 1</option>
+                            <option value="2">Semester 2</option>
+                            <option value="3">Semester 3</option>
+                            <option value="4">Semester 4</option>
+                            <option value="5">Semester 5</option>
+                            <option value="6">Semester 6</option>
+                            <option value="7">Semester 7</option>
+                            <option value="8">Semester 8</option>
+                        </select>
+                        <label for="semester">Semester</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="tel" class="form-control" id="phone" placeholder="Phone Number" required>
+                        <label for="phone">Phone Number</label>
+                    </div>
+                </div>
+
+                <div class="form-floating">
+                    <input type="email" class="form-control" id="email" placeholder="Email" required>
+                    <label for="email">Email Address</label>
+                </div>
+
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="password" placeholder="Password" required>
+                    <label for="password">Password</label>
+                </div>
+
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password"
+                        required>
+                    <label for="confirmPassword">Confirm Password</label>
+                </div>
+                <p class="password-hint text-start">Must be at least 8 characters with a number and symbol.</p>
+
+                <button type="submit" class="btn btn-register">Create Account</button>
+            </form>
+
+            <div class="divider"><span>or</span></div>
+
+            <div class="links">
+                Already have an account? <a href="login.html">Sign in</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

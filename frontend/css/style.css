@@ -1,0 +1,67 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f6f9;
+}
+
+/* HERO */
+
+.hero {
+    height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #4f46e5, #9333ea);
+}
+
+.hero-title {
+    font-size: 55px;
+    font-weight: 700;
+}
+
+.hero-subtitle {
+    font-size: 20px;
+    margin-top: 15px;
+}
+
+/* FEATURE CARDS */
+
+.feature-card {
+    border: none;
+    border-radius: 12px;
+    transition: 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* COURSES */
+
+.courses-section {
+    margin-top: 80px;
+}
+
+.course-card img {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.course-card {
+    border-radius: 12px;
+    transition: 0.3s;
+}
+
+.course-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* FOOTER */
+
+.footer {
+    background: #111;
+    color: white;
+    padding: 30px;
+    margin-top: 80px;
+}

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard – Student Learning Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .dashboard-header {
+            background: linear-gradient(135deg, #4f46e5, #9333ea);
+            padding: 40px 0 60px;
+            color: white;
+        }
+
+        .stat-card {
+            border: none;
+            border-radius: 14px;
+            padding: 24px;
+            text-align: center;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-icon {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #4f46e5;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1a1a2e;
+        }
+
+        .course-progress-card {
+            border: none;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+            transition: 0.3s;
+        }
+
+        .course-progress-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+        }
+
+        .badge-custom {
+            font-size: 11px;
+            border-radius: 20px;
+            padding: 4px 10px;
+            font-weight: 600;
+        }
+
+        .activity-item {
+            border-left: 3px solid #4f46e5;
+            padding: 10px 16px;
+            margin-bottom: 12px;
+            background: #f8f9ff;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .quick-link-card {
+            border: none;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .quick-link-card:hover {
+            transform: translateY(-5px);
+            background: #f0edff;
+            color: #4f46e5;
+        }
+
+        .quick-link-icon {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center fw-bold" href="index.html">
+                🎓 CRISMATECH AUTOMATION
+            </a>
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link active" href="dashboard.html">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="courses/courses.html">Courses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="assignments/assignments.html">Assignments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="tests/test.html">Tests</a></li>
+                    <li class="nav-item"><a class="nav-link" href="attendance/attendance.html">Attendance</a></li>
+                    <li class="nav-item"><a class="nav-link" href="certificate/certificate.html">Certificates</a></li>
+                    <li class="nav-item ms-2"><a class="nav-link" href="profile/profile.html">👤 Profile</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <div class="dashboard-header">
+        <div class="container">
+            <h1 class="fw-bold">Welcome back, Student! 👋</h1>
+            <p class="mb-0 opacity-75">Here's what's happening with your learning journey today.</p>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="container" style="margin-top: -30px;">
+        <div class="row g-4">
+            <div class="col-6 col-md-3">
+                <div class="stat-card bg-white">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Enrolled Courses</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card bg-white">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Pending Assignments</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card bg-white">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-number">87%</div>
+                    <div class="stat-label">Attendance Rate</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card bg-white">
+                    <div class="stat-icon">🎓</div>
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Certificates Earned</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="container mt-5">
+        <div class="row g-4">
+
+            <!-- COURSE PROGRESS -->
+            <div class="col-lg-8">
+                <h5 class="section-title">📖 My Courses</h5>
+                <div class="row g-3">
+
+                    <div class="col-12">
+                        <div class="card course-progress-card p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <span class="fw-semibold">Web Development</span>
+                                    <span class="badge bg-primary badge-custom ms-2">In Progress</span>
+                                </div>
+                                <span class="text-muted small">75%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-primary" style="width:75%"></div>
+                            </div>
+                            <div class="small text-muted mt-1">12 / 16 lessons completed</div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card course-progress-card p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <span class="fw-semibold">IoT Fundamentals</span>
+                                    <span class="badge bg-warning text-dark badge-custom ms-2">In Progress</span>
+                                </div>
+                                <span class="text-muted small">45%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-warning" style="width:45%"></div>
+                            </div>
+                            <div class="small text-muted mt-1">9 / 20 lessons completed</div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card course-progress-card p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <span class="fw-semibold">Python Programming</span>
+                                    <span class="badge bg-success badge-custom ms-2">Completed</span>
+                                </div>
+                                <span class="text-muted small">100%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" style="width:100%"></div>
+                            </div>
+                            <div class="small text-muted mt-1">20 / 20 lessons completed</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- QUICK LINKS -->
+                <h5 class="section-title mt-5">⚡ Quick Access</h5>
+                <div class="row g-3">
+                    <div class="col-4">
+                        <a href="assignments/assignments.html" class="quick-link-card bg-white">
+                            <div class="quick-link-icon">📝</div>
+                            <div class="fw-semibold small">Assignments</div>
+                        </a>
+                    </div>
+                    <div class="col-4">
+                        <a href="tests/test.html" class="quick-link-card bg-white">
+                            <div class="quick-link-icon">🧠</div>
+                            <div class="fw-semibold small">Tests</div>
+                        </a>
+                    </div>
+                    <div class="col-4">
+                        <a href="certificate/certificate.html" class="quick-link-card bg-white">
+                            <div class="quick-link-icon">🎓</div>
+                            <div class="fw-semibold small">Certificates</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACTIVITY FEED -->
+            <div class="col-lg-4">
+                <h5 class="section-title">🕐 Recent Activity</h5>
+                <div class="activity-item">
+                    <div class="fw-semibold">Submitted Assignment #3</div>
+                    <div class="small text-muted">Web Development</div>
+                    <div class="activity-time">2 hours ago</div>
+                </div>
+                <div class="activity-item">
+                    <div class="fw-semibold">Completed Lesson: IoT Sensors</div>
+                    <div class="small text-muted">IoT Fundamentals</div>
+                    <div class="activity-time">Yesterday</div>
+                </div>
+                <div class="activity-item">
+                    <div class="fw-semibold">Scored 92% on Python Test</div>
+                    <div class="small text-muted">Python Programming</div>
+                    <div class="activity-time">2 days ago</div>
+                </div>
+                <div class="activity-item">
+                    <div class="fw-semibold">Earned Python Certificate 🎓</div>
+                    <div class="small text-muted">Certificate issued</div>
+                    <div class="activity-time">3 days ago</div>
+                </div>
+                <div class="activity-item">
+                    <div class="fw-semibold">Attended Web Dev Lecture</div>
+                    <div class="small text-muted">Attendance marked</div>
+                    <div class="activity-time">4 days ago</div>
+                </div>
+
+                <!-- UPCOMING -->
+                <h5 class="section-title mt-4">📅 Upcoming</h5>
+                <div class="card border-0 p-3 mb-2" style="background:#fff7ed; border-radius:12px;">
+                    <div class="fw-semibold">Assignment #4 Due</div>
+                    <div class="small text-muted">Web Development · Tomorrow</div>
+                </div>
+                <div class="card border-0 p-3 mb-2" style="background:#f0fdf4; border-radius:12px;">
+                    <div class="fw-semibold">IoT Mid-Term Test</div>
+                    <div class="small text-muted">IoT Fundamentals · In 3 days</div>
+                </div>
+                <div class="card border-0 p-3" style="background:#f0edff; border-radius:12px;">
+                    <div class="fw-semibold">Python Advanced Lecture</div>
+                    <div class="small text-muted">Python Programming · In 5 days</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer mt-5">
+        <div class="container text-center">
+            <h4>CRISMATECH Learning Portal</h4>
+            <p>Email: support@crismatech.com</p>
+            <p>© 2026 All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
