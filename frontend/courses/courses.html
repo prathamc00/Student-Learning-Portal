@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses – Student Learning Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .page-hero {
+            background: linear-gradient(135deg, #4f46e5, #9333ea);
+            padding: 50px 0;
+            color: white;
+        }
+
+        .filter-bar {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 16px 20px;
+        }
+
+        .course-card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: 0.3s;
+            overflow: hidden;
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .course-thumb {
+            height: 180px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .course-thumb-placeholder {
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+
+        .badge-category {
+            font-size: 11px;
+            border-radius: 20px;
+            padding: 4px 10px;
+            font-weight: 600;
+        }
+
+        .instructor {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .progress {
+            height: 6px;
+            border-radius: 4px;
+        }
+
+        .enroll-btn {
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .search-box {
+            border-radius: 10px;
+            border: 1.5px solid #e2e8f0;
+            padding: 10px 16px;
+            font-size: 14px;
+        }
+
+        .search-box:focus {
+            border-color: #4f46e5;
+            box-shadow: none;
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html">🎓 CRISMATECH AUTOMATION</a>
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="../dashboard.html">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="courses.html">Courses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../assignments/assignments.html">Assignments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../tests/test.html">Tests</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../attendance/attendance.html">Attendance</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../certificate/certificate.html">Certificates</a>
+                    </li>
+                    <li class="nav-item ms-2"><a class="nav-link" href="../profile/profile.html">👤 Profile</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="page-hero">
+        <div class="container">
+            <h1 class="fw-bold mb-1">📚 My Courses</h1>
+            <p class="mb-0 opacity-75">Explore, enroll, and continue your learning journey.</p>
+        </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="container mt-4">
+        <div class="filter-bar d-flex flex-wrap gap-3 align-items-center justify-content-between">
+            <input type="text" class="search-box form-control" style="max-width:300px;"
+                placeholder="🔍 Search courses...">
+            <div class="d-flex gap-2 flex-wrap">
+                <button class="btn btn-primary btn-sm enroll-btn">All</button>
+                <button class="btn btn-outline-secondary btn-sm enroll-btn">Enrolled</button>
+                <button class="btn btn-outline-secondary btn-sm enroll-btn">Completed</button>
+                <button class="btn btn-outline-secondary btn-sm enroll-btn">Available</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- COURSES GRID -->
+    <div class="container mt-4 mb-5">
+        <div class="row g-4">
+
+            <!-- Course 1 -->
+            <div class="col-md-4">
+                <div class="card course-card h-100">
+                    <div class="course-thumb-placeholder" style="background: linear-gradient(135deg,#667eea,#764ba2);">
+                        🌐</div>
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-2">
+                            <span class="badge bg-primary badge-category">Web Dev</span>
+                        </div>
+                        <h5 class="fw-bold mb-1">Web Development</h5>
+                        <p class="instructor mb-2">👨‍💻 Instructor: Prof. Sharma</p>
+                        <p class="text-muted small flex-grow-1">Master HTML, CSS, JavaScript and build real-world
+                            projects from scratch.</p>
+                        <div class="mb-1 d-flex justify-content-between small text-muted">
+                            <span>Progress</span><span>75%</span>
+                        </div>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-primary" style="width:75%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="small text-muted">16 Lessons · 8 hrs</span>
+                            <button class="btn btn-primary btn-sm enroll-btn">Continue →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course 2 -->
+            <div class="col-md-4">
+                <div class="card course-card h-100">
+                    <div class="course-thumb-placeholder" style="background: linear-gradient(135deg,#f093fb,#f5576c);">
+                        📡</div>
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-2">
+                            <span class="badge bg-warning text-dark badge-category">IoT</span>
+                        </div>
+                        <h5 class="fw-bold mb-1">IoT Fundamentals</h5>
+                        <p class="instructor mb-2">👨‍💻 Instructor: Prof. Mehta</p>
+                        <p class="text-muted small flex-grow-1">Understand sensors, actuators, and connect devices in a
+                            smart network.</p>
+                        <div class="mb-1 d-flex justify-content-between small text-muted">
+                            <span>Progress</span><span>45%</span>
+                        </div>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-warning" style="width:45%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="small text-muted">20 Lessons · 12 hrs</span>
+                            <button class="btn btn-warning btn-sm enroll-btn text-dark">Continue →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course 3 -->
+            <div class="col-md-4">
+                <div class="card course-card h-100">
+                    <div class="course-thumb-placeholder" style="background: linear-gradient(135deg,#4facfe,#00f2fe);">
+                        🐍</div>
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-2">
+                            <span class="badge bg-success badge-category">Programming</span>
+                        </div>
+                        <h5 class="fw-bold mb-1">Python Programming</h5>
+                        <p class="instructor mb-2">👨‍💻 Instructor: Prof. Rao</p>
+                        <p class="text-muted small flex-grow-1">Learn Python from scratch — variables, functions, OOP,
+                            and data handling.</p>
+                        <div class="mb-1 d-flex justify-content-between small text-muted">
+                            <span>Progress</span><span>100%</span>
+                        </div>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-success" style="width:100%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="small text-muted">20 Lessons · 10 hrs</span>
+                            <button class="btn btn-success btn-sm enroll-btn">✅ Completed</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course 4 – Available -->
+            <div class="col-md-4">
+                <div class="card course-card h-100">
+                    <div class="course-thumb-placeholder" style="background: linear-gradient(135deg,#43e97b,#38f9d7);">
+                        🤖</div>
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-2">
+                            <span class="badge bg-info text-dark badge-category">AI/ML</span>
+                        </div>
+                        <h5 class="fw-bold mb-1">Machine Learning Basics</h5>
+                        <p class="instructor mb-2">👨‍💻 Instructor: Prof. Singh</p>
+                        <p class="text-muted small flex-grow-1">Dive into supervised learning, models, and real-world ML
+                            applications.</p>
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                            <span class="small text-muted">18 Lessons · 14 hrs</span>
+                            <button class="btn btn-outline-primary btn-sm enroll-btn">Enroll Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course 5 – Available -->
+            <div class="col-md-4">
+                <div class="card course-card h-100">
+                    <div class="course-thumb-placeholder" style="background: linear-gradient(135deg,#fa709a,#fee140);">
+                        🔐</div>
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-2">
+                            <span class="badge bg-danger badge-category">Security</span>
+                        </div>
+                        <h5 class="fw-bold mb-1">Cybersecurity Essentials</h5>
+                        <p class="instructor mb-2">👨‍💻 Instructor: Prof. Nair</p>
+                        <p class="text-muted small flex-grow-1">Protect systems and networks from threats with core
+                            security concepts.</p>
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                            <span class="small text-muted">15 Lessons · 9 hrs</span>
+                            <button class="btn btn-outline-primary btn-sm enroll-btn">Enroll Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course 6 – Available -->
+            <div class="col-md-4">
+                <div class="card course-card h-100">
+                    <div class="course-thumb-placeholder" style="background: linear-gradient(135deg,#a18cd1,#fbc2eb);">
+                        ☁️</div>
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-2">
+                            <span class="badge bg-secondary badge-category">Cloud</span>
+                        </div>
+                        <h5 class="fw-bold mb-1">Cloud Computing</h5>
+                        <p class="instructor mb-2">👨‍💻 Instructor: Prof. Kumar</p>
+                        <p class="text-muted small flex-grow-1">Understanding AWS, Azure, GCP and cloud deployment
+                            strategies.</p>
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                            <span class="small text-muted">22 Lessons · 16 hrs</span>
+                            <button class="btn btn-outline-primary btn-sm enroll-btn">Enroll Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container text-center">
+            <h4>CRISMATECH Learning Portal</h4>
+            <p>Email: support@crismatech.com</p>
+            <p>© 2026 All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
