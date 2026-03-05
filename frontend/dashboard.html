@@ -140,7 +140,7 @@
     <!-- HEADER -->
     <div class="dashboard-header">
         <div class="container">
-            <h1 class="fw-bold">Welcome back, Student! 👋</h1>
+            <h1 class="fw-bold">Welcome back, <span id="studentName">Student</span>! 👋</h1>
             <p class="mb-0 opacity-75">Here's what's happening with your learning journey today.</p>
         </div>
     </div>
@@ -320,6 +320,14 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user && user.name) {
+            document.getElementById('studentName').textContent = user.name;
+        } else {
+            window.location.href = 'login.html';
+        }
+    </script>
 </body>
 
 </html>

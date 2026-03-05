@@ -56,7 +56,8 @@
             color: white;
         }
 
-        .upload-zone {
+        /* Drop zone */
+        .drop-zone {
             border: 2px dashed #c7d2fe;
             border-radius: 12px;
             padding: 30px;
@@ -67,11 +68,37 @@
             transition: 0.3s;
         }
 
-        .upload-zone:hover {
+        .drop-zone:hover,
+        .drop-zone.drag-over {
             background: #ede9fe;
             border-color: #4f46e5;
         }
 
+        .file-preview {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+            flex-wrap: wrap;
+        }
+
+        .file-icon {
+            font-size: 32px;
+        }
+
+        .file-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+            word-break: break-all;
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: #888;
+        }
+
+        /* Modal */
         .modal-header {
             background: linear-gradient(135deg, #4f46e5, #9333ea);
             color: white;
@@ -82,17 +109,24 @@
             border-radius: 14px;
             border: none;
         }
+
+        .char-counter {
+            font-size: 12px;
+            color: #aaa;
+            text-align: right;
+            margin-top: 4px;
+        }
     </style>
 </head>
 
 <body>
+
     <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
         <div class="container">
             <a class="navbar-brand fw-bold" href="../index.html">🎓 CRISMATECH AUTOMATION</a>
-            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu"><span
+                    class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="menu">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item"><a class="nav-link" href="../dashboard.html">Dashboard</a></li>
@@ -116,34 +150,33 @@
         </div>
     </div>
 
-    <!-- TABS + CONTENT -->
     <div class="container mt-4 mb-5">
 
-        <!-- Stats Row -->
+        <!-- Stats -->
         <div class="row g-3 mb-4">
             <div class="col-6 col-md-3">
-                <div class="card border-0 p-3 text-center" style="border-radius:12px; background:#f0edff;">
+                <div class="card border-0 p-3 text-center" style="border-radius:12px;background:#f0edff;">
                     <div style="font-size:28px;">📋</div>
                     <div class="fw-bold fs-4 text-primary">8</div>
                     <div class="small text-muted">Total</div>
                 </div>
             </div>
             <div class="col-6 col-md-3">
-                <div class="card border-0 p-3 text-center" style="border-radius:12px; background:#fff7ed;">
+                <div class="card border-0 p-3 text-center" style="border-radius:12px;background:#fff7ed;">
                     <div style="font-size:28px;">⏳</div>
                     <div class="fw-bold fs-4" style="color:#f59e0b;">3</div>
                     <div class="small text-muted">Pending</div>
                 </div>
             </div>
             <div class="col-6 col-md-3">
-                <div class="card border-0 p-3 text-center" style="border-radius:12px; background:#f0fdf4;">
+                <div class="card border-0 p-3 text-center" style="border-radius:12px;background:#f0fdf4;">
                     <div style="font-size:28px;">✅</div>
                     <div class="fw-bold fs-4 text-success">4</div>
                     <div class="small text-muted">Submitted</div>
                 </div>
             </div>
             <div class="col-6 col-md-3">
-                <div class="card border-0 p-3 text-center" style="border-radius:12px; background:#fef2f2;">
+                <div class="card border-0 p-3 text-center" style="border-radius:12px;background:#fef2f2;">
                     <div style="font-size:28px;">⚠️</div>
                     <div class="fw-bold fs-4 text-danger">1</div>
                     <div class="small text-muted">Overdue</div>
@@ -159,10 +192,8 @@
             <li class="nav-item"><a class="nav-link" href="#">Overdue</a></li>
         </ul>
 
-        <!-- Assignment Cards -->
-
         <!-- Overdue -->
-        <div class="card assignment-card">
+        <div class="card assignment-card" id="asgn-1">
             <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>
                     <span class="badge bg-danger status-badge me-2">Overdue</span>
@@ -170,13 +201,13 @@
                     <div class="small text-muted mt-1">📚 Web Development</div>
                     <div class="due-urgent small mt-1">⚠️ Due: 28 Feb 2026 (Overdue)</div>
                 </div>
-                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#submitModal">Submit
-                    Late</button>
+                <button class="btn btn-danger btn-sm submit-action-btn"
+                    onclick="AssignmentSystem.openSubmit('asgn-1','HTML Basics Layout')">Submit Late</button>
             </div>
         </div>
 
         <!-- Pending -->
-        <div class="card assignment-card">
+        <div class="card assignment-card" id="asgn-4">
             <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>
                     <span class="badge bg-warning text-dark status-badge me-2">Pending</span>
@@ -184,12 +215,12 @@
                     <div class="small text-muted mt-1">📚 Web Development</div>
                     <div class="due-tag small mt-1">📅 Due: 6 Mar 2026 (Tomorrow)</div>
                 </div>
-                <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                    data-bs-target="#submitModal">Submit</button>
+                <button class="btn btn-primary btn-sm submit-action-btn"
+                    onclick="AssignmentSystem.openSubmit('asgn-4','CSS Flexbox Challenge')">Submit</button>
             </div>
         </div>
 
-        <div class="card assignment-card">
+        <div class="card assignment-card" id="asgn-5">
             <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>
                     <span class="badge bg-warning text-dark status-badge me-2">Pending</span>
@@ -197,12 +228,12 @@
                     <div class="small text-muted mt-1">📡 IoT Fundamentals</div>
                     <div class="due-tag small mt-1">📅 Due: 10 Mar 2026</div>
                 </div>
-                <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                    data-bs-target="#submitModal">Submit</button>
+                <button class="btn btn-primary btn-sm submit-action-btn"
+                    onclick="AssignmentSystem.openSubmit('asgn-5','IoT Sensor Report')">Submit</button>
             </div>
         </div>
 
-        <div class="card assignment-card">
+        <div class="card assignment-card" id="asgn-6">
             <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>
                     <span class="badge bg-warning text-dark status-badge me-2">Pending</span>
@@ -210,13 +241,13 @@
                     <div class="small text-muted mt-1">🤖 Machine Learning</div>
                     <div class="due-tag small mt-1">📅 Due: 15 Mar 2026</div>
                 </div>
-                <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                    data-bs-target="#submitModal">Submit</button>
+                <button class="btn btn-primary btn-sm submit-action-btn"
+                    onclick="AssignmentSystem.openSubmit('asgn-6','ML Data Analysis')">Submit</button>
             </div>
         </div>
 
         <!-- Submitted -->
-        <div class="card assignment-card">
+        <div class="card assignment-card" id="asgn-2">
             <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>
                     <span class="badge bg-success status-badge me-2">Submitted</span>
@@ -225,11 +256,11 @@
                     <div class="due-tag small mt-1">📅 Submitted: 20 Feb 2026 · Grade: <strong
                             class="text-success">88/100</strong></div>
                 </div>
-                <button class="btn btn-outline-secondary btn-sm">View Feedback</button>
+                <button class="btn btn-outline-secondary btn-sm submit-action-btn">View Feedback</button>
             </div>
         </div>
 
-        <div class="card assignment-card">
+        <div class="card assignment-card" id="asgn-3">
             <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>
                     <span class="badge bg-success status-badge me-2">Submitted</span>
@@ -238,11 +269,11 @@
                     <div class="due-tag small mt-1">📅 Submitted: 25 Feb 2026 · Grade: <strong
                             class="text-success">92/100</strong></div>
                 </div>
-                <button class="btn btn-outline-secondary btn-sm">View Feedback</button>
+                <button class="btn btn-outline-secondary btn-sm submit-action-btn">View Feedback</button>
             </div>
         </div>
 
-        <div class="card assignment-card">
+        <div class="card assignment-card" id="asgn-7">
             <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>
                     <span class="badge bg-success status-badge me-2">Submitted</span>
@@ -251,11 +282,11 @@
                     <div class="due-tag small mt-1">📅 Submitted: 1 Mar 2026 · Grade: <strong
                             class="text-warning">75/100</strong></div>
                 </div>
-                <button class="btn btn-outline-secondary btn-sm">View Feedback</button>
+                <button class="btn btn-outline-secondary btn-sm submit-action-btn">View Feedback</button>
             </div>
         </div>
 
-        <div class="card assignment-card">
+        <div class="card assignment-card" id="asgn-8">
             <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>
                     <span class="badge bg-success status-badge me-2">Submitted</span>
@@ -264,7 +295,7 @@
                     <div class="due-tag small mt-1">📅 Submitted: 3 Mar 2026 · Grade: <strong
                             class="text-success">95/100</strong></div>
                 </div>
-                <button class="btn btn-outline-secondary btn-sm">View Feedback</button>
+                <button class="btn btn-outline-secondary btn-sm submit-action-btn">View Feedback</button>
             </div>
         </div>
 
@@ -275,24 +306,30 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold">📤 Submit Assignment</h5>
+                    <h5 class="modal-title fw-bold" id="submitModalTitle">📤 Submit Assignment</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Comments / Notes</label>
-                        <textarea class="form-control" rows="3"
-                            placeholder="Add any notes for your instructor..."></textarea>
+                        <label class="form-label fw-semibold">Comments / Notes for Instructor</label>
+                        <textarea class="form-control" id="submitNotes" rows="3"
+                            placeholder="Describe your submission, mention any issues..."></textarea>
+                        <div class="char-counter"><span id="charCountVal">0</span> / 500</div>
                     </div>
-                    <div class="upload-zone">
-                        <div style="font-size:36px;">📎</div>
-                        <div class="fw-semibold mt-2">Drag & Drop your file here</div>
-                        <div class="small text-muted">or click to browse · PDF, DOCX, ZIP accepted</div>
+                    <label class="form-label fw-semibold">Attach File</label>
+                    <div class="drop-zone" id="dropZone">
+                        <div class="drop-placeholder">
+                            <div style="font-size:38px;">📎</div>
+                            <div class="fw-semibold mt-2">Drag &amp; Drop your file here</div>
+                            <div class="small text-muted">or click to browse · PDF, DOCX, ZIP accepted · Max 20 MB</div>
+                        </div>
                     </div>
+                    <input type="file" id="fileInput" class="d-none" accept=".pdf,.doc,.docx,.zip,.txt">
                 </div>
                 <div class="modal-footer border-0">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-primary fw-semibold">Submit Assignment</button>
+                    <button class="btn btn-primary fw-semibold" id="submitBtn"
+                        onclick="AssignmentSystem.submitAssignment()">Submit Assignment</button>
                 </div>
             </div>
         </div>
@@ -308,6 +345,7 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/assignments.js"></script>
 </body>
 
 </html>

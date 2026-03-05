@@ -193,9 +193,9 @@
                     <div class="avatar-change" title="Change photo">✏️</div>
                 </div>
             </div>
-            <h4 class="fw-bold mt-3 mb-0">Pratham Choudhary</h4>
-            <div class="text-muted small mb-1">pratham@crismatech.com</div>
-            <div class="text-muted small">🎓 Student · Enrolled since Jan 2026</div>
+            <h4 class="fw-bold mt-3 mb-0" id="profileName">Loading...</h4>
+            <div class="text-muted small mb-1" id="profileEmail"></div>
+            <div class="text-muted small" id="profileMeta"></div>
 
             <!-- Mini Stats -->
             <div class="row g-2 mt-4">
@@ -251,56 +251,37 @@
                 <h6 class="fw-bold mb-4">Personal Information</h6>
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label">First Name</label>
-                        <input type="text" class="form-control" value="Pratham">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Last Name</label>
-                        <input type="text" class="form-control" value="Choudhary">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="inputName" readonly style="background:#f8f9ff;">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Email Address</label>
-                        <input type="email" class="form-control" value="pratham@crismatech.com">
+                        <input type="email" class="form-control" id="inputEmail" readonly style="background:#f8f9ff;">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Phone Number</label>
-                        <input type="tel" class="form-control" value="+91 98765 43210">
+                        <input type="tel" class="form-control" id="inputPhone" readonly style="background:#f8f9ff;">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Date of Birth</label>
-                        <input type="date" class="form-control" value="2003-06-15">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Gender</label>
-                        <select class="form-select">
-                            <option selected>Male</option>
-                            <option>Female</option>
-                            <option>Prefer not to say</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Roll Number</label>
-                        <input type="text" class="form-control" value="CT2026-031" readonly style="background:#f8f9ff;">
+                        <label class="form-label">College</label>
+                        <input type="text" class="form-control" id="inputCollege" readonly style="background:#f8f9ff;">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Branch / Department</label>
-                        <select class="form-select">
-                            <option selected>Computer Engineering</option>
-                            <option>Electronics</option>
-                            <option>Mechanical</option>
-                            <option>Civil</option>
-                        </select>
+                        <input type="text" class="form-control" id="inputBranch" readonly style="background:#f8f9ff;">
                     </div>
-                    <div class="col-12">
-                        <label class="form-label">Bio</label>
-                        <textarea class="form-control" rows="3"
-                            placeholder="Tell us a bit about yourself...">Passionate learner interested in Web Development and IoT technologies.</textarea>
+                    <div class="col-md-6">
+                        <label class="form-label">Semester</label>
+                        <input type="text" class="form-control" id="inputSemester" readonly style="background:#f8f9ff;">
                     </div>
-                </div>
-                <hr class="section-divider">
-                <div class="d-flex justify-content-end gap-2">
-                    <button class="btn btn-outline-secondary save-btn">Cancel</button>
-                    <button class="btn btn-primary save-btn">Save Changes</button>
+                    <div class="col-md-6">
+                        <label class="form-label">Role</label>
+                        <input type="text" class="form-control" id="inputRole" readonly style="background:#f8f9ff;">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Member Since</label>
+                        <input type="text" class="form-control" id="inputJoined" readonly style="background:#f8f9ff;">
+                    </div>
                 </div>
             </div>
         </div>
@@ -412,6 +393,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        const API_URL = 'http://localhost:5000/api';
+
         function showTab(tab, el) {
             event.preventDefault();
             ['personal', 'security', 'notif'].forEach(t => {
@@ -421,6 +404,44 @@
             document.getElementById('panel-' + tab).style.display = 'block';
             el.classList.add('active');
         }
+
+        // Load user profile
+        (async function loadProfile() {
+            const token = localStorage.getItem('token');
+            if (!token) { window.location.href = '../login.html'; return; }
+
+            try {
+                const res = await fetch(`${API_URL}/auth/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+
+                if (!data.success) { window.location.href = '../login.html'; return; }
+
+                const u = data.user;
+                // Update localStorage with fresh data
+                localStorage.setItem('user', JSON.stringify(u));
+
+                // Header card
+                document.getElementById('profileName').textContent = u.name || '';
+                document.getElementById('profileEmail').textContent = u.email || '';
+                const joined = u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '';
+                const role = u.role ? u.role.charAt(0).toUpperCase() + u.role.slice(1) : 'Student';
+                document.getElementById('profileMeta').textContent = `🎓 ${role} · Enrolled since ${joined}`;
+
+                // Personal info fields
+                document.getElementById('inputName').value = u.name || '';
+                document.getElementById('inputEmail').value = u.email || '';
+                document.getElementById('inputPhone').value = u.phone || '';
+                document.getElementById('inputCollege').value = u.college || '';
+                document.getElementById('inputBranch').value = u.branch || '';
+                document.getElementById('inputSemester').value = u.semester ? `Semester ${u.semester}` : '';
+                document.getElementById('inputRole').value = role;
+                document.getElementById('inputJoined').value = joined;
+            } catch (err) {
+                console.error('Failed to load profile:', err);
+            }
+        })();
     </script>
 </body>
 
