@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tests – Student Learning Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .page-hero {
+            background: linear-gradient(135deg, #4f46e5, #9333ea);
+            padding: 50px 0;
+            color: white;
+        }
+
+        .test-card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+            transition: 0.3s;
+        }
+
+        .test-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .test-icon {
+            font-size: 40px;
+            width: 70px;
+            height: 70px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-circle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            border: 4px solid;
+        }
+
+        .timer-badge {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .status-pill {
+            font-size: 12px;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-weight: 600;
+        }
+
+        .question-card {
+            border: none;
+            border-radius: 12px;
+            background: #f8f9ff;
+            margin-bottom: 16px;
+        }
+
+        .option-label {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .option-label:hover {
+            border-color: #4f46e5;
+            background: #f0edff;
+        }
+
+        input[type=radio]:checked+.option-label {
+            border-color: #4f46e5;
+            background: #ede9fe;
+            color: #4f46e5;
+            font-weight: 600;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #4f46e5, #9333ea);
+            color: white;
+            border-radius: 14px 14px 0 0;
+        }
+
+        .modal-content {
+            border-radius: 14px;
+            border: none;
+        }
+
+        .test-timer {
+            background: linear-gradient(135deg, #4f46e5, #9333ea);
+            color: white;
+            border-radius: 14px;
+            padding: 16px 24px;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .result-bar {
+            height: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html">🎓 CRISMATECH AUTOMATION</a>
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="../dashboard.html">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../courses/courses.html">Courses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../assignments/assignments.html">Assignments</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="test.html">Tests</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../attendance/attendance.html">Attendance</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../certificate/certificate.html">Certificates</a>
+                    </li>
+                    <li class="nav-item ms-2"><a class="nav-link" href="../profile/profile.html">👤 Profile</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="page-hero">
+        <div class="container">
+            <h1 class="fw-bold mb-1">🧠 Tests &amp; Assessments</h1>
+            <p class="mb-0 opacity-75">Evaluate your knowledge and track your performance.</p>
+        </div>
+    </div>
+
+    <div class="container mt-4 mb-5">
+
+        <!-- Stats -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+                <div class="card border-0 p-3 text-center" style="border-radius:12px; background:#f0edff;">
+                    <div style="font-size:26px;">📋</div>
+                    <div class="fw-bold fs-4 text-primary">6</div>
+                    <div class="small text-muted">Total Tests</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card border-0 p-3 text-center" style="border-radius:12px; background:#fff7ed;">
+                    <div style="font-size:26px;">🔓</div>
+                    <div class="fw-bold fs-4" style="color:#f59e0b;">2</div>
+                    <div class="small text-muted">Available</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card border-0 p-3 text-center" style="border-radius:12px; background:#f0fdf4;">
+                    <div style="font-size:26px;">✅</div>
+                    <div class="fw-bold fs-4 text-success">3</div>
+                    <div class="small text-muted">Attempted</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card border-0 p-3 text-center" style="border-radius:12px; background:#f0f9ff;">
+                    <div style="font-size:26px;">⭐</div>
+                    <div class="fw-bold fs-4 text-info">85%</div>
+                    <div class="small text-muted">Avg Score</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Tests -->
+        <h5 class="fw-bold mb-3" style="color:#1a1a2e;">🔓 Available Tests</h5>
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-6">
+                <div class="card test-card p-4">
+                    <div class="d-flex gap-3 align-items-start">
+                        <div class="test-icon" style="background:#f0edff;">🌐</div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h6 class="fw-bold mb-1">Web Dev Mid-Term Test</h6>
+                                <span class="badge bg-success status-pill">Open</span>
+                            </div>
+                            <div class="small text-muted mb-1">📚 Web Development</div>
+                            <div class="d-flex gap-3 small text-muted">
+                                <span>⏱ 30 min</span>
+                                <span>❓ 20 Questions</span>
+                                <span>📅 Due: 8 Mar</span>
+                            </div>
+                            <button class="btn btn-primary btn-sm mt-3 fw-semibold" data-bs-toggle="modal"
+                                data-bs-target="#testModal">Start Test →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card test-card p-4">
+                    <div class="d-flex gap-3 align-items-start">
+                        <div class="test-icon" style="background:#fff7ed;">📡</div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h6 class="fw-bold mb-1">IoT Mid-Term Test</h6>
+                                <span class="badge bg-success status-pill">Open</span>
+                            </div>
+                            <div class="small text-muted mb-1">📡 IoT Fundamentals</div>
+                            <div class="d-flex gap-3 small text-muted">
+                                <span>⏱ 45 min</span>
+                                <span>❓ 25 Questions</span>
+                                <span>📅 Due: 12 Mar</span>
+                            </div>
+                            <button class="btn btn-primary btn-sm mt-3 fw-semibold" data-bs-toggle="modal"
+                                data-bs-target="#testModal">Start Test →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Completed Tests -->
+        <h5 class="fw-bold mb-3" style="color:#1a1a2e;">✅ Completed Tests</h5>
+        <div class="row g-3">
+
+            <div class="col-md-4">
+                <div class="card test-card p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h6 class="fw-bold mb-1">Python Basics Quiz</h6>
+                            <div class="small text-muted">🐍 Python Programming</div>
+                        </div>
+                        <div class="score-circle text-success" style="border-color:#22c55e;">92%</div>
+                    </div>
+                    <div class="progress result-bar mb-2">
+                        <div class="progress-bar bg-success" style="width:92%"></div>
+                    </div>
+                    <div class="d-flex justify-content-between small text-muted">
+                        <span>23/25 Correct</span>
+                        <span>⏱ 18 min 40 sec</span>
+                    </div>
+                    <div class="small text-muted mt-1">📅 Attempted: 1 Mar 2026</div>
+                    <button class="btn btn-outline-primary btn-sm mt-3" data-bs-toggle="modal"
+                        data-bs-target="#resultModal">View Result</button>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card test-card p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h6 class="fw-bold mb-1">Python OOP Test</h6>
+                            <div class="small text-muted">🐍 Python Programming</div>
+                        </div>
+                        <div class="score-circle text-primary" style="border-color:#4f46e5;">80%</div>
+                    </div>
+                    <div class="progress result-bar mb-2">
+                        <div class="progress-bar bg-primary" style="width:80%"></div>
+                    </div>
+                    <div class="d-flex justify-content-between small text-muted">
+                        <span>16/20 Correct</span>
+                        <span>⏱ 22 min 10 sec</span>
+                    </div>
+                    <div class="small text-muted mt-1">📅 Attempted: 20 Feb 2026</div>
+                    <button class="btn btn-outline-primary btn-sm mt-3" data-bs-toggle="modal"
+                        data-bs-target="#resultModal">View Result</button>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card test-card p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h6 class="fw-bold mb-1">Web Dev Basics Quiz</h6>
+                            <div class="small text-muted">🌐 Web Development</div>
+                        </div>
+                        <div class="score-circle" style="color:#f59e0b; border-color:#f59e0b;">75%</div>
+                    </div>
+                    <div class="progress result-bar mb-2">
+                        <div class="progress-bar bg-warning" style="width:75%"></div>
+                    </div>
+                    <div class="d-flex justify-content-between small text-muted">
+                        <span>15/20 Correct</span>
+                        <span>⏱ 25 min 05 sec</span>
+                    </div>
+                    <div class="small text-muted mt-1">📅 Attempted: 10 Feb 2026</div>
+                    <button class="btn btn-outline-primary btn-sm mt-3" data-bs-toggle="modal"
+                        data-bs-target="#resultModal">View Result</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TEST MODAL (Quiz Interface) -->
+    <div class="modal fade" id="testModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h5 class="modal-title fw-bold">🌐 Web Dev Mid-Term Test</h5>
+                        <div class="small opacity-75">Question 1 of 20</div>
+                    </div>
+                    <div class="ms-auto me-3">
+                        <div class="test-timer" style="font-size:20px; padding:8px 18px;">⏱ 29:45</div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="progress mb-4" style="height:6px; border-radius:4px;">
+                        <div class="progress-bar bg-primary" style="width:5%"></div>
+                    </div>
+                    <div class="question-card p-4">
+                        <h6 class="fw-bold mb-4">Q1. Which HTML tag is used to define an internal style sheet?</h6>
+                        <div>
+                            <input type="radio" name="q1" id="a" class="d-none">
+                            <label for="a" class="option-label">A. &lt;script&gt;</label>
+
+                            <input type="radio" name="q1" id="b" class="d-none">
+                            <label for="b" class="option-label">B. &lt;style&gt;</label>
+
+                            <input type="radio" name="q1" id="c" class="d-none">
+                            <label for="c" class="option-label">C. &lt;css&gt;</label>
+
+                            <input type="radio" name="q1" id="d" class="d-none">
+                            <label for="d" class="option-label">D. &lt;link&gt;</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button class="btn btn-outline-secondary">← Previous</button>
+                    <button class="btn btn-primary fw-semibold">Next →</button>
+                    <button class="btn btn-success fw-semibold ms-2">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT MODAL -->
+    <div class="modal fade" id="resultModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">📊 Test Result</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <div class="score-circle mx-auto mb-3 text-success"
+                        style="border-color:#22c55e; width:90px; height:90px; font-size:24px;">92%</div>
+                    <h5 class="fw-bold">Python Basics Quiz</h5>
+                    <p class="text-muted">You performed excellently!</p>
+                    <div class="row g-3 mt-2 text-start">
+                        <div class="col-6">
+                            <div class="p-3 rounded" style="background:#f0fdf4;">
+                                <div class="small text-muted">Correct</div>
+                                <div class="fw-bold text-success">23 / 25</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 rounded" style="background:#fef2f2;">
+                                <div class="small text-muted">Wrong</div>
+                                <div class="fw-bold text-danger">2 / 25</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 rounded" style="background:#f0edff;">
+                                <div class="small text-muted">Time Taken</div>
+                                <div class="fw-bold text-primary">18 min 40 sec</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 rounded" style="background:#fff7ed;">
+                                <div class="small text-muted">Rank</div>
+                                <div class="fw-bold" style="color:#f59e0b;">#3 in Class</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-primary">View Answers</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container text-center">
+            <h4>CRISMATECH Learning Portal</h4>
+            <p>Email: support@crismatech.com</p>
+            <p>© 2026 All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

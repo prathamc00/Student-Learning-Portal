@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile – Student Learning Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .page-hero {
+            background: linear-gradient(135deg, #4f46e5, #9333ea);
+            padding: 60px 0 120px;
+            color: white;
+        }
+
+        .avatar-wrapper {
+            margin-top: -80px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 5px solid white;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #4f46e5, #9333ea);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+        }
+
+        .avatar-change {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #4f46e5;
+            color: white;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .profile-card {
+            border: none;
+            border-radius: 18px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            border: 1.5px solid #e2e8f0;
+            padding: 10px 14px;
+            font-size: 14px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #444;
+        }
+
+        .section-divider {
+            border: none;
+            border-top: 1px solid #f0f0f0;
+            margin: 20px 0;
+        }
+
+        .stat-mini {
+            text-align: center;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+        }
+
+        .stat-mini .number {
+            font-size: 26px;
+            font-weight: 800;
+            color: #4f46e5;
+        }
+
+        .stat-mini .label {
+            font-size: 12px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .badge-item {
+            display: inline-flex;
+            align-items: center;
+            gap-6;
+            background: #f0edff;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 4px;
+        }
+
+        .nav-pills .nav-link {
+            border-radius: 10px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .nav-pills .nav-link.active {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .save-btn {
+            border-radius: 10px;
+            padding: 10px 28px;
+            font-weight: 600;
+        }
+
+        .danger-zone {
+            background: #fff5f5;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #fecaca;
+        }
+
+        .toggle-switch .form-check-input {
+            width: 44px;
+            height: 22px;
+            cursor: pointer;
+        }
+
+        .toggle-switch .form-check-input:checked {
+            background-color: #4f46e5;
+            border-color: #4f46e5;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html">🎓 CRISMATECH AUTOMATION</a>
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="../dashboard.html">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../courses/courses.html">Courses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../assignments/assignments.html">Assignments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../tests/test.html">Tests</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../attendance/attendance.html">Attendance</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../certificate/certificate.html">Certificates</a>
+                    </li>
+                    <li class="nav-item ms-2"><a class="nav-link active" href="profile.html">👤 Profile</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="page-hero">
+        <div class="container text-center">
+            <h1 class="fw-bold mb-1">My Profile</h1>
+            <p class="opacity-75">Manage your personal information and account settings.</p>
+        </div>
+    </div>
+
+    <div class="container mb-5" style="max-width: 960px;">
+
+        <!-- Avatar + Name Card -->
+        <div class="card profile-card p-4 text-center mb-4">
+            <div class="d-flex justify-content-center">
+                <div class="avatar-wrapper">
+                    <div class="avatar">👤</div>
+                    <div class="avatar-change" title="Change photo">✏️</div>
+                </div>
+            </div>
+            <h4 class="fw-bold mt-3 mb-0">Pratham Choudhary</h4>
+            <div class="text-muted small mb-1">pratham@crismatech.com</div>
+            <div class="text-muted small">🎓 Student · Enrolled since Jan 2026</div>
+
+            <!-- Mini Stats -->
+            <div class="row g-2 mt-4">
+                <div class="col-3">
+                    <div class="stat-mini" style="background:#f0edff;">
+                        <div class="number">5</div>
+                        <div class="label">Courses</div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="stat-mini" style="background:#f0fdf4;">
+                        <div class="number text-success">87%</div>
+                        <div class="label">Attendance</div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="stat-mini" style="background:#fff7ed;">
+                        <div class="number" style="color:#f59e0b;">85%</div>
+                        <div class="label">Avg Score</div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="stat-mini" style="background:#fef2f2;">
+                        <div class="number text-danger">2</div>
+                        <div class="label">Certs</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Badges -->
+            <div class="mt-4 text-start">
+                <div class="fw-semibold small mb-2 text-muted">ACHIEVEMENTS</div>
+                <span class="badge-item">🏅 Python Expert</span>
+                <span class="badge-item">⚡ Fast Learner</span>
+                <span class="badge-item">📚 Course Completer</span>
+                <span class="badge-item">✅ Perfect Score</span>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <ul class="nav nav-pills gap-2 mb-4">
+            <li class="nav-item"><a class="nav-link active" id="tab-personal" href="#"
+                    onclick="showTab('personal', this)">👤 Personal Info</a></li>
+            <li class="nav-item"><a class="nav-link" id="tab-security" href="#" onclick="showTab('security', this)">🔒
+                    Security</a></li>
+            <li class="nav-item"><a class="nav-link" id="tab-notif" href="#" onclick="showTab('notif', this)">🔔
+                    Notifications</a></li>
+        </ul>
+
+        <!-- TAB: Personal Info -->
+        <div id="panel-personal">
+            <div class="card profile-card p-4">
+                <h6 class="fw-bold mb-4">Personal Information</h6>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-control" value="Pratham">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-control" value="Choudhary">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" value="pratham@crismatech.com">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" value="+91 98765 43210">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Date of Birth</label>
+                        <input type="date" class="form-control" value="2003-06-15">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Gender</label>
+                        <select class="form-select">
+                            <option selected>Male</option>
+                            <option>Female</option>
+                            <option>Prefer not to say</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Roll Number</label>
+                        <input type="text" class="form-control" value="CT2026-031" readonly style="background:#f8f9ff;">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Branch / Department</label>
+                        <select class="form-select">
+                            <option selected>Computer Engineering</option>
+                            <option>Electronics</option>
+                            <option>Mechanical</option>
+                            <option>Civil</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Bio</label>
+                        <textarea class="form-control" rows="3"
+                            placeholder="Tell us a bit about yourself...">Passionate learner interested in Web Development and IoT technologies.</textarea>
+                    </div>
+                </div>
+                <hr class="section-divider">
+                <div class="d-flex justify-content-end gap-2">
+                    <button class="btn btn-outline-secondary save-btn">Cancel</button>
+                    <button class="btn btn-primary save-btn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Security -->
+        <div id="panel-security" style="display:none;">
+            <div class="card profile-card p-4 mb-3">
+                <h6 class="fw-bold mb-4">Change Password</h6>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label">Current Password</label>
+                        <input type="password" class="form-control" placeholder="Enter current password">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">New Password</label>
+                        <input type="password" class="form-control" placeholder="At least 8 characters">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" placeholder="Repeat new password">
+                    </div>
+                </div>
+                <hr class="section-divider">
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-primary save-btn">Update Password</button>
+                </div>
+            </div>
+            <div class="danger-zone">
+                <h6 class="fw-bold text-danger mb-1">⚠️ Danger Zone</h6>
+                <p class="small text-muted mb-3">Deleting your account will permanently remove all your data including
+                    progress, certificates and assignments.</p>
+                <button class="btn btn-outline-danger btn-sm fw-semibold">Delete My Account</button>
+            </div>
+        </div>
+
+        <!-- TAB: Notifications -->
+        <div id="panel-notif" style="display:none;">
+            <div class="card profile-card p-4">
+                <h6 class="fw-bold mb-4">Notification Preferences</h6>
+                <div class="toggle-switch">
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3"
+                        style="border-bottom:1px solid #f0f0f0;">
+                        <div>
+                            <div class="fw-semibold small">📧 Email Notifications</div>
+                            <div class="text-muted" style="font-size:12px;">Receive updates via email</div>
+                        </div>
+                        <div class="form-check form-switch mb-0">
+                            <input class="form-check-input" type="checkbox" checked>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3"
+                        style="border-bottom:1px solid #f0f0f0;">
+                        <div>
+                            <div class="fw-semibold small">📝 Assignment Reminders</div>
+                            <div class="text-muted" style="font-size:12px;">Get reminded before due dates</div>
+                        </div>
+                        <div class="form-check form-switch mb-0">
+                            <input class="form-check-input" type="checkbox" checked>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3"
+                        style="border-bottom:1px solid #f0f0f0;">
+                        <div>
+                            <div class="fw-semibold small">🧠 Test Alerts</div>
+                            <div class="text-muted" style="font-size:12px;">Notified when a test is available</div>
+                        </div>
+                        <div class="form-check form-switch mb-0">
+                            <input class="form-check-input" type="checkbox" checked>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3"
+                        style="border-bottom:1px solid #f0f0f0;">
+                        <div>
+                            <div class="fw-semibold small">🎓 Certificate Earned</div>
+                            <div class="text-muted" style="font-size:12px;">Celebration notification on earning certs
+                            </div>
+                        </div>
+                        <div class="form-check form-switch mb-0">
+                            <input class="form-check-input" type="checkbox" checked>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fw-semibold small">📢 Announcements</div>
+                            <div class="text-muted" style="font-size:12px;">Portal news and updates</div>
+                        </div>
+                        <div class="form-check form-switch mb-0">
+                            <input class="form-check-input" type="checkbox">
+                        </div>
+                    </div>
+                </div>
+                <hr class="section-divider">
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-primary save-btn">Save Preferences</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container text-center">
+            <h4>CRISMATECH Learning Portal</h4>
+            <p>Email: support@crismatech.com</p>
+            <p>© 2026 All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showTab(tab, el) {
+            event.preventDefault();
+            ['personal', 'security', 'notif'].forEach(t => {
+                document.getElementById('panel-' + t).style.display = 'none';
+                document.getElementById('tab-' + t).classList.remove('active');
+            });
+            document.getElementById('panel-' + tab).style.display = 'block';
+            el.classList.add('active');
+        }
+    </script>
+</body>
+
+</html>
