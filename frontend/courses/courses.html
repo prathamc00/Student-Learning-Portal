@@ -8,465 +8,542 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../css/style.css">
     <style>
-        .courses-hero {
-            background: linear-gradient(135deg, var(--primary-color), #0040a3);
+        /* Modern Courses Layout */
+        body {
+            display: flex;
+            background: #f5f7fa;
+            margin: 0;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            padding: 24px 0;
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .sidebar-brand {
+            padding: 0 24px 30px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .sidebar-brand h2 {
             color: white;
-            padding: 60px var(--spacing-xl);
-            margin-bottom: var(--spacing-2xl);
+            font-size: 1.3rem;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav li { margin: 0; }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 24px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            margin: 2px 0;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: #3b82f6;
+        }
+
+        .sidebar-nav i {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 0;
+        }
+
+        .courses-hero {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+            padding: 50px 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .courses-hero h1 {
-            margin: 0 0 var(--spacing-sm) 0;
-            font-size: 36px;
+            margin: 0 0 10px 0;
+            font-size: 32px;
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .courses-hero p {
             margin: 0;
             opacity: 0.9;
-            font-size: 16px;
+            font-size: 15px;
         }
 
+        /* Filter Section */
         .filter-section {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-2xl);
+            gap: 20px;
+            padding: 30px 40px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
             flex-wrap: wrap;
         }
 
         .search-input {
             flex: 1;
             min-width: 250px;
-            padding: var(--spacing-md);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
+            padding: 10px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
             font-size: 14px;
-            transition: border-color var(--transition-duration) ease;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
         }
 
         .search-input:focus {
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 86, 210, 0.1);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
         .filter-buttons {
             display: flex;
-            gap: var(--spacing-sm);
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .filter-btn {
-            padding: var(--spacing-sm) var(--spacing-lg);
-            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
             background: white;
-            border-radius: var(--border-radius);
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 14px;
-            transition: all var(--transition-duration) ease;
+            font-size: 13px;
+            transition: all 0.3s;
+            color: #64748b;
+            font-family: 'Inter', sans-serif;
         }
 
         .filter-btn:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
+            border-color: #3b82f6;
+            color: #3b82f6;
+            background: #f0f4f8;
         }
 
         .filter-btn.active {
-            background: var(--primary-color);
+            background: #3b82f6;
             color: white;
-            border-color: var(--primary-color);
+            border-color: #3b82f6;
+        }
+
+        /* Courses Grid */
+        .courses-container {
+            padding: 40px;
         }
 
         .courses-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: var(--spacing-2xl);
-            margin-bottom: var(--spacing-2xl);
+            gap: 24px;
         }
 
         .course-card {
             background: white;
-            border-radius: var(--border-radius);
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: var(--card-shadow);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
             display: flex;
             flex-direction: column;
-            transition: all var(--transition-duration) ease;
+            cursor: pointer;
         }
 
         .course-card:hover {
-            box-shadow: var(--card-shadow-hover);
-            transform: translateY(-4px);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
         }
 
-        .course-image {
-            width: 100%;
-            height: 180px;
+        .course-img {
+            height: 160px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 48px;
-            font-weight: 700;
             color: white;
+            font-size: 3rem;
+        }
+
+        .course-img.blue { background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); }
+        .course-img.pink { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .course-img.cyan { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .course-img.orange { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .course-img.green { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .course-img.purple { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); }
+
+        .course-tag {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: white;
+            background: rgba(0, 0, 0, 0.3);
         }
 
         .course-body {
-            padding: var(--spacing-lg);
+            padding: 18px;
             flex: 1;
             display: flex;
             flex-direction: column;
         }
 
-        .course-badge {
-            display: inline-block;
-            background: var(--primary-light);
-            color: var(--primary-color);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: var(--spacing-sm);
-            width: fit-content;
-        }
-
         .course-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: var(--spacing-sm);
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+            line-height: 1.4;
         }
 
         .course-instructor {
-            font-size: 13px;
-            color: var(--text-light);
-            margin-bottom: var(--spacing-md);
-        }
-
-        .course-description {
-            font-size: 13px;
-            color: var(--text-light);
-            margin-bottom: var(--spacing-md);
-            flex: 1;
-            line-height: 1.5;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .course-rating {
             display: flex;
             align-items: center;
-            gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-md);
-            font-size: 13px;
+            gap: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
         }
 
-        .course-rating .stars {
-            color: #FFB84D;
-        }
-
-        .course-rating .count {
-            color: var(--text-light);
-        }
-
-        .course-progress {
-            margin-bottom: var(--spacing-md);
-        }
-
-        .progress-bar-container {
-            width: 100%;
-            height: 6px;
-            background: #f0f0f0;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: var(--spacing-xs);
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: var(--primary-color);
-        }
+        .stars { color: #f59e0b; }
 
         .course-meta {
-            display: flex;
-            justify-content: space-between;
-            gap: var(--spacing-md);
-            font-size: 12px;
-            color: var(--text-light);
-            margin-bottom: var(--spacing-lg);
-            padding-bottom: var(--spacing-lg);
-            border-bottom: 1px solid var(--border-color);
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .course-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
         }
 
         .course-button {
-            padding: var(--spacing-sm) var(--spacing-lg);
-            border: none;
-            border-radius: var(--border-radius);
-            background: var(--primary-color);
+            flex: 1;
+            padding: 10px;
+            background: #3b82f6;
             color: white;
+            border: none;
+            border-radius: 6px;
             font-weight: 600;
-            font-size: 14px;
             cursor: pointer;
-            transition: background var(--transition-duration) ease;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
         }
 
         .course-button:hover {
-            background: #003fa3;
+            background: #2563eb;
         }
 
-        .course-button.outline {
-            background: white;
-            color: var(--primary-color);
-            border: 1px solid var(--primary-light);
-        }
-
-        .course-button.outline:hover {
-            background: var(--primary-light);
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar { width: 200px; }
+            .main-content { margin-left: 200px; }
+            .filter-section { padding: 20px; }
+            .courses-hero { padding: 30px 20px; }
+            .courses-container { padding: 20px; }
+            .courses-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
         }
 
         @media (max-width: 768px) {
-            .courses-hero h1 {
-                font-size: 28px;
+            .sidebar {
+                position: fixed;
+                left: -260px;
+                transition: left 0.3s;
+                width: 260px;
             }
-
-            .filter-section {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .search-input {
-                min-width: unset;
-            }
-
-            .filter-buttons {
-                justify-content: flex-start;
-                overflow-x: auto;
-            }
-
-            .courses-grid {
-                grid-template-columns: 1fr;
-            }
+            .sidebar.active { left: 0; }
+            .main-content { margin-left: 0; }
+            .filter-section { flex-direction: column; align-items: stretch; }
+            .search-input { min-width: auto; }
+            .courses-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <div class="navbar-logo">
-                <span>CRISMATECH</span>
-            </div>
-            <ul class="navbar-menu">
-                <li><a href="../dashboard.html">Dashboard</a></li>
-                <li><a href="courses.html" style="color: var(--primary-color); font-weight: 700;">Courses</a></li>
-                <li><a href="../assignments/assignments.html">Assignments</a></li>
-                <li><a href="../tests/test.html">Tests</a></li>
-                <li><a href="../certificate/certificate.html">Certificates</a></li>
-            </ul>
-            <div class="navbar-auth">
-                <a href="../profile/profile.html" style="color: var(--text-dark); font-weight: 500;">Profile</a>
-                <button class="btn-outline" onclick="logout()" style="padding: var(--spacing-sm) var(--spacing-lg);">Logout</button>
-            </div>
+    <!-- SIDEBAR NAVIGATION -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h2><i class="bi bi-book"></i> CRISMATECH</h2>
         </div>
-    </nav>
-
-    <!-- HERO SECTION -->
-    <div class="courses-hero">
-        <h1>Explore Courses</h1>
-        <p>Discover and enroll in courses that match your learning goals</p>
+        <ul class="sidebar-nav">
+            <li><a href="../dashboard.html"><i class="bi bi-house-door-fill"></i> Dashboard</a></li>
+            <li><a href="courses.html" class="active"><i class="bi bi-play-circle-fill"></i> Courses</a></li>
+            <li><a href="../assignments/assignments.html"><i class="bi bi-file-earmark-text"></i> Assignments</a></li>
+            <li><a href="../tests/test.html"><i class="bi bi-pencil-square"></i> Tests</a></li>
+            <li><a href="../attendance/attendance.html"><i class="bi bi-calendar-check"></i> Attendance</a></li>
+            <li><a href="../certificate/certificate.html"><i class="bi bi-award-fill"></i> Certificates</a></li>
+            <li><hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 15px 0;"></li>
+            <li><a href="../profile/profile.html"><i class="bi bi-person-circle"></i> Profile</a></li>
+            <li><a href="#" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+        </ul>
     </div>
 
     <!-- MAIN CONTENT -->
-    <div class="dashboard-container">
-        <!-- FILTER SECTION -->
+    <div class="main-content">
+        <!-- Hero Section -->
+        <div class="courses-hero">
+            <h1><i class="bi bi-play-circle-fill" style="font-size: 2rem;"></i> Explore Our Courses</h1>
+            <p>Choose from a wide range of expert-led courses to expand your skills</p>
+        </div>
+
+        <!-- Filter Section -->
         <div class="filter-section">
-            <input type="text" class="search-input" placeholder="Search courses..." id="searchInput">
+            <input type="text" class="search-input" placeholder="Search courses...">
             <div class="filter-buttons">
-                <button class="filter-btn active" onclick="filterCourses('all')">All Courses</button>
-                <button class="filter-btn" onclick="filterCourses('enrolled')">Enrolled</button>
-                <button class="filter-btn" onclick="filterCourses('completed')">Completed</button>
-                <button class="filter-btn" onclick="filterCourses('available')">Available</button>
+                <button class="filter-btn active">All</button>
+                <button class="filter-btn">Web Development</button>
+                <button class="filter-btn">Data Science</button>
+                <button class="filter-btn">Machine Learning</button>
+                <button class="filter-btn">Security</button>
             </div>
         </div>
 
-        <!-- COURSES GRID -->
-        <div class="courses-grid" id="coursesGrid">
-            <!-- Course cards will be inserted here -->
+        <!-- Courses Grid -->
+        <div class="courses-container">
+            <div class="courses-grid">
+                <!-- Web Development -->
+                <div class="course-card">
+                    <div class="course-img blue">
+                        <i class="bi bi-code-slash"></i>
+                        <span class="course-tag">HTML/CSS</span>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-title">Web Development Masterclass</div>
+                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Sharma</div>
+                        <div class="course-rating">
+                            <span class="stars">★★★★★</span>
+                            <span style="color: #94a3b8;">(1,250)</span>
+                        </div>
+                        <div class="course-meta">22 Lessons • 16 Hours • Advanced</div>
+                    </div>
+                    <div class="course-footer">
+                        <button class="course-button">Enroll Now</button>
+                    </div>
+                </div>
+
+                <!-- Python Data Science -->
+                <div class="course-card">
+                    <div class="course-img pink">
+                        <i class="bi bi-snake"></i>
+                        <span class="course-tag">PYTHON</span>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-title">Python for Data Science</div>
+                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Rao</div>
+                        <div class="course-rating">
+                            <span class="stars">★★★★☆</span>
+                            <span style="color: #94a3b8;">(1,102)</span>
+                        </div>
+                        <div class="course-meta">18 Lessons • 14 Hours • Intermediate</div>
+                    </div>
+                    <div class="course-footer">
+                        <button class="course-button">Enroll Now</button>
+                    </div>
+                </div>
+
+                <!-- IoT -->
+                <div class="course-card">
+                    <div class="course-img cyan">
+                        <i class="bi bi-cpu"></i>
+                        <span class="course-tag">IoT</span>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-title">IoT Fundamentals</div>
+                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Mehta</div>
+                        <div class="course-rating">
+                            <span class="stars">★★★★★</span>
+                            <span style="color: #94a3b8;">(875)</span>
+                        </div>
+                        <div class="course-meta">16 Lessons • 12 Hours • Intermediate</div>
+                    </div>
+                    <div class="course-footer">
+                        <button class="course-button">Enroll Now</button>
+                    </div>
+                </div>
+
+                <!-- Machine Learning -->
+                <div class="course-card">
+                    <div class="course-img orange">
+                        <i class="bi bi-robot"></i>
+                        <span class="course-tag">ML</span>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-title">Machine Learning Basics</div>
+                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Singh</div>
+                        <div class="course-rating">
+                            <span class="stars">★★★★★</span>
+                            <span style="color: #94a3b8;">(1,203)</span>
+                        </div>
+                        <div class="course-meta">20 Lessons • 18 Hours • Advanced</div>
+                    </div>
+                    <div class="course-footer">
+                        <button class="course-button">Enroll Now</button>
+                    </div>
+                </div>
+
+                <!-- Cybersecurity -->
+                <div class="course-card">
+                    <div class="course-img green">
+                        <i class="bi bi-shield-lock"></i>
+                        <span class="course-tag">SECURITY</span>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-title">Cybersecurity Essentials</div>
+                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Nair</div>
+                        <div class="course-rating">
+                            <span class="stars">★★★★☆</span>
+                            <span style="color: #94a3b8;">(956)</span>
+                        </div>
+                        <div class="course-meta">15 Lessons • 10 Hours • Intermediate</div>
+                    </div>
+                    <div class="course-footer">
+                        <button class="course-button">Enroll Now</button>
+                    </div>
+                </div>
+
+                <!-- Cloud Computing -->
+                <div class="course-card">
+                    <div class="course-img purple">
+                        <i class="bi bi-cloud"></i>
+                        <span class="course-tag">CLOUD</span>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-title">Cloud Computing</div>
+                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Kumar</div>
+                        <div class="course-rating">
+                            <span class="stars">★★★★★</span>
+                            <span style="color: #94a3b8;">(1,450)</span>
+                        </div>
+                        <div class="course-meta">22 Lessons • 16 Hours • Advanced</div>
+                    </div>
+                    <div class="course-footer">
+                        <button class="course-button">Enroll Now</button>
+                    </div>
+                </div>
+
+                <!-- Mobile Development -->
+                <div class="course-card">
+                    <div class="course-img blue">
+                        <i class="bi bi-phone"></i>
+                        <span class="course-tag">MOBILE</span>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-title">Mobile App Development</div>
+                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Gupta</div>
+                        <div class="course-rating">
+                            <span class="stars">★★★★★</span>
+                            <span style="color: #94a3b8;">(1,150)</span>
+                        </div>
+                        <div class="course-meta">20 Lessons • 15 Hours • Advanced</div>
+                    </div>
+                    <div class="course-footer">
+                        <button class="course-button">Enroll Now</button>
+                    </div>
+                </div>
+
+                <!-- DevOps -->
+                <div class="course-card">
+                    <div class="course-img pink">
+                        <i class="bi bi-gear"></i>
+                        <span class="course-tag">DEVOPS</span>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-title">DevOps & CI/CD</div>
+                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Verma</div>
+                        <div class="course-rating">
+                            <span class="stars">★★★★☆</span>
+                            <span style="color: #94a3b8;">(862)</span>
+                        </div>
+                        <div class="course-meta">18 Lessons • 13 Hours • Advanced</div>
+                    </div>
+                    <div class="course-footer">
+                        <button class="course-button">Enroll Now</button>
+                    </div>
+                </div>
+
+                <!-- Database Design -->
+                <div class="course-card">
+                    <div class="course-img cyan">
+                        <i class="bi bi-database"></i>
+                        <span class="course-tag">DATABASE</span>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-title">Advanced Database Design</div>
+                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Chopra</div>
+                        <div class="course-rating">
+                            <span class="stars">★★★★★</span>
+                            <span style="color: #94a3b8;">(725)</span>
+                        </div>
+                        <div class="course-meta">17 Lessons • 12 Hours • Intermediate</div>
+                    </div>
+                    <div class="course-footer">
+                        <button class="course-button">Enroll Now</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        const coursesData = [
-            {
-                id: 1,
-                title: "Web Development Masterclass",
-                instructor: "Prof. Sharma",
-                category: "Web Development",
-                description: "Master HTML, CSS, JavaScript and build real-world projects from scratch.",
-                rating: 5,
-                reviews: 1203,
-                lessons: 16,
-                duration: "8 hrs",
-                progress: 75,
-                status: "enrolled",
-                color: "linear-gradient(135deg, #667eea, #764ba2)",
-                icon: "WEB"
-            },
-            {
-                id: 2,
-                title: "IoT Fundamentals",
-                instructor: "Prof. Mehta",
-                category: "IoT",
-                description: "Understand sensors, actuators, and connect devices in a smart network.",
-                rating: 4.5,
-                reviews: 856,
-                lessons: 20,
-                duration: "12 hrs",
-                progress: 45,
-                status: "enrolled",
-                color: "linear-gradient(135deg, #f093fb, #f5576c)",
-                icon: "IOT"
-            },
-            {
-                id: 3,
-                title: "Python Programming",
-                instructor: "Prof. Rao",
-                category: "Programming",
-                description: "Learn Python from scratch — variables, functions, OOP, and data handling.",
-                rating: 5,
-                reviews: 1450,
-                lessons: 20,
-                duration: "10 hrs",
-                progress: 100,
-                status: "completed",
-                color: "linear-gradient(135deg, #4facfe, #00f2fe)",
-                icon: "PYTHON"
-            },
-            {
-                id: 4,
-                title: "Machine Learning Basics",
-                instructor: "Prof. Singh",
-                category: "AI/ML",
-                description: "Dive into supervised learning, models, and real-world ML applications.",
-                rating: 5,
-                reviews: 1100,
-                lessons: 18,
-                duration: "14 hrs",
-                progress: 0,
-                status: "available",
-                color: "linear-gradient(135deg, #43e97b, #38f9d7)",
-                icon: "ML"
-            },
-            {
-                id: 5,
-                title: "Cybersecurity Essentials",
-                instructor: "Prof. Nair",
-                category: "Security",
-                description: "Protect systems and networks from threats with core security concepts.",
-                rating: 4.5,
-                reviews: 956,
-                lessons: 15,
-                duration: "9 hrs",
-                progress: 0,
-                status: "available",
-                color: "linear-gradient(135deg, #fa709a, #fee140)",
-                icon: "LOCK"
-            },
-            {
-                id: 6,
-                title: "Cloud Computing",
-                instructor: "Prof. Kumar",
-                category: "Cloud",
-                description: "Understanding AWS, Azure, GCP and cloud deployment strategies.",
-                rating: 5,
-                reviews: 1400,
-                lessons: 22,
-                duration: "16 hrs",
-                progress: 0,
-                status: "available",
-                color: "linear-gradient(135deg, #a18cd1, #fbc2eb)",
-                icon: "CLOUD"
-            }
-        ];
-
-        let currentFilter = 'all';
-
-        function renderCourses(courses) {
-            const grid = document.getElementById('coursesGrid');
-            grid.innerHTML = courses.map(course => `
-                <div class="course-card" data-status="${course.status}">
-                    <div class="course-image" style="background: ${course.color};">${course.icon}</div>
-                    <div class="course-body">
-                        <div class="course-badge">${course.category}</div>
-                        <h3 class="course-title">${course.title}</h3>
-                        <p class="course-instructor">Instructor: ${course.instructor}</p>
-                        <div class="course-rating">
-                            <span class="stars">${'★'.repeat(Math.floor(course.rating))}${'☆'.repeat(5 - Math.floor(course.rating))}</span>
-                            <span class="count">(${course.reviews.toLocaleString()})</span>
-                        </div>
-                        <p class="course-description">${course.description}</p>
-                        ${course.progress > 0 ? `
-                            <div class="course-progress">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span style="font-size: 12px; color: var(--text-light);">Progress</span>
-                                    <span style="font-size: 12px; font-weight: 600; color: var(--primary-color);">${course.progress}%</span>
-                                </div>
-                                <div class="progress-bar-container">
-                                    <div class="progress-bar-fill" style="width: ${course.progress}%;"></div>
-                                </div>
-                            </div>
-                        ` : ''}
-                        <div class="course-meta">
-                            <span>${course.lessons} Lessons</span>
-                            <span>${course.duration}</span>
-                        </div>
-                        <div class="course-footer">
-                            ${course.status === 'enrolled' ? 
-                                `<button class="course-button">Continue →</button>` :
-                                course.status === 'completed' ?
-                                `<button class="course-button" disabled style="opacity: 0.7; cursor: not-allowed;">Completed</button>` :
-                                `<button class="course-button outline">Enroll Now</button>`
-                            }
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function filterCourses(filter) {
-            currentFilter = filter;
-            
-            // Update active button
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            // Filter courses
-            let filtered = coursesData;
-            if (filter !== 'all') {
-                filtered = coursesData.filter(c => c.status === filter);
-            }
-
-            renderCourses(filtered);
-        }
-
-        function searchCourses() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = coursesData.filter(course => 
-                course.title.toLowerCase().includes(query) ||
-                course.category.toLowerCase().includes(query) ||
-                course.instructor.toLowerCase().includes(query)
-            );
-            renderCourses(filtered);
-        }
-
         function logout() {
             if (confirm('Are you sure you want to logout?')) {
                 localStorage.removeItem('token');
@@ -474,12 +551,6 @@
                 window.location.href = '../login.html';
             }
         }
-
-        // Add search event listener
-        document.getElementById('searchInput').addEventListener('input', searchCourses);
-
-        // Initial render
-        renderCourses(coursesData);
     </script>
 </body>
 </html>

@@ -7,216 +7,641 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Modern Dashboard Layout */
+        body {
+            display: flex;
+            background: #f5f7fa;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            padding: 24px 0;
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .sidebar-brand {
+            padding: 0 24px 30px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .sidebar-brand h2 {
+            color: white;
+            font-size: 1.3rem;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav li {
+            margin: 0;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 24px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            margin: 2px 0;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: #3b82f6;
+        }
+
+        .sidebar-nav i {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 30px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            background: white;
+            padding: 20px 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .dashboard-header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #1e293b;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f0f4f8;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .search-box input {
+            background: none;
+            border: none;
+            outline: none;
+            font-size: 0.9rem;
+            width: 200px;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .main-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .sidebar-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Stats Cards Redesign */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            border-top: 4px solid #3b82f6;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        /* Course Cards with Color Tags */
+        .course-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .course-img {
+            height: 140px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+        }
+
+        .course-tag {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: white;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .course-body {
+            padding: 18px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .course-instructor {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+
+        .course-progress {
+            margin-bottom: 12px;
+        }
+
+        .progress-bar {
+            height: 5px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6 0%, #0ea5e9 100%);
+            border-radius: 3px;
+        }
+
+        .course-meta {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 12px;
+        }
+
+        .course-footer {
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .course-button {
+            width: 100%;
+            padding: 10px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .course-button:hover {
+            background: #2563eb;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 25px 0 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .view-all {
+            font-size: 0.9rem;
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .view-all:hover {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+
+        /* Sidebar Info Card */
+        .info-card {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-card h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 12px;
+        }
+
+        .info-card p {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main-content {
+                margin-left: 200px;
+                padding: 20px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -260px;
+                transition: left 0.3s;
+                width: 260px;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+
+            .search-box input {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <div class="navbar-logo">
-                <span>CRISMATECH</span>
-            </div>
-            <ul class="navbar-menu">
-                <li><a href="dashboard.html" style="color: var(--primary-color); font-weight: 700;">Dashboard</a></li>
-                <li><a href="courses/courses.html">Courses</a></li>
-                <li><a href="assignments/assignments.html">Assignments</a></li>
-                <li><a href="tests/test.html">Tests</a></li>
-                <li><a href="certificate/certificate.html">Certificates</a></li>
-            </ul>
-            <div class="navbar-auth">
-                <a href="profile/profile.html" style="color: var(--text-dark); font-weight: 500;">Profile</a>
-                <button class="btn-outline" onclick="logout()" style="padding: var(--spacing-sm) var(--spacing-lg);">Logout</button>
-            </div>
+    <!-- SIDEBAR NAVIGATION -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h2><i class="bi bi-book"></i> CRISMATECH</h2>
         </div>
-    </nav>
+        <ul class="sidebar-nav">
+            <li><a href="dashboard.html" class="active"><i class="bi bi-house-door-fill"></i> Dashboard</a></li>
+            <li><a href="courses/courses.html"><i class="bi bi-play-circle-fill"></i> Courses</a></li>
+            <li><a href="assignments/assignments.html"><i class="bi bi-file-earmark-text"></i> Assignments</a></li>
+            <li><a href="tests/test.html"><i class="bi bi-pencil-square"></i> Tests</a></li>
+            <li><a href="attendance/attendance.html"><i class="bi bi-calendar-check"></i> Attendance</a></li>
+            <li><a href="certificate/certificate.html"><i class="bi bi-award-fill"></i> Certificates</a></li>
+            <li><hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 15px 0;"></li>
+            <li><a href="profile/profile.html"><i class="bi bi-person-circle"></i> Profile</a></li>
+            <li><a href="#" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+        </ul>
+    </div>
 
     <!-- MAIN CONTENT -->
-    <div class="dashboard-container">
-        <!-- Welcome Section -->
-        <div class="welcome-header">
+    <div class="main-content">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
             <h1>Welcome back, <span id="userName">Student</span>!</h1>
-            <p>Continue your learning journey with our recommended courses</p>
-        </div>
-
-        <!-- Stats Section -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-value" id="enrolledCount">5</div>
-                <div class="stat-label">Courses Enrolled</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="completedCount">2</div>
-                <div class="stat-label">Completed</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="certificateCount">1</div>
-                <div class="stat-label">Certificates</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value">87%</div>
-                <div class="stat-label">Avg. Progress</div>
+            <div class="header-actions">
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" placeholder="Search courses...">
+                </div>
+                <i class="bi bi-bell" style="font-size: 1.2rem; color: #64748b; cursor: pointer;"></i>
             </div>
         </div>
 
-        <!-- Continue Learning Section -->
-        <div style="margin-bottom: var(--spacing-2xl);">
-            <div class="section-header">
-                <h2>Continue Learning</h2>
-                <a href="courses/courses.html" class="view-all">View All</a>
-            </div>
-            <div class="grid grid-3">
-                <div class="course-card">
-                    <div class="course-img"></div>
-                    <div class="course-body">
-                        <div class="course-title">Web Development Masterclass</div>
-                        <div class="course-instructor">Prof. Sharma</div>
-                        <div class="course-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 65%;"></div>
+        <!-- Dashboard Grid Layout -->
+        <div class="dashboard-grid">
+            <!-- Main Content Area -->
+            <div class="main-section">
+                <!-- Stats Section -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="enrolledCount">5</div>
+                        <div class="stat-label">Courses Enrolled</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="completedCount">2</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="certificateCount">1</div>
+                        <div class="stat-label">Certificates</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">87%</div>
+                        <div class="stat-label">Avg. Progress</div>
+                    </div>
+                </div>
+
+                <!-- Continue Learning Section -->
+                <div class="section-title">
+                    <span><i class="bi bi-play-circle"></i> Continue Learning</span>
+                    <a href="courses/courses.html" class="view-all">View All →</a>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-bottom: 30px;">
+                    <div class="course-card">
+                        <div class="course-img" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <i class="bi bi-code-slash"></i>
+                            <span class="course-tag">HTML/CSS</span>
+                        </div>
+                        <div class="course-body">
+                            <div class="course-title">Web Development Masterclass</div>
+                            <div class="course-instructor"><i class="bi bi-person-circle" style="margin-right: 6px;"></i>Prof. Sharma</div>
+                            <div class="course-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 65%;"></div>
+                                </div>
                             </div>
+                            <div class="course-meta">65% Complete • 16 Lessons</div>
                         </div>
-                        <div class="course-meta">
-                            <span>65% Complete</span>
-                            <span>16 Lessons</span>
+                        <div class="course-footer">
+                            <button class="course-button">Continue</button>
                         </div>
                     </div>
-                    <div class="course-footer">
-                        <button class="course-button">Continue</button>
-                    </div>
-                </div>
 
-                <div class="course-card">
-                    <div class="course-img"></div>
-                    <div class="course-body">
-                        <div class="course-title">Python for Data Science</div>
-                        <div class="course-instructor">Prof. Rao</div>
-                        <div class="course-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 45%;"></div>
+                    <div class="course-card">
+                        <div class="course-img" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <i class="bi bi-snake"></i>
+                            <span class="course-tag">PYTHON</span>
+                        </div>
+                        <div class="course-body">
+                            <div class="course-title">Python for Data Science</div>
+                            <div class="course-instructor"><i class="bi bi-person-circle" style="margin-right: 6px;"></i>Prof. Rao</div>
+                            <div class="course-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 45%;"></div>
+                                </div>
                             </div>
+                            <div class="course-meta">45% Complete • 20 Lessons</div>
                         </div>
-                        <div class="course-meta">
-                            <span>45% Complete</span>
-                            <span>20 Lessons</span>
+                        <div class="course-footer">
+                            <button class="course-button">Continue</button>
                         </div>
                     </div>
-                    <div class="course-footer">
-                        <button class="course-button">Continue</button>
-                    </div>
-                </div>
 
-                <div class="course-card">
-                    <div class="course-img"></div>
-                    <div class="course-body">
-                        <div class="course-title">IoT Fundamentals</div>
-                        <div class="course-instructor">Prof. Mehta</div>
-                        <div class="course-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 80%;"></div>
+                    <div class="course-card">
+                        <div class="course-img" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <i class="bi bi-cpu"></i>
+                            <span class="course-tag">IoT</span>
+                        </div>
+                        <div class="course-body">
+                            <div class="course-title">IoT Fundamentals</div>
+                            <div class="course-instructor"><i class="bi bi-person-circle" style="margin-right: 6px;"></i>Prof. Mehta</div>
+                            <div class="course-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 80%;"></div>
+                                </div>
                             </div>
+                            <div class="course-meta">80% Complete • 18 Lessons</div>
                         </div>
-                        <div class="course-meta">
-                            <span>80% Complete</span>
-                            <span>18 Lessons</span>
+                        <div class="course-footer">
+                            <button class="course-button">Continue</button>
                         </div>
                     </div>
-                    <div class="course-footer">
-                        <button class="course-button">Continue</button>
+                </div>
+
+                <!-- Recommended Courses Section -->
+                <div class="section-title">
+                    <span><i class="bi bi-star"></i> Recommended for You</span>
+                    <a href="courses/courses.html" class="view-all">View All →</a>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-bottom: 30px;">
+                    <div class="course-card">
+                        <div class="course-img" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                            <i class="bi bi-robot"></i>
+                            <span class="course-tag">ML</span>
+                        </div>
+                        <div class="course-body">
+                            <div class="course-title">Machine Learning Basics</div>
+                            <div class="course-instructor"><i class="bi bi-person-circle" style="margin-right: 6px;"></i>Prof. Singh</div>
+                            <div class="course-rating" style="margin-bottom: 8px;">
+                                <span class="stars">★★★★★</span>
+                                <span style="font-size: 0.8rem; color: #94a3b8;">(1,203)</span>
+                            </div>
+                            <div class="course-meta">18 Lessons • Advanced</div>
+                        </div>
+                        <div class="course-footer">
+                            <button class="course-button">Enroll Now</button>
+                        </div>
+                    </div>
+
+                    <div class="course-card">
+                        <div class="course-img" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                            <i class="bi bi-shield-lock"></i>
+                            <span class="course-tag">SECURITY</span>
+                        </div>
+                        <div class="course-body">
+                            <div class="course-title">Cybersecurity Essentials</div>
+                            <div class="course-instructor"><i class="bi bi-person-circle" style="margin-right: 6px;"></i>Prof. Nair</div>
+                            <div class="course-rating" style="margin-bottom: 8px;">
+                                <span class="stars">★★★★☆</span>
+                                <span style="font-size: 0.8rem; color: #94a3b8;">(956)</span>
+                            </div>
+                            <div class="course-meta">15 Lessons • Intermediate</div>
+                        </div>
+                        <div class="course-footer">
+                            <button class="course-button">Enroll Now</button>
+                        </div>
+                    </div>
+
+                    <div class="course-card">
+                        <div class="course-img" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">
+                            <i class="bi bi-cloud"></i>
+                            <span class="course-tag">CLOUD</span>
+                        </div>
+                        <div class="course-body">
+                            <div class="course-title">Cloud Computing</div>
+                            <div class="course-instructor"><i class="bi bi-person-circle" style="margin-right: 6px;"></i>Prof. Kumar</div>
+                            <div class="course-rating" style="margin-bottom: 8px;">
+                                <span class="stars">★★★★★</span>
+                                <span style="font-size: 0.8rem; color: #94a3b8;">(1,450)</span>
+                            </div>
+                            <div class="course-meta">22 Lessons • Advanced</div>
+                        </div>
+                        <div class="course-footer">
+                            <button class="course-button">Enroll Now</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Recommended Courses Section -->
-        <div style="margin-bottom: var(--spacing-2xl);">
-            <div class="section-header">
-                <h2>Recommended for You</h2>
-                <a href="courses/courses.html" class="view-all">View All</a>
-            </div>
-            <div class="grid grid-3">
-                <div class="course-card">
-                    <div class="course-img"></div>
-                    <div class="course-body">
-                        <div class="course-title">Machine Learning Basics</div>
-                        <div class="course-instructor">Prof. Singh</div>
-                        <div class="course-rating">
-                            <span class="stars">★★★★★</span>
-                            <span class="rating-count">(1,203)</span>
+            <!-- Sidebar Section -->
+            <div class="sidebar-section">
+                <!-- Upcoming Classes -->
+                <div class="info-card">
+                    <h3><i class="bi bi-calendar-event" style="margin-right: 8px;"></i>Upcoming Classes</h3>
+                    <div style="font-size: 0.85rem; color: #64748b; line-height: 1.8;">
+                        <div style="padding: 10px 0; border-bottom: 1px solid #e2e8f0;">
+                            <strong>Today • 2:30 PM</strong><br>
+                            Web Dev Lecture
                         </div>
-                        <div class="course-meta">
-                            <span>18 Lessons</span>
-                            <span>Advanced</span>
+                        <div style="padding: 10px 0; border-bottom: 1px solid #e2e8f0;">
+                            <strong>Tomorrow • 10:00 AM</strong><br>
+                            Data Science Lab
                         </div>
-                    </div>
-                    <div class="course-footer">
-                        <button class="course-button">Enroll Now</button>
+                        <div style="padding: 10px 0;">
+                            <strong>Friday • 3:00 PM</strong><br>
+                            IoT Project Review
+                        </div>
                     </div>
                 </div>
 
-                <div class="course-card">
-                    <div class="course-img"></div>
-                    <div class="course-body">
-                        <div class="course-title">Cybersecurity Essentials</div>
-                        <div class="course-instructor">Prof. Nair</div>
-                        <div class="course-rating">
-                            <span class="stars">★★★★☆</span>
-                            <span class="rating-count">(956)</span>
-                        </div>
-                        <div class="course-meta">
-                            <span>15 Lessons</span>
-                            <span>Intermediate</span>
-                        </div>
-                    </div>
-                    <div class="course-footer">
-                        <button class="course-button">Enroll Now</button>
+                <!-- Quick Links -->
+                <div class="info-card">
+                    <h3><i class="bi bi-link-45deg" style="margin-right: 8px;"></i>Quick Access</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <a href="assignments/assignments.html" style="padding: 10px; background: #f0f4f8; border-radius: 8px; text-align: center; text-decoration: none; color: #3b82f6; font-weight: 600; font-size: 0.85rem; transition: all 0.3s;">
+                            <i class="bi bi-file-earmark"></i><br>Assignments
+                        </a>
+                        <a href="tests/test.html" style="padding: 10px; background: #f0f4f8; border-radius: 8px; text-align: center; text-decoration: none; color: #3b82f6; font-weight: 600; font-size: 0.85rem; transition: all 0.3s;">
+                            <i class="bi bi-pencil-square"></i><br>Tests
+                        </a>
+                        <a href="attendance/attendance.html" style="padding: 10px; background: #f0f4f8; border-radius: 8px; text-align: center; text-decoration: none; color: #3b82f6; font-weight: 600; font-size: 0.85rem; transition: all 0.3s;">
+                            <i class="bi bi-calendar-check"></i><br>Attendance
+                        </a>
+                        <a href="certificate/certificate.html" style="padding: 10px; background: #f0f4f8; border-radius: 8px; text-align: center; text-decoration: none; color: #3b82f6; font-weight: 600; font-size: 0.85rem; transition: all 0.3s;">
+                            <i class="bi bi-award"></i><br>Certificates
+                        </a>
                     </div>
                 </div>
 
-                <div class="course-card">
-                    <div class="course-img"></div>
-                    <div class="course-body">
-                        <div class="course-title">Cloud Computing</div>
-                        <div class="course-instructor">Prof. Kumar</div>
-                        <div class="course-rating">
-                            <span class="stars">★★★★★</span>
-                            <span class="rating-count">(1,450)</span>
+                <!-- Recent Activity -->
+                <div class="info-card">
+                    <h3><i class="bi bi-activity" style="margin-right: 8px;"></i>Recent Activity</h3>
+                    <div style="font-size: 0.85rem; color: #64748b; line-height: 1.8;">
+                        <div style="padding: 8px 0; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px;">
+                            <span style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%; flex-shrink: 0;"></span>
+                            <span><strong>Completed:</strong> Web Dev Module</span>
                         </div>
-                        <div class="course-meta">
-                            <span>22 Lessons</span>
-                            <span>Advanced</span>
+                        <div style="padding: 8px 0; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px;">
+                            <span style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; flex-shrink: 0;"></span>
+                            <span><strong>Submitted:</strong> JS Assignment</span>
                         </div>
-                    </div>
-                    <div class="course-footer">
-                        <button class="course-button">Enroll Now</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Activity Section -->
-        <div>
-            <h2 style="margin-bottom: var(--spacing-lg);">Recent Activity</h2>
-            <div class="card">
-                <div style="padding: var(--spacing-lg);">
-                    <div style="display: flex; justify-content: space-between; padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--border-color);">
-                        <div>
-                            <h4>Completed Module: Web Development Basics</h4>
-                            <p style="margin: var(--spacing-sm) 0 0 0; color: var(--text-light);">March 5, 2026</p>
+                        <div style="padding: 8px 0; display: flex; align-items: center; gap: 8px;">
+                            <span style="width: 8px; height: 8px; background: #f59e0b; border-radius: 50%; flex-shrink: 0;"></span>
+                            <span><strong>Earned:</strong> Python Cert</span>
                         </div>
-                        <span style="background-color: var(--primary-light); color: var(--primary-color); padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--border-radius); font-size: 0.85rem; font-weight: 600;">Completed</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; padding: var(--spacing-lg) 0; border-bottom: 1px solid var(--border-color);">
-                        <div>
-                            <h4>Submitted Assignment: JS Projects</h4>
-                            <p style="margin: var(--spacing-sm) 0 0 0; color: var(--text-light);">March 3, 2026</p>
-                        </div>
-                        <span style="background-color: #E8F5E9; color: #2E7D32; padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--border-radius); font-size: 0.85rem; font-weight: 600;">Submitted</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; padding: var(--spacing-lg) 0;">
-                        <div>
-                            <h4>Earned Certificate: Python Programming</h4>
-                            <p style="margin: var(--spacing-sm) 0 0 0; color: var(--text-light);">March 1, 2026</p>
-                        </div>
-                        <span style="background-color: #FFF3E0; color: #E65100; padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--border-radius); font-size: 0.85rem; font-weight: 600;">Certificate</span>
                     </div>
                 </div>
             </div>
