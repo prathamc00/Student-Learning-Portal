@@ -804,6 +804,73 @@ a:hover {
     box-shadow: 0 0 0 3px rgba(0, 86, 210, 0.1);
 }
 
+/* ===== IMAGES ===== */
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.img-fluid.rounded {
+    border-radius: var(--border-radius-lg);
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+.section {
+    padding: var(--spacing-2xl) var(--spacing-lg);
+}
+
+.container {
+    max-width: 1200px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-white {
+    color: white;
+}
+
+.mb-5 {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.g-4 {
+    gap: var(--spacing-lg);
+}
+
+.shadow-sm {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.rounded {
+    border-radius: var(--border-radius-lg);
+}
+
+/* ===== CARD ENHANCEMENTS ===== */
+
+.feature-card {
+    background: white;
+    border: none;
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xl);
+    transition: var(--transition);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
 /* ===== RESPONSIVE ===== */
 
 @media (max-width: 768px) {
