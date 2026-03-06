@@ -141,15 +141,18 @@
 
     async function getApiBase() {
         if (apiBase) return apiBase;
+        console.log('Searching for backend API on ports 5000-5005...');
         for (const base of API_CANDIDATES) {
             try {
+                console.log(`Trying ${base}...`);
                 const res = await fetch(`${base}/courses`);
                 if (res.ok) {
                     apiBase = base;
+                    console.log(`✓ Connected to backend at ${apiBase}`);
                     return apiBase;
                 }
-            } catch (_) {
-                // Try next candidate.
+            } catch (err) {
+                console.log(`✗ Port ${base.split(':')[2].split('/')[0]} not available`);
             }
         }
         throw new Error('Unable to connect to backend API (ports 5000-5005).');
@@ -203,8 +206,11 @@
 
     async function loadCourses() {
         try {
+            console.log('Loading courses...');
             const data = await fetchFromApi('/courses');
+            console.log('Received data:', data);
             courses = Array.isArray(data.courses) ? data.courses : [];
+            console.log(`Loaded ${courses.length} courses`);
             renderStats();
             renderTable();
         } catch (error) {
@@ -227,13 +233,17 @@
         const durationHours = Number(prompt('Duration in hours:', '8')) || 8;
 
         try {
-            await fetchFromApi('/courses', {
+            console.log('Creating course with data:', { title, instructor, category, level, lessons, durationHours, isActive: true });
+            const response = await fetchFromApi('/courses', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ title, instructor, category, level, lessons, durationHours, isActive: true }),
             });
+            console.log('Course created successfully:', response);
+            alert('Course created successfully!');
             await loadCourses();
         } catch (error) {
+            console.error('Failed to create course:', error);
             alert(`Failed to create course: ${error.message}`);
         }
     }
