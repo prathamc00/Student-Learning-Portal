@@ -3,337 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tests - CRISMATECH</title>
+    <title>Tests | CRISMATECH</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="../css/style.css">
     <style>
-        .tests-hero {
-            background: linear-gradient(135deg, var(--primary-color), #0040a3);
-            color: white;
-            padding: 60px var(--spacing-xl);
-            margin-bottom: var(--spacing-2xl);
+        :root {
+            --navy-900: #0d1b36;
+            --navy-800: #13264a;
+            --surface: #ffffff;
+            --bg: #f3f6fb;
+            --text: #1f2b46;
+            --muted: #6f7f9f;
+            --line: #e6ecf5;
+            --blue: #2f6bff;
+            --green: #1da772;
+            --amber: #c07a0b;
+            --shadow: 0 12px 30px rgba(17, 40, 89, 0.08);
+            --radius: 14px;
         }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
 
-        .tests-hero h1 {
-            margin: 0 0 var(--spacing-sm) 0;
-            font-size: 36px;
-            font-weight: 700;
+        .shell { min-height: 100vh; display: grid; grid-template-columns: 250px 1fr; }
+        .sidebar {
+            background: linear-gradient(180deg, var(--navy-900) 0%, var(--navy-800) 100%);
+            color: #dce6ff;
+            padding: 22px 14px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
         }
-
-        .tests-hero p {
-            margin: 0;
-            opacity: 0.9;
-            font-size: 16px;
+        .brand { padding: 10px 12px 22px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); margin-bottom: 14px; }
+        .brand h1 { font-size: 1.05rem; color: #fff; }
+        .brand p { color: #9fb1d8; font-size: 0.78rem; margin-top: 6px; }
+        .nav a {
+            display: flex; align-items: center; gap: 10px;
+            color: #cad7f7; text-decoration: none; padding: 11px 12px;
+            border-radius: 10px; margin-bottom: 4px; font-weight: 500; font-size: 0.92rem;
+            transition: 0.2s ease;
         }
+        .nav a:hover, .nav a.active { background: rgba(255,255,255,0.14); color: #fff; }
 
-        .test-grid {
+        .main { padding: 24px; }
+        .head {
+            background: linear-gradient(135deg, #2f6bff 0%, #36a5ff 100%);
+            color: #fff;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 14px;
+        }
+        .head h2 { font-size: 1.35rem; }
+        .head p { margin-top: 6px; opacity: 0.95; font-size: 0.9rem; }
+
+        .cards {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: var(--spacing-2xl);
-            margin-bottom: var(--spacing-2xl);
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 11px;
         }
 
-        .test-card {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--card-shadow);
-            overflow: hidden;
-            transition: all var(--transition-duration) ease;
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 14px;
             display: flex;
             flex-direction: column;
+            gap: 10px;
         }
 
-        .test-card:hover {
-            box-shadow: var(--card-shadow-hover);
-            transform: translateY(-4px);
-        }
+        .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+        .title { font-size: 0.96rem; font-weight: 700; }
+        .course { color: var(--muted); font-size: 0.8rem; margin-top: 3px; }
 
-        .test-header {
-            padding: var(--spacing-lg);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .test-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: var(--border-radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            background: var(--primary-light);
-            color: var(--primary-color);
-        }
-
-        .test-title {
-            font-size: 16px;
+        .status {
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 0.74rem;
             font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: var(--spacing-xs);
         }
+        .upcoming { background: #ffeecf; color: var(--amber); }
+        .completed { background: #dbf6eb; color: var(--green); }
 
-        .test-course {
-            font-size: 13px;
-            color: var(--text-light);
-        }
-
-        .test-body {
-            padding: var(--spacing-lg);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .test-info {
+        .meta {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
-            padding-bottom: var(--spacing-lg);
-            border-bottom: 1px solid var(--border-color);
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
         }
-
-        .test-info-item {
+        .meta div {
+            border: 1px solid var(--line);
+            border-radius: 9px;
+            padding: 8px;
             text-align: center;
+            font-size: 0.8rem;
+            color: #38507f;
+            background: #fafcff;
         }
+        .meta strong { display: block; font-size: 1.05rem; color: var(--blue); }
 
-        .test-info-label {
-            font-size: 12px;
-            color: var(--text-light);
-            margin-bottom: var(--spacing-xs);
+        .score {
+            border-radius: 10px;
+            background: #edf2ff;
+            color: #27437b;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.8rem;
         }
+        .score strong { font-size: 1.35rem; color: var(--blue); }
 
-        .test-info-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .test-status {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: var(--spacing-lg);
-        }
-
-        .status-upcoming {
-            background: #FFF3E0;
-            color: #E65100;
-        }
-
-        .status-completed {
-            background: #E8F5E9;
-            color: #2E7D32;
-        }
-
-        .test-button {
-            padding: var(--spacing-md);
-            border: none;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all var(--transition-duration) ease;
+        .btn {
             margin-top: auto;
+            border: 0;
+            border-radius: 9px;
+            padding: 9px;
+            cursor: pointer;
+            font-weight: 600;
+            background: var(--blue);
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.82rem;
         }
+        .btn.alt { background: #eaf0ff; color: #244792; }
 
-        .test-button.start {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .test-button.start:hover {
-            background: #003fa3;
-        }
-
-        .test-button.view {
-            background: white;
-            color: var(--primary-color);
-            border: 1px solid var(--primary-light);
-        }
-
-        .test-button.view:hover {
-            background: var(--primary-light);
-        }
-
-        @media (max-width: 768px) {
-            .tests-hero h1 {
-                font-size: 28px;
-            }
-
-            .test-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .test-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .test-info {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 820px) {
+            .shell { grid-template-columns: 1fr; }
+            .sidebar { position: static; height: auto; }
+            .main { padding: 14px; }
         }
     </style>
 </head>
 <body>
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <div class="navbar-logo">
-                <span>CRISMATECH</span>
+    <div class="shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1><i class="bi bi-mortarboard-fill"></i> CRISMATECH</h1>
+                <p>Student Learning Portal</p>
             </div>
-            <ul class="navbar-menu">
-                <li><a href="../dashboard.html">Dashboard</a></li>
-                <li><a href="../courses/courses.html">Courses</a></li>
-                <li><a href="../assignments/assignments.html">Assignments</a></li>
-                <li><a href="test.html" style="color: var(--primary-color); font-weight: 700;">Tests</a></li>
-                <li><a href="../certificate/certificate.html">Certificates</a></li>
-            </ul>
-            <div class="navbar-auth">
-                <a href="../profile/profile.html" style="color: var(--text-dark); font-weight: 500;">Profile</a>
-                <button class="btn-outline" onclick="logout()" style="padding: var(--spacing-sm) var(--spacing-lg);">Logout</button>
-            </div>
-        </div>
-    </nav>
+            <nav class="nav">
+                <a href="../index.html"><i class="bi bi-house-door"></i> Home</a>
+                <a href="../dashboard.html"><i class="bi bi-grid"></i> Dashboard</a>
+                <a href="../courses/courses.html"><i class="bi bi-journal-bookmark"></i> Courses</a>
+                <a href="../assignments/assignments.html"><i class="bi bi-file-earmark-check"></i> Assignments</a>
+                <a class="active" href="test.html"><i class="bi bi-ui-checks-grid"></i> Tests</a>
+                <a href="../certificate/certificate.html"><i class="bi bi-award"></i> Certificates</a>
+                <a href="#" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</a>
+            </nav>
+        </aside>
 
-    <!-- HERO SECTION -->
-    <div class="tests-hero">
-        <h1>Tests & Assessments</h1>
-        <p>Evaluate your knowledge and track your performance</p>
-    </div>
+        <main class="main">
+            <section class="head">
+                <h2>Tests and Assessments</h2>
+                <p>Check schedules, attempt tests, and review your latest scores.</p>
+            </section>
 
-    <!-- MAIN CONTENT -->
-    <div class="dashboard-container">
-        <!-- TESTS GRID -->
-        <div class="test-grid" id="testsGrid">
-            <!-- Tests will be inserted here -->
-        </div>
+            <section class="cards" id="testsGrid"></section>
+        </main>
     </div>
 
     <script>
-        const tests = [
-            {
-                id: 1,
-                title: "Web Dev Mid-Term Test",
-                course: "Web Development",
-                questions: 50,
-                duration: 90,
-                status: "completed",
-                score: 87,
-                scoreTotal: 100,
-                date: "Feb 20, 2026"
-            },
-            {
-                id: 2,
-                title: "Python Programming Quiz",
-                course: "Python Programming",
-                questions: 30,
-                duration: 60,
-                status: "completed",
-                score: 92,
-                scoreTotal: 100,
-                date: "Feb 25, 2026"
-            },
-            {
-                id: 3,
-                title: "IoT Fundamentals Test",
-                course: "IoT Fundamentals",
-                questions: 40,
-                duration: 75,
-                status: "upcoming",
-                scheduleDate: "Mar 10, 2026"
-            },
-            {
-                id: 4,
-                title: "Machine Learning Mid-Term",
-                course: "Machine Learning",
-                questions: 45,
-                duration: 120,
-                status: "upcoming",
-                scheduleDate: "Mar 15, 2026"
-            },
-            {
-                id: 5,
-                title: "Cybersecurity Assessment",
-                course: "Cybersecurity Essentials",
-                questions: 35,
-                duration: 60,
-                status: "completed",
-                score: 85,
-                scoreTotal: 100,
-                date: "Mar 1, 2026"
-            },
-            {
-                id: 6,
-                title: "Cloud Computing Final",
-                course: "Cloud Computing",
-                questions: 50,
-                duration: 120,
-                status: "upcoming",
-                scheduleDate: "Mar 20, 2026"
+        const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
+            (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
+        );
+
+        let tests = [];
+
+        async function fetchFromApi(path) {
+            for (const base of API_CANDIDATES) {
+                try {
+                    const res = await fetch(`${base}${path}`);
+                    if (!res.ok) continue;
+                    return await res.json();
+                } catch (_) {
+                    // Try next candidate.
+                }
             }
-        ];
+            throw new Error('Unable to connect to backend API (ports 5000-5005).');
+        }
 
         function renderTests() {
-            const grid = document.getElementById('testsGrid');
-            grid.innerHTML = tests.map(test => `
-                <div class="test-card">
-                    <div class="test-header">
+            document.getElementById('testsGrid').innerHTML = tests.map((t) => `
+                <article class="card">
+                    <div class="row">
                         <div>
-                            <h3 class="test-title">${test.title}</h3>
-                            <p class="test-course">${test.course}</p>
+                            <div class="title">${t.title}</div>
+                            <div class="course">${t.course}</div>
                         </div>
+                        <span class="status ${t.status === 'upcoming' ? 'upcoming' : 'completed'}">${t.status}</span>
                     </div>
-                    <div class="test-body">
-                        <span class="test-status ${test.status === 'upcoming' ? 'status-upcoming' : 'status-completed'}">
-                            ${test.status === 'upcoming' ? 'Scheduled' : 'Completed'}
-                        </span>
-                        <div class="test-info">
-                            <div class="test-info-item">
-                                <div class="test-info-label">Questions</div>
-                                <div class="test-info-value">${test.questions}</div>
-                            </div>
-                            <div class="test-info-item">
-                                <div class="test-info-label">Duration</div>
-                                <div class="test-info-value">${test.duration}m</div>
-                            </div>
-                        </div>
-                        ${test.status === 'completed' ? `
-                            <div style="text-align: center; padding: var(--spacing-lg); background: var(--primary-light); border-radius: var(--border-radius); margin-bottom: var(--spacing-lg);">
-                                <div style="font-size: 12px; color: var(--text-light); margin-bottom: var(--spacing-xs);">Your Score</div>
-                                <div style="font-size: 28px; font-weight: 700; color: var(--primary-color);">${test.score}/${test.scoreTotal}</div>
-                                <div style="font-size: 12px; color: var(--text-light); margin-top: var(--spacing-xs);">Completed: ${test.date}</div>
-                            </div>
-                            <button class="test-button view">View Results</button>
-                        ` : `
-                            <div style="text-align: center; padding: var(--spacing-lg); background: var(--bg-color); border-radius: var(--border-radius); margin-bottom: var(--spacing-lg);">
-                                <div style="font-size: 12px; color: var(--text-light);">Scheduled for</div>
-                                <div style="font-size: 16px; font-weight: 700; color: var(--text-dark); margin-top: var(--spacing-xs);">${test.scheduleDate}</div>
-                            </div>
-                            <button class="test-button start">Start Test</button>
-                        `}
+                    <div class="meta">
+                        <div><strong>${t.totalQuestions}</strong>Questions</div>
+                        <div><strong>${t.durationMinutes}m</strong>Duration</div>
                     </div>
-                </div>
+                    ${t.status === 'completed'
+                        ? `<div class="score">Score<br><strong>${t.score ?? 0}/100</strong><br>${t.updatedAt ? new Date(t.updatedAt).toLocaleDateString() : ''}</div><button class="btn alt">View Results</button>`
+                        : `<div class="score">Scheduled<br><strong>${t.scheduledDate ? new Date(t.scheduledDate).toLocaleDateString() : 'TBD'}</strong></div><button class="btn">Start Test</button>`
+                    }
+                </article>
             `).join('');
         }
 
         function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.href = '../login.html';
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../login.html';
+        }
+
+        async function initTests() {
+            try {
+                const data = await fetchFromApi('/tests');
+                tests = Array.isArray(data.tests) ? data.tests : [];
+                renderTests();
+            } catch (error) {
+                document.getElementById('testsGrid').innerHTML = `
+                    <article class="card" style="grid-column:1/-1;">
+                        <div class="title">Could not load tests</div>
+                        <div class="course">${error.message}</div>
+                    </article>
+                `;
             }
         }
 
-        // Initial render
-        renderTests();
+        document.addEventListener('DOMContentLoaded', initTests);
     </script>
 </body>
 </html>

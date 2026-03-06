@@ -21,34 +21,34 @@
 
             <div class="sidebar-nav">
                 <a href="admin-dashboard.html">
-                    <span class="icon">DASH</span>
+                    <span class="icon"><i class="bi bi-speedometer2"></i></span>
                     <span>Dashboard</span>
                 </a>
                 <a href="manage-students.html">
-                    <span class="icon">USERS</span>
+                    <span class="icon"><i class="bi bi-people"></i></span>
                     <span>Students</span>
                 </a>
                 <a href="manage-courses.html">
-                    <span class="icon">COURSES</span>
+                    <span class="icon"><i class="bi bi-journal-bookmark"></i></span>
                     <span>Courses</span>
                 </a>
                 <a href="manage-assignments.html">
-                    <span class="icon">ASSIGN</span>
+                    <span class="icon"><i class="bi bi-clipboard-check"></i></span>
                     <span>Assignments</span>
                 </a>
                 <a href="quiz-scheduler.html" class="active">
-                    <span class="icon">🧠</span>
+                    <span class="icon"><i class="bi bi-ui-checks-grid"></i></span>
                     <span>Quiz Scheduler</span>
                 </a>
 
                 <div class="nav-divider"></div>
 
                 <a href="../dashboard.html">
-                    <span class="icon">CERT</span>
+                    <span class="icon"><i class="bi bi-mortarboard"></i></span>
                     <span>Student Portal</span>
                 </a>
                 <a href="../index.html" class="logout-link">
-                    <span class="icon">LOGOUT</span>
+                    <span class="icon"><i class="bi bi-box-arrow-right"></i></span>
                     <span>Logout</span>
                 </a>
             </div>
@@ -69,7 +69,7 @@
                         <h2>Quiz Scheduling</h2>
                         <p>Plan, schedule, and manage quizzes across all courses</p>
                     </div>
-                    <button class="btn btn-primary">+ Schedule Quiz</button>
+                    <button id="addQuizBtn" class="btn btn-primary">+ Schedule Quiz</button>
                 </div>
 
                 <!-- Stats Row -->
@@ -78,7 +78,7 @@
                         <div class="stat-card">
                             <div class="stat-icon blue">🧠</div>
                             <div class="stat-info">
-                                <h3>8</h3>
+                                <h3 id="quizTotal">0</h3>
                                 <p>Total Quizzes</p>
                             </div>
                         </div>
@@ -87,7 +87,7 @@
                         <div class="stat-card">
                             <div class="stat-icon green">🟢</div>
                             <div class="stat-info">
-                                <h3>3</h3>
+                                <h3 id="quizUpcoming">0</h3>
                                 <p>Upcoming</p>
                             </div>
                         </div>
@@ -96,7 +96,7 @@
                         <div class="stat-card">
                             <div class="stat-icon orange">✔️</div>
                             <div class="stat-info">
-                                <h3>5</h3>
+                                <h3 id="quizCompleted">0</h3>
                                 <p>Completed</p>
                             </div>
                         </div>
@@ -106,7 +106,7 @@
                 <div class="table-wrapper">
                     <div class="table-header">
                         <h5>Scheduled Quizzes</h5>
-                        <span class="record-count">1 Record</span>
+                        <span id="quizRecordCount" class="record-count">0 Records</span>
                     </div>
                     <table class="table">
                         <thead>
@@ -115,20 +115,11 @@
                                 <th>Course</th>
                                 <th>Date</th>
                                 <th>Duration</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>HTML Basics</td>
-                                <td>Web Development</td>
-                                <td>25 Feb</td>
-                                <td>30 mins</td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-                                    <button class="btn btn-danger btn-sm">Delete</button>
-                                </td>
-                            </tr>
+                        <tbody id="quizTableBody">
                         </tbody>
                     </table>
                 </div>
@@ -138,6 +129,158 @@
         </div>
 
     </div>
+
+<script>
+    const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
+        (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
+    );
+
+    let apiBase = null;
+    let quizzes = [];
+
+    async function getApiBase() {
+        if (apiBase) return apiBase;
+        for (const base of API_CANDIDATES) {
+            try {
+                const res = await fetch(`${base}/tests`);
+                if (res.ok) {
+                    apiBase = base;
+                    return apiBase;
+                }
+            } catch (_) {
+                // Try next candidate.
+            }
+        }
+        throw new Error('Unable to connect to backend API (ports 5000-5005).');
+    }
+
+    async function fetchFromApi(path, options) {
+        const base = await getApiBase();
+        const res = await fetch(`${base}${path}`, options);
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(errorText || `Request failed with status ${res.status}`);
+        }
+        return await res.json();
+    }
+
+    function renderStats() {
+        document.getElementById('quizTotal').textContent = quizzes.length;
+        document.getElementById('quizUpcoming').textContent = quizzes.filter((q) => q.status === 'upcoming').length;
+        document.getElementById('quizCompleted').textContent = quizzes.filter((q) => q.status === 'completed').length;
+        document.getElementById('quizRecordCount').textContent = `${quizzes.length} Records`;
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('quizTableBody');
+
+        if (!quizzes.length) {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No quizzes found</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = quizzes
+            .map((quiz) => {
+                const date = quiz.scheduledDate ? new Date(quiz.scheduledDate).toLocaleDateString() : 'TBD';
+                return `
+                    <tr>
+                        <td>${quiz.title}</td>
+                        <td>${quiz.course}</td>
+                        <td>${date}</td>
+                        <td>${quiz.durationMinutes} mins</td>
+                        <td><span class="badge ${quiz.status === 'completed' ? 'bg-secondary' : 'bg-success'}">${quiz.status}</span></td>
+                        <td>
+                            <button class="btn btn-warning btn-sm me-1" onclick="editQuiz('${quiz._id}')">Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteQuiz('${quiz._id}')">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            })
+            .join('');
+    }
+
+    async function loadQuizzes() {
+        try {
+            const data = await fetchFromApi('/tests');
+            quizzes = Array.isArray(data.tests) ? data.tests : [];
+            renderStats();
+            renderTable();
+        } catch (error) {
+            console.error('Failed to load quizzes:', error.message);
+            document.getElementById('quizTableBody').innerHTML =
+                `<tr><td colspan="7" class="text-danger text-center">${error.message}</td></tr>`;
+        }
+    }
+
+    async function createQuiz() {
+        const title = prompt('Quiz title:');
+        if (!title) return;
+        const course = prompt('Course name:');
+        if (!course) return;
+        const totalQuestions = Number(prompt('Total questions:', '20')) || 20;
+        const durationMinutes = Number(prompt('Duration (minutes):', '30')) || 30;
+        const status = prompt('Status (upcoming/completed):', 'upcoming');
+        if (!status) return;
+        const scheduledDate = status === 'upcoming' ? prompt('Scheduled date (YYYY-MM-DD):', '2026-03-25') : null;
+
+        const payload = { title, course, totalQuestions, durationMinutes, status };
+        if (scheduledDate) payload.scheduledDate = scheduledDate;
+
+        try {
+            await fetchFromApi('/tests', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            await loadQuizzes();
+        } catch (error) {
+            alert(`Failed to create quiz: ${error.message}`);
+        }
+    }
+
+    async function editQuiz(id) {
+        const quiz = quizzes.find((q) => q._id === id);
+        if (!quiz) return;
+
+        const title = prompt('Quiz title:', quiz.title);
+        if (!title) return;
+        const course = prompt('Course name:', quiz.course);
+        if (!course) return;
+        const totalQuestions = Number(prompt('Total questions:', String(quiz.totalQuestions))) || quiz.totalQuestions;
+        const durationMinutes = Number(prompt('Duration (minutes):', String(quiz.durationMinutes))) || quiz.durationMinutes;
+        const status = prompt('Status (upcoming/completed):', quiz.status);
+        if (!status) return;
+        const defaultDate = quiz.scheduledDate ? quiz.scheduledDate.slice(0, 10) : '2026-03-25';
+        const scheduledDate = status === 'upcoming' ? prompt('Scheduled date (YYYY-MM-DD):', defaultDate) : null;
+
+        const payload = { title, course, totalQuestions, durationMinutes, status };
+        if (scheduledDate) payload.scheduledDate = scheduledDate;
+
+        try {
+            await fetchFromApi(`/tests/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            await loadQuizzes();
+        } catch (error) {
+            alert(`Failed to update quiz: ${error.message}`);
+        }
+    }
+
+    async function deleteQuiz(id) {
+        if (!confirm('Delete this quiz?')) return;
+        try {
+            await fetchFromApi(`/tests/${id}`, { method: 'DELETE' });
+            await loadQuizzes();
+        } catch (error) {
+            alert(`Failed to delete quiz: ${error.message}`);
+        }
+    }
+
+    document.getElementById('addQuizBtn').addEventListener('click', createQuiz);
+    document.addEventListener('DOMContentLoaded', loadQuizzes);
+</script>
 
 </body>
 

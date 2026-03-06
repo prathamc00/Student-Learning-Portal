@@ -3,653 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - CRISMATECH</title>
+    <title>Dashboard | CRISMATECH</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css">
     <style>
-        /* Modern Dashboard Layout */
-        body {
-            display: flex;
-            background: #f5f7fa;
+        :root {
+            --navy-900: #0d1b36;
+            --navy-800: #13264a;
+            --surface: #ffffff;
+            --bg: #f3f6fb;
+            --text: #1f2b46;
+            --muted: #6f7f9f;
+            --line: #e6ecf5;
+            --blue: #2f6bff;
+            --green: #1da772;
+            --amber: #c07a0b;
+            --shadow: 0 12px 30px rgba(17, 40, 89, 0.08);
+            --radius: 14px;
         }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
 
-        /* Sidebar Navigation */
+        .shell { min-height: 100vh; display: grid; grid-template-columns: 250px 1fr; }
         .sidebar {
-            width: 260px;
-            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-            min-height: 100vh;
-            position: fixed;
-            left: 0;
+            background: linear-gradient(180deg, var(--navy-900) 0%, var(--navy-800) 100%);
+            color: #dce6ff;
+            padding: 22px 14px;
+            position: sticky;
             top: 0;
-            z-index: 1000;
-            padding: 24px 0;
-            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+            height: 100vh;
         }
-
-        .sidebar-brand {
-            padding: 0 24px 30px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
+        .brand { padding: 10px 12px 22px; border-bottom: 1px solid rgba(255,255,255,0.12); margin-bottom: 14px; }
+        .brand h1 { font-size: 1.05rem; color: #fff; }
+        .brand p { color: #9fb1d8; font-size: 0.78rem; margin-top: 6px; }
+        .nav a {
+            display: flex; align-items: center; gap: 10px;
+            color: #cad7f7; text-decoration: none; padding: 11px 12px;
+            border-radius: 10px; margin-bottom: 4px; font-weight: 500; font-size: 0.92rem;
+            transition: 0.2s ease;
         }
+        .nav a:hover, .nav a.active { background: rgba(255,255,255,0.14); color: #fff; }
 
-        .sidebar-brand h2 {
-            color: white;
-            font-size: 1.3rem;
-            margin: 0;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        .sidebar-nav {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar-nav li {
-            margin: 0;
-        }
-
-        .sidebar-nav a {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 24px;
-            color: rgba(255, 255, 255, 0.6);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: all 0.3s;
-            border-left: 3px solid transparent;
-            margin: 2px 0;
-        }
-
-        .sidebar-nav a:hover,
-        .sidebar-nav a.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-left-color: #3b82f6;
-        }
-
-        .sidebar-nav i {
-            font-size: 1.2rem;
-            width: 24px;
-            text-align: center;
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-left: 260px;
-            flex: 1;
-            padding: 30px;
-        }
-
-        .dashboard-header {
+        .main { padding: 24px; }
+        .topbar {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 35px;
-            background: white;
-            padding: 20px 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            gap: 12px;
+            margin-bottom: 14px;
         }
-
-        .dashboard-header h1 {
-            margin: 0;
-            font-size: 1.8rem;
-            color: #1e293b;
+        .welcome h2 { font-size: 1.28rem; }
+        .welcome p { margin-top: 5px; color: var(--muted); font-size: 0.88rem; }
+        .search {
+            display: flex; align-items: center; gap: 8px;
+            background: #f8faff; border: 1px solid var(--line);
+            border-radius: 10px; padding: 8px 10px; width: 240px; color: var(--muted);
         }
+        .search input { border: 0; outline: 0; width: 100%; background: transparent; font-family: inherit; }
 
-        .header-actions {
-            display: flex;
-            gap: 15px;
-            align-items: center;
+        .stats { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 14px; }
+        .stat {
+            background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+            padding: 14px; box-shadow: var(--shadow);
         }
+        .stat small { color: var(--muted); }
+        .stat strong { display: block; margin-top: 6px; font-size: 1.45rem; color: var(--blue); }
 
-        .search-box {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #f0f4f8;
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .search-box input {
-            background: none;
-            border: none;
-            outline: none;
-            font-size: 0.9rem;
-            width: 200px;
-        }
-
-        /* Dashboard Layout */
-        .dashboard-grid {
+        .layout {
             display: grid;
-            grid-template-columns: 1fr 320px;
-            gap: 25px;
-            margin-bottom: 30px;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 12px;
         }
 
-        .main-section {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 14px;
         }
+        .panel h3 { font-size: 1rem; margin-bottom: 10px; }
 
-        .sidebar-section {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* Stats Cards Redesign */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 20px;
+        .cards { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
+        .course {
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            border-top: 4px solid #3b82f6;
-            transition: all 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #3b82f6;
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-        }
-
-        /* Course Cards with Color Tags */
-        .course-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s;
+            padding: 11px;
+            min-height: 120px;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
         }
+        .course:nth-child(1) { background: #d8ecff; }
+        .course:nth-child(2) { background: #dff7eb; }
+        .course:nth-child(3) { background: #ffeecf; }
+        .course h4 { font-size: 0.9rem; }
+        .course p { font-size: 0.78rem; color: #42557f; margin-top: 5px; }
+        .meta { display: flex; justify-content: space-between; color: #2f436f; font-size: 0.76rem; }
 
-        .course-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
-        }
-
-        .course-img {
-            height: 140px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 2.5rem;
-        }
-
-        .course-tag {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: white;
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        .course-body {
-            padding: 18px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .course-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 6px;
-            line-height: 1.4;
-        }
-
-        .course-instructor {
-            font-size: 0.85rem;
-            color: #64748b;
-            margin-bottom: 12px;
-        }
-
-        .course-progress {
-            margin-bottom: 12px;
-        }
-
-        .progress-bar {
-            height: 5px;
-            background: #e2e8f0;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #3b82f6 0%, #0ea5e9 100%);
-            border-radius: 3px;
-        }
-
-        .course-meta {
-            font-size: 0.8rem;
-            color: #94a3b8;
-            margin-bottom: 12px;
-        }
-
-        .course-footer {
-            padding-top: 12px;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        .course-button {
-            width: 100%;
+        .list { display: flex; flex-direction: column; gap: 9px; }
+        .item {
+            border: 1px solid var(--line);
+            border-radius: 10px;
             padding: 10px;
-            background: #3b82f6;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-        }
-
-        .course-button:hover {
-            background: #2563eb;
-        }
-
-        /* Section Title */
-        .section-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin: 25px 0 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 8px;
         }
+        .item strong { font-size: 0.9rem; }
+        .item small { color: var(--muted); font-size: 0.76rem; }
 
-        .view-all {
-            font-size: 0.9rem;
-            color: #3b82f6;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
+        .pill { padding: 5px 8px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; }
+        .ok { background: #dbf6eb; color: var(--green); }
+        .wait { background: #ffeecf; color: var(--amber); }
+        .plan { background: #eaf0ff; color: #244792; }
+
+        @media (max-width: 1100px) {
+            .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
+            .layout { grid-template-columns: 1fr; }
+            .cards { grid-template-columns: 1fr; }
         }
-
-        .view-all:hover {
-            color: #2563eb;
-            text-decoration: underline;
-        }
-
-        /* Sidebar Info Card */
-        .info-card {
-            background: white;
-            padding: 18px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .info-card h3 {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin: 0 0 12px;
-        }
-
-        .info-card p {
-            font-size: 0.85rem;
-            color: #64748b;
-            margin: 0;
-            line-height: 1.5;
-        }
-
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 992px) {
-            .sidebar {
-                width: 200px;
-            }
-
-            .main-content {
-                margin-left: 200px;
-                padding: 20px;
-            }
-
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                left: -260px;
-                transition: left 0.3s;
-                width: 260px;
-            }
-
-            .sidebar.active {
-                left: 0;
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 15px;
-            }
-
-            .dashboard-header {
-                flex-direction: column;
-                gap: 15px;
-                align-items: flex-start;
-            }
-
-            .header-actions {
-                width: 100%;
-            }
-
-            .search-box input {
-                width: 100%;
-            }
+        @media (max-width: 820px) {
+            .shell { grid-template-columns: 1fr; }
+            .sidebar { position: static; height: auto; }
+            .main { padding: 14px; }
+            .topbar { flex-direction: column; align-items: flex-start; }
+            .search { width: 100%; }
         }
     </style>
 </head>
 <body>
-    <!-- SIDEBAR NAVIGATION -->
-    <div class="sidebar">
-        <div class="sidebar-brand">
-            <h2><i class="bi bi-book"></i> CRISMATECH</h2>
-        </div>
-        <ul class="sidebar-nav">
-            <li><a href="dashboard.html" class="active"><i class="bi bi-house-door-fill"></i> Dashboard</a></li>
-            <li><a href="courses/courses.html"><i class="bi bi-play-circle-fill"></i> Courses</a></li>
-            <li><a href="assignments/assignments.html"><i class="bi bi-file-earmark-text"></i> Assignments</a></li>
-            <li><a href="tests/test.html"><i class="bi bi-pencil-square"></i> Tests</a></li>
-            <li><a href="attendance/attendance.html"><i class="bi bi-calendar-check"></i> Attendance</a></li>
-            <li><a href="certificate/certificate.html"><i class="bi bi-award-fill"></i> Certificates</a></li>
-            <li><hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 15px 0;"></li>
-            <li><a href="profile/profile.html"><i class="bi bi-person-circle"></i> Profile</a></li>
-            <li><a href="#" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
-        </ul>
-    </div>
+    <div class="shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1><i class="bi bi-mortarboard-fill"></i> CRISMATECH</h1>
+                <p>Student Learning Portal</p>
+            </div>
+            <nav class="nav">
+                <a href="index.html"><i class="bi bi-house-door"></i> Home</a>
+                <a class="active" href="dashboard.html"><i class="bi bi-grid"></i> Dashboard</a>
+                <a href="courses/courses.html"><i class="bi bi-journal-bookmark"></i> Courses</a>
+                <a href="assignments/assignments.html"><i class="bi bi-file-earmark-check"></i> Assignments</a>
+                <a href="tests/test.html"><i class="bi bi-ui-checks-grid"></i> Tests</a>
+                <a href="certificate/certificate.html"><i class="bi bi-award"></i> Certificates</a>
+                <a href="profile/profile.html"><i class="bi bi-person"></i> Profile</a>
+                <a href="#" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</a>
+            </nav>
+        </aside>
 
-    <!-- MAIN CONTENT -->
-    <div class="main-content">
-        <!-- Dashboard Header -->
-        <div class="dashboard-header">
-            <h1>Welcome back, <span id="userName">Student</span>!</h1>
-            <div class="header-actions">
-                <div class="search-box">
+        <main class="main">
+            <section class="topbar">
+                <div class="welcome">
+                    <h2>Welcome back, <span id="userName">Student</span></h2>
+                    <p>Here is your live learning overview for this week.</p>
+                </div>
+                <label class="search">
                     <i class="bi bi-search"></i>
-                    <input type="text" placeholder="Search courses...">
-                </div>
-                <i class="bi bi-bell" style="font-size: 1.2rem; color: #64748b; cursor: pointer;"></i>
-            </div>
-        </div>
+                    <input type="text" placeholder="Search courses, tasks, tests...">
+                </label>
+            </section>
 
-        <!-- Dashboard Grid Layout -->
-        <div class="dashboard-grid">
-            <!-- Main Content Area -->
-            <div class="main-section">
-                <!-- Stats Section -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="enrolledCount">5</div>
-                        <div class="stat-label">Courses Enrolled</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="completedCount">2</div>
-                        <div class="stat-label">Completed</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="certificateCount">1</div>
-                        <div class="stat-label">Certificates</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">87%</div>
-                        <div class="stat-label">Avg. Progress</div>
+            <section class="stats">
+                <div class="stat"><small>Courses Enrolled</small><strong id="enrolledCount">0</strong></div>
+                <div class="stat"><small>Completed</small><strong id="completedCount">0</strong></div>
+                <div class="stat"><small>Certificates</small><strong id="certificateCount">0</strong></div>
+                <div class="stat"><small>Average Progress</small><strong id="avgProgress">0%</strong></div>
+            </section>
+
+            <section class="layout">
+                <div class="panel">
+                    <h3>Continue Learning</h3>
+                    <div id="continueCourses" class="cards">
                     </div>
                 </div>
 
-                <!-- Continue Learning Section -->
-                <div class="section-title">
-                    <span><i class="bi bi-play-circle"></i> Continue Learning</span>
-                    <a href="courses/courses.html" class="view-all">View All →</a>
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-bottom: 30px;">
-                    <div class="course-card">
-                        <div class="course-img" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                            <i class="bi bi-code-slash"></i>
-                            <span class="course-tag">HTML/CSS</span>
-                        </div>
-                        <div class="course-body">
-                            <div class="course-title">Web Development Masterclass</div>
-                            <div class="course-instructor"><i class="bi bi-person-circle" style="margin-right: 6px;"></i>Prof. Sharma</div>
-                            <div class="course-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 65%;"></div>
-                                </div>
-                            </div>
-                            <div class="course-meta">65% Complete • 16 Lessons</div>
-                        </div>
-                        <div class="course-footer">
-                            <button class="course-button">Continue</button>
-                        </div>
-                    </div>
-
-                    <div class="course-card">
-                        <div class="course-img" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                            <i class="bi bi-snake"></i>
-                            <span class="course-tag">PYTHON</span>
-                        </div>
-                        <div class="course-body">
-                            <div class="course-title">Python for Data Science</div>
-                            <div class="course-instructor"><i class="bi bi-person-circle" style="margin-right: 6px;"></i>Prof. Rao</div>
-                            <div class="course-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 45%;"></div>
-                                </div>
-                            </div>
-                            <div class="course-meta">45% Complete • 20 Lessons</div>
-                        </div>
-                        <div class="course-footer">
-                            <button class="course-button">Continue</button>
-                        </div>
-                    </div>
-
-                    <div class="course-card">
-                        <div class="course-img" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                            <i class="bi bi-cpu"></i>
-                            <span class="course-tag">IoT</span>
-                        </div>
-                        <div class="course-body">
-                            <div class="course-title">IoT Fundamentals</div>
-                            <div class="course-instructor"><i class="bi bi-person-circle" style="margin-right: 6px;"></i>Prof. Mehta</div>
-                            <div class="course-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 80%;"></div>
-                                </div>
-                            </div>
-                            <div class="course-meta">80% Complete • 18 Lessons</div>
-                        </div>
-                        <div class="course-footer">
-                            <button class="course-button">Continue</button>
-                        </div>
+                <div class="panel">
+                    <h3>Recent Activity</h3>
+                    <div id="recentActivity" class="list">
                     </div>
                 </div>
-
-                <!-- Recommended Courses Section -->
-                <div class="section-title">
-                    <span><i class="bi bi-star"></i> Recommended for You</span>
-                    <a href="courses/courses.html" class="view-all">View All →</a>
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-bottom: 30px;">
-                    <div class="course-card">
-                        <div class="course-img" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
-                            <i class="bi bi-robot"></i>
-                            <span class="course-tag">ML</span>
-                        </div>
-                        <div class="course-body">
-                            <div class="course-title">Machine Learning Basics</div>
-                            <div class="course-instructor"><i class="bi bi-person-circle" style="margin-right: 6px;"></i>Prof. Singh</div>
-                            <div class="course-rating" style="margin-bottom: 8px;">
-                                <span class="stars">★★★★★</span>
-                                <span style="font-size: 0.8rem; color: #94a3b8;">(1,203)</span>
-                            </div>
-                            <div class="course-meta">18 Lessons • Advanced</div>
-                        </div>
-                        <div class="course-footer">
-                            <button class="course-button">Enroll Now</button>
-                        </div>
-                    </div>
-
-                    <div class="course-card">
-                        <div class="course-img" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
-                            <i class="bi bi-shield-lock"></i>
-                            <span class="course-tag">SECURITY</span>
-                        </div>
-                        <div class="course-body">
-                            <div class="course-title">Cybersecurity Essentials</div>
-                            <div class="course-instructor"><i class="bi bi-person-circle" style="margin-right: 6px;"></i>Prof. Nair</div>
-                            <div class="course-rating" style="margin-bottom: 8px;">
-                                <span class="stars">★★★★☆</span>
-                                <span style="font-size: 0.8rem; color: #94a3b8;">(956)</span>
-                            </div>
-                            <div class="course-meta">15 Lessons • Intermediate</div>
-                        </div>
-                        <div class="course-footer">
-                            <button class="course-button">Enroll Now</button>
-                        </div>
-                    </div>
-
-                    <div class="course-card">
-                        <div class="course-img" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">
-                            <i class="bi bi-cloud"></i>
-                            <span class="course-tag">CLOUD</span>
-                        </div>
-                        <div class="course-body">
-                            <div class="course-title">Cloud Computing</div>
-                            <div class="course-instructor"><i class="bi bi-person-circle" style="margin-right: 6px;"></i>Prof. Kumar</div>
-                            <div class="course-rating" style="margin-bottom: 8px;">
-                                <span class="stars">★★★★★</span>
-                                <span style="font-size: 0.8rem; color: #94a3b8;">(1,450)</span>
-                            </div>
-                            <div class="course-meta">22 Lessons • Advanced</div>
-                        </div>
-                        <div class="course-footer">
-                            <button class="course-button">Enroll Now</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sidebar Section -->
-            <div class="sidebar-section">
-                <!-- Upcoming Classes -->
-                <div class="info-card">
-                    <h3><i class="bi bi-calendar-event" style="margin-right: 8px;"></i>Upcoming Classes</h3>
-                    <div style="font-size: 0.85rem; color: #64748b; line-height: 1.8;">
-                        <div style="padding: 10px 0; border-bottom: 1px solid #e2e8f0;">
-                            <strong>Today • 2:30 PM</strong><br>
-                            Web Dev Lecture
-                        </div>
-                        <div style="padding: 10px 0; border-bottom: 1px solid #e2e8f0;">
-                            <strong>Tomorrow • 10:00 AM</strong><br>
-                            Data Science Lab
-                        </div>
-                        <div style="padding: 10px 0;">
-                            <strong>Friday • 3:00 PM</strong><br>
-                            IoT Project Review
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Links -->
-                <div class="info-card">
-                    <h3><i class="bi bi-link-45deg" style="margin-right: 8px;"></i>Quick Access</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <a href="assignments/assignments.html" style="padding: 10px; background: #f0f4f8; border-radius: 8px; text-align: center; text-decoration: none; color: #3b82f6; font-weight: 600; font-size: 0.85rem; transition: all 0.3s;">
-                            <i class="bi bi-file-earmark"></i><br>Assignments
-                        </a>
-                        <a href="tests/test.html" style="padding: 10px; background: #f0f4f8; border-radius: 8px; text-align: center; text-decoration: none; color: #3b82f6; font-weight: 600; font-size: 0.85rem; transition: all 0.3s;">
-                            <i class="bi bi-pencil-square"></i><br>Tests
-                        </a>
-                        <a href="attendance/attendance.html" style="padding: 10px; background: #f0f4f8; border-radius: 8px; text-align: center; text-decoration: none; color: #3b82f6; font-weight: 600; font-size: 0.85rem; transition: all 0.3s;">
-                            <i class="bi bi-calendar-check"></i><br>Attendance
-                        </a>
-                        <a href="certificate/certificate.html" style="padding: 10px; background: #f0f4f8; border-radius: 8px; text-align: center; text-decoration: none; color: #3b82f6; font-weight: 600; font-size: 0.85rem; transition: all 0.3s;">
-                            <i class="bi bi-award"></i><br>Certificates
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Recent Activity -->
-                <div class="info-card">
-                    <h3><i class="bi bi-activity" style="margin-right: 8px;"></i>Recent Activity</h3>
-                    <div style="font-size: 0.85rem; color: #64748b; line-height: 1.8;">
-                        <div style="padding: 8px 0; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px;">
-                            <span style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%; flex-shrink: 0;"></span>
-                            <span><strong>Completed:</strong> Web Dev Module</span>
-                        </div>
-                        <div style="padding: 8px 0; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px;">
-                            <span style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; flex-shrink: 0;"></span>
-                            <span><strong>Submitted:</strong> JS Assignment</span>
-                        </div>
-                        <div style="padding: 8px 0; display: flex; align-items: center; gap: 8px;">
-                            <span style="width: 8px; height: 8px; background: #f59e0b; border-radius: 50%; flex-shrink: 0;"></span>
-                            <span><strong>Earned:</strong> Python Cert</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            </section>
+        </main>
     </div>
 
     <script>
-        // Load user name
+        const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
+            (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
+        );
+
+        let apiBase = null;
+
+        async function getApiBase() {
+            if (apiBase) return apiBase;
+            for (const base of API_CANDIDATES) {
+                try {
+                    const res = await fetch(`${base}/courses`);
+                    if (res.ok) {
+                        apiBase = base;
+                        return apiBase;
+                    }
+                } catch (_) {
+                    // Try next candidate.
+                }
+            }
+            throw new Error('Unable to connect to backend API (ports 5000-5005).');
+        }
+
+        async function fetchFromApi(path) {
+            const base = await getApiBase();
+            const res = await fetch(`${base}${path}`);
+            if (!res.ok) {
+                const errorText = await res.text();
+                throw new Error(errorText || `Request failed with status ${res.status}`);
+            }
+            return await res.json();
+        }
+
         function loadUserName() {
             const user = JSON.parse(localStorage.getItem('user'));
             if (user && user.name) {
@@ -657,17 +231,122 @@
             }
         }
 
-        // Logout function
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.href = 'login.html';
+        function renderCourses(courses) {
+            const container = document.getElementById('continueCourses');
+            if (!courses.length) {
+                container.innerHTML = '<div class="item"><small>No courses available yet.</small></div>';
+                return;
+            }
+
+            container.innerHTML = courses
+                .slice(0, 3)
+                .map((course) => {
+                    const lessons = Number(course.lessons) || 0;
+                    const progress = Math.min(100, Math.max(10, lessons * 4));
+                    return `
+                        <article class="course">
+                            <div>
+                                <h4>${course.title}</h4>
+                                <p>${course.instructor || 'Instructor'}</p>
+                            </div>
+                            <div class="meta"><span>${progress}% complete</span><span>${lessons} lessons</span></div>
+                        </article>
+                    `;
+                })
+                .join('');
+        }
+
+        function renderRecent(assignments, tests, certificates) {
+            const container = document.getElementById('recentActivity');
+            const activities = [];
+
+            assignments.slice(0, 1).forEach((a) => {
+                const dueText = a.dueDate ? new Date(a.dueDate).toLocaleDateString() : 'No due date';
+                activities.push({ title: 'Assignment Update', subtitle: `${a.title} • Due ${dueText}`, type: 'wait', label: 'Review' });
+            });
+
+            tests.slice(0, 1).forEach((t) => {
+                const testText = t.scheduledDate ? new Date(t.scheduledDate).toLocaleDateString() : 'No schedule';
+                activities.push({ title: 'Upcoming Test', subtitle: `${t.title} • ${testText}`, type: 'plan', label: 'Planned' });
+            });
+
+            certificates
+                .filter((c) => c.status === 'earned')
+                .slice(0, 1)
+                .forEach((c) => {
+                    activities.push({ title: 'Certificate Earned', subtitle: c.title, type: 'ok', label: 'Done' });
+                });
+
+            if (!activities.length) {
+                container.innerHTML = '<div class="item"><small>No recent activity yet.</small></div>';
+                return;
+            }
+
+            container.innerHTML = activities
+                .map(
+                    (activity) => `
+                        <div class="item">
+                            <div>
+                                <strong>${activity.title}</strong><br>
+                                <small>${activity.subtitle}</small>
+                            </div>
+                            <span class="pill ${activity.type}">${activity.label}</span>
+                        </div>
+                    `
+                )
+                .join('');
+        }
+
+        function updateStats(courses, tests, certificates) {
+            const earnedCertificates = certificates.filter((c) => c.status === 'earned').length;
+            const progressValues = certificates.map((c) => {
+                if (c.status === 'earned') return 100;
+                if (typeof c.progressPercent === 'number') return c.progressPercent;
+                if (c.status === 'inProgress') return 50;
+                return 0;
+            });
+            const avgProgress = progressValues.length
+                ? Math.round(progressValues.reduce((sum, value) => sum + value, 0) / progressValues.length)
+                : 0;
+
+            document.getElementById('enrolledCount').textContent = courses.length;
+            document.getElementById('completedCount').textContent = earnedCertificates;
+            document.getElementById('certificateCount').textContent = certificates.length;
+            document.getElementById('avgProgress').textContent = `${avgProgress}%`;
+        }
+
+        async function loadDashboardData() {
+            try {
+                const [coursesRes, assignmentsRes, testsRes, certificatesRes] = await Promise.all([
+                    fetchFromApi('/courses'),
+                    fetchFromApi('/assignments'),
+                    fetchFromApi('/tests'),
+                    fetchFromApi('/certificates'),
+                ]);
+
+                const courses = Array.isArray(coursesRes.courses) ? coursesRes.courses : [];
+                const assignments = Array.isArray(assignmentsRes.assignments) ? assignmentsRes.assignments : [];
+                const tests = Array.isArray(testsRes.tests) ? testsRes.tests : [];
+                const certificates = Array.isArray(certificatesRes.certificates) ? certificatesRes.certificates : [];
+
+                updateStats(courses, tests, certificates);
+                renderCourses(courses);
+                renderRecent(assignments, tests, certificates);
+            } catch (error) {
+                console.error('Dashboard data load failed:', error.message);
             }
         }
 
-        // Load on page load
-        document.addEventListener('DOMContentLoaded', loadUserName);
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserName();
+            loadDashboardData();
+        });
     </script>
 </body>
 </html>

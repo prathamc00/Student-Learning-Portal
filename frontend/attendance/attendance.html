@@ -74,6 +74,65 @@
             margin-bottom: var(--spacing-2xl);
         }
 
+        .attendance-form-card {
+            background: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .attendance-form-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-dark);
+        }
+
+        .attendance-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            align-items: end;
+        }
+
+        .attendance-form .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .attendance-form label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .attendance-form input,
+        .attendance-form select {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 14px;
+        }
+
+        .attendance-form input:focus,
+        .attendance-form select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .attendance-form-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .form-message {
+            margin-top: var(--spacing-sm);
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
         .course-attendance-card {
             background: white;
             padding: var(--spacing-lg);
@@ -206,179 +265,231 @@
         <div class="stats-overview">
             <div class="stat-card">
                 <h3>Overall Attendance</h3>
-                <div class="stat-value">87%</div>
+                <div id="overallAttendance" class="stat-value">0%</div>
                 <div class="stat-progress">
-                    <div class="stat-progress-bar" style="width: 87%;"></div>
+                    <div id="overallAttendanceBar" class="stat-progress-bar" style="width: 0%;"></div>
                 </div>
-                <div style="font-size: 12px; color: var(--text-light); margin-top: var(--spacing-sm);">Above Required Minimum</div>
+                <div id="overallAttendanceNote" style="font-size: 12px; color: var(--text-light); margin-top: var(--spacing-sm);">No records yet</div>
             </div>
             <div class="stat-card">
                 <h3>Classes Attended</h3>
-                <div class="stat-value">45</div>
-                <div style="font-size: 12px; color: var(--text-light);">Out of 52 classes</div>
+                <div id="classesAttended" class="stat-value">0</div>
+                <div id="classesAttendedNote" style="font-size: 12px; color: var(--text-light);">Out of 0 classes</div>
             </div>
             <div class="stat-card">
                 <h3>Classes Missed</h3>
-                <div class="stat-value">7</div>
-                <div style="font-size: 12px; color: var(--text-light);">with valid reasons</div>
+                <div id="classesMissed" class="stat-value">0</div>
+                <div style="font-size: 12px; color: var(--text-light);">Marked absent</div>
             </div>
         </div>
 
+        <div class="attendance-form-card">
+            <div class="attendance-form-title">Add Attendance Record</div>
+            <form id="attendanceForm" class="attendance-form">
+                <div class="form-field">
+                    <label for="studentNameInput">Student Name</label>
+                    <input id="studentNameInput" type="text" required placeholder="Enter student name">
+                </div>
+                <div class="form-field">
+                    <label for="courseInput">Course</label>
+                    <input id="courseInput" type="text" required placeholder="Enter course name">
+                </div>
+                <div class="form-field">
+                    <label for="dateInput">Date</label>
+                    <input id="dateInput" type="date" required>
+                </div>
+                <div class="form-field">
+                    <label for="statusInput">Status</label>
+                    <select id="statusInput" required>
+                        <option value="present">Present</option>
+                        <option value="late">Late</option>
+                        <option value="absent">Absent</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label for="remarksInput">Remarks</label>
+                    <input id="remarksInput" type="text" placeholder="Optional remarks">
+                </div>
+                <div class="attendance-form-actions">
+                    <button class="btn-primary" type="submit">Add</button>
+                    <button class="btn-secondary" type="reset">Clear</button>
+                </div>
+            </form>
+            <div id="attendanceFormMessage" class="form-message"></div>
+        </div>
+
         <!-- COURSES ATTENDANCE -->
-        <div class="courses-attendance">
-            <!-- Web Development -->
-            <div class="course-attendance-card">
-                <div class="course-attendance-header">
-                    <span class="course-name">Web Development Masterclass</span>
-                    <span class="attendance-percentage">95% (19/20)</span>
-                </div>
-                <table class="attendance-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Time</th>
-                            <th>Duration</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="date-cell">Mar 5, 2026</td>
-                            <td><span class="status-present">Present</span></td>
-                            <td>10:00 AM</td>
-                            <td>2 hours</td>
-                        </tr>
-                        <tr>
-                            <td class="date-cell">Mar 3, 2026</td>
-                            <td><span class="status-present">Present</span></td>
-                            <td>10:00 AM</td>
-                            <td>2 hours</td>
-                        </tr>
-                        <tr>
-                            <td class="date-cell">Mar 1, 2026</td>
-                            <td><span class="status-late">Late</span></td>
-                            <td>10:15 AM</td>
-                            <td>1.5 hours</td>
-                        </tr>
-                        <tr>
-                            <td class="date-cell">Feb 27, 2026</td>
-                            <td><span class="status-present">Present</span></td>
-                            <td>10:00 AM</td>
-                            <td>2 hours</td>
-                        </tr>
-                        <tr>
-                            <td class="date-cell">Feb 25, 2026</td>
-                            <td><span class="status-absent">Absent</span></td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- IoT Fundamentals -->
-            <div class="course-attendance-card">
-                <div class="course-attendance-header">
-                    <span class="course-name">IoT Fundamentals</span>
-                    <span class="attendance-percentage">80% (16/20)</span>
-                </div>
-                <table class="attendance-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Time</th>
-                            <th>Duration</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="date-cell">Mar 6, 2026</td>
-                            <td><span class="status-present">Present</span></td>
-                            <td>2:00 PM</td>
-                            <td>2 hours</td>
-                        </tr>
-                        <tr>
-                            <td class="date-cell">Mar 4, 2026</td>
-                            <td><span class="status-present">Present</span></td>
-                            <td>2:00 PM</td>
-                            <td>2 hours</td>
-                        </tr>
-                        <tr>
-                            <td class="date-cell">Mar 2, 2026</td>
-                            <td><span class="status-absent">Absent</span></td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td class="date-cell">Feb 28, 2026</td>
-                            <td><span class="status-present">Present</span></td>
-                            <td>2:00 PM</td>
-                            <td>2 hours</td>
-                        </tr>
-                        <tr>
-                            <td class="date-cell">Feb 26, 2026</td>
-                            <td><span class="status-present">Present</span></td>
-                            <td>2:00 PM</td>
-                            <td>2 hours</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Python Programming -->
-            <div class="course-attendance-card">
-                <div class="course-attendance-header">
-                    <span class="course-name">Python Programming</span>
-                    <span class="attendance-percentage">100% (25/25)</span>
-                </div>
-                <table class="attendance-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Time</th>
-                            <th>Duration</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="date-cell">Mar 7, 2026</td>
-                            <td><span class="status-present">Present</span></td>
-                            <td>4:00 PM</td>
-                            <td>2 hours</td>
-                        </tr>
-                        <tr>
-                            <td class="date-cell">Mar 5, 2026</td>
-                            <td><span class="status-present">Present</span></td>
-                            <td>4:00 PM</td>
-                            <td>2 hours</td>
-                        </tr>
-                        <tr>
-                            <td class="date-cell">Mar 3, 2026</td>
-                            <td><span class="status-present">Present</span></td>
-                            <td>4:00 PM</td>
-                            <td>2 hours</td>
-                        </tr>
-                        <tr>
-                            <td class="date-cell">Mar 1, 2026</td>
-                            <td><span class="status-present">Present</span></td>
-                            <td>4:00 PM</td>
-                            <td>2 hours</td>
-                        </tr>
-                        <tr>
-                            <td class="date-cell">Feb 27, 2026</td>
-                            <td><span class="status-present">Present</span></td>
-                            <td>4:00 PM</td>
-                            <td>2 hours</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div id="attendanceByCourse" class="courses-attendance">
         </div>
     </div>
 
     <script>
+        const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
+            (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
+        );
+
+        let apiBase = null;
+
+        async function getApiBase() {
+            if (apiBase) return apiBase;
+            for (const base of API_CANDIDATES) {
+                try {
+                    const res = await fetch(`${base}/attendance`);
+                    if (res.ok) {
+                        apiBase = base;
+                        return apiBase;
+                    }
+                } catch (_) {
+                    // Try next candidate.
+                }
+            }
+            throw new Error('Unable to connect to backend API (ports 5000-5005).');
+        }
+
+        async function fetchFromApi(path, options) {
+            const base = await getApiBase();
+            const res = await fetch(`${base}${path}`, options);
+            if (!res.ok) {
+                const errorText = await res.text();
+                throw new Error(errorText || `Request failed with status ${res.status}`);
+            }
+
+            const contentType = res.headers.get('content-type') || '';
+            if (contentType.includes('application/json')) {
+                return await res.json();
+            }
+            return { success: true };
+        }
+
+        function statusClass(status) {
+            if (status === 'present') return 'status-present';
+            if (status === 'late') return 'status-late';
+            return 'status-absent';
+        }
+
+        function statusLabel(status) {
+            if (status === 'present') return 'Present';
+            if (status === 'late') return 'Late';
+            return 'Absent';
+        }
+
+        function updateStats(records) {
+            const total = records.length;
+            const present = records.filter((r) => r.status === 'present').length;
+            const late = records.filter((r) => r.status === 'late').length;
+            const attended = present + late;
+            const absent = records.filter((r) => r.status === 'absent').length;
+            const overall = total ? Math.round((attended / total) * 100) : 0;
+
+            document.getElementById('overallAttendance').textContent = `${overall}%`;
+            document.getElementById('overallAttendanceBar').style.width = `${overall}%`;
+            document.getElementById('overallAttendanceNote').textContent =
+                overall >= 75 ? 'Above required minimum' : 'Below required minimum';
+            document.getElementById('classesAttended').textContent = attended;
+            document.getElementById('classesAttendedNote').textContent = `Out of ${total} classes`;
+            document.getElementById('classesMissed').textContent = absent;
+        }
+
+        function renderAttendanceByCourse(records) {
+            const container = document.getElementById('attendanceByCourse');
+            if (!records.length) {
+                container.innerHTML = '<div class="course-attendance-card"><div class="course-name">No attendance records found.</div></div>';
+                return;
+            }
+
+            const grouped = records.reduce((acc, record) => {
+                const key = record.course || 'General';
+                if (!acc[key]) acc[key] = [];
+                acc[key].push(record);
+                return acc;
+            }, {});
+
+            container.innerHTML = Object.entries(grouped)
+                .map(([course, items]) => {
+                    const attended = items.filter((i) => i.status === 'present' || i.status === 'late').length;
+                    const percent = items.length ? Math.round((attended / items.length) * 100) : 0;
+                    const rows = items
+                        .sort((a, b) => new Date(b.date) - new Date(a.date))
+                        .slice(0, 6)
+                        .map((record) => {
+                            const dateLabel = record.date ? new Date(record.date).toLocaleDateString() : '-';
+                            return `
+                                <tr>
+                                    <td class="date-cell">${dateLabel}</td>
+                                    <td><span class="${statusClass(record.status)}">${statusLabel(record.status)}</span></td>
+                                    <td>-</td>
+                                    <td>${record.remarks || '-'}</td>
+                                </tr>
+                            `;
+                        })
+                        .join('');
+
+                    return `
+                        <div class="course-attendance-card">
+                            <div class="course-attendance-header">
+                                <span class="course-name">${course}</span>
+                                <span class="attendance-percentage">${percent}% (${attended}/${items.length})</span>
+                            </div>
+                            <table class="attendance-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Time</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${rows}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                })
+                .join('');
+        }
+
+        async function initAttendancePage() {
+            try {
+                const response = await fetchFromApi('/attendance');
+                const records = Array.isArray(response.records) ? response.records : [];
+                updateStats(records);
+                renderAttendanceByCourse(records);
+            } catch (error) {
+                console.error('Attendance data load failed:', error.message);
+                document.getElementById('attendanceByCourse').innerHTML =
+                    `<div class="course-attendance-card"><div class="course-name">${error.message}</div></div>`;
+            }
+        }
+
+        async function createAttendanceRecord(event) {
+            event.preventDefault();
+
+            const messageEl = document.getElementById('attendanceFormMessage');
+            const payload = {
+                studentName: document.getElementById('studentNameInput').value.trim(),
+                course: document.getElementById('courseInput').value.trim(),
+                date: document.getElementById('dateInput').value,
+                status: document.getElementById('statusInput').value,
+                remarks: document.getElementById('remarksInput').value.trim(),
+            };
+
+            try {
+                messageEl.textContent = 'Saving attendance record...';
+                await fetchFromApi('/attendance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+
+                document.getElementById('attendanceForm').reset();
+                messageEl.textContent = 'Attendance record added successfully.';
+                await initAttendancePage();
+            } catch (error) {
+                messageEl.textContent = `Failed to add attendance: ${error.message}`;
+            }
+        }
+
         function logout() {
             if (confirm('Are you sure you want to logout?')) {
                 localStorage.removeItem('token');
@@ -386,6 +497,13 @@
                 window.location.href = '../login.html';
             }
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().slice(0, 10);
+            document.getElementById('dateInput').value = today;
+            document.getElementById('attendanceForm').addEventListener('submit', createAttendanceRecord);
+            initAttendancePage();
+        });
     </script>
 </body>
 </html>

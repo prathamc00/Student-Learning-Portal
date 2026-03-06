@@ -21,34 +21,34 @@
 
             <div class="sidebar-nav">
                 <a href="admin-dashboard.html">
-                    <span class="icon">DASH</span>
+                    <span class="icon"><i class="bi bi-speedometer2"></i></span>
                     <span>Dashboard</span>
                 </a>
                 <a href="manage-students.html" class="active">
-                    <span class="icon">USERS</span>
+                    <span class="icon"><i class="bi bi-people"></i></span>
                     <span>Students</span>
                 </a>
                 <a href="manage-courses.html">
-                    <span class="icon">COURSES</span>
+                    <span class="icon"><i class="bi bi-journal-bookmark"></i></span>
                     <span>Courses</span>
                 </a>
                 <a href="manage-assignments.html">
-                    <span class="icon">ASSIGN</span>
+                    <span class="icon"><i class="bi bi-clipboard-check"></i></span>
                     <span>Assignments</span>
                 </a>
                 <a href="quiz-scheduler.html">
-                    <span class="icon">🧠</span>
+                    <span class="icon"><i class="bi bi-ui-checks-grid"></i></span>
                     <span>Quiz Scheduler</span>
                 </a>
 
                 <div class="nav-divider"></div>
 
                 <a href="../dashboard.html">
-                    <span class="icon">CERT</span>
+                    <span class="icon"><i class="bi bi-mortarboard"></i></span>
                     <span>Student Portal</span>
                 </a>
                 <a href="../index.html" class="logout-link">
-                    <span class="icon">LOGOUT</span>
+                    <span class="icon"><i class="bi bi-box-arrow-right"></i></span>
                     <span>Logout</span>
                 </a>
             </div>
@@ -73,18 +73,18 @@
                 <div class="row g-4 mb-4">
                     <div class="col-lg-4 col-md-6">
                         <div class="stat-card">
-                            <div class="stat-icon purple">USERS</div>
+                            <div class="stat-icon purple"><i class="bi bi-people"></i></div>
                             <div class="stat-info">
-                                <h3>120</h3>
+                                <h3 id="studentsTotal">0</h3>
                                 <p>Total Students</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6">
                         <div class="stat-card">
-                            <div class="stat-icon green">ACTIVE</div>
+                            <div class="stat-icon green"><i class="bi bi-person-check"></i></div>
                             <div class="stat-info">
-                                <h3>98</h3>
+                                <h3 id="studentsActive">0</h3>
                                 <p>Active Students</p>
                             </div>
                         </div>
@@ -93,7 +93,7 @@
                         <div class="stat-card">
                             <div class="stat-icon orange">🆕</div>
                             <div class="stat-info">
-                                <h3>12</h3>
+                                <h3 id="studentsNew">0</h3>
                                 <p>New This Month</p>
                             </div>
                         </div>
@@ -103,7 +103,7 @@
                 <div class="table-wrapper">
                     <div class="table-header">
                         <h5>All Students</h5>
-                        <span class="record-count">2 Records</span>
+                        <span id="studentsRecordCount" class="record-count">0 Records</span>
                     </div>
                     <table class="table">
                         <thead>
@@ -112,28 +112,11 @@
                                 <th>Email</th>
                                 <th>Branch</th>
                                 <th>Semester</th>
+                                <th>Role</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>Rahul Sharma</td>
-                                <td>rahul@gmail.com</td>
-                                <td>IoT</td>
-                                <td>6</td>
-                                <td>
-                                    <button class="btn btn-danger btn-sm">Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Anita Singh</td>
-                                <td>anita@gmail.com</td>
-                                <td>Web Tech</td>
-                                <td>5</td>
-                                <td>
-                                    <button class="btn btn-danger btn-sm">Delete</button>
-                                </td>
-                            </tr>
+                        <tbody id="studentsTableBody">
                         </tbody>
                     </table>
                 </div>
@@ -145,5 +128,111 @@
     </div>
 
 </body>
+
+<script>
+    const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
+        (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
+    );
+
+    let apiBase = null;
+    let users = [];
+
+    async function getApiBase() {
+        if (apiBase) return apiBase;
+        for (const base of API_CANDIDATES) {
+            try {
+                const res = await fetch(`${base}/users`);
+                if (res.ok) {
+                    apiBase = base;
+                    return apiBase;
+                }
+            } catch (_) {
+                // Try next candidate.
+            }
+        }
+        throw new Error('Unable to connect to backend API (ports 5000-5005).');
+    }
+
+    async function fetchFromApi(path, options) {
+        const base = await getApiBase();
+        const res = await fetch(`${base}${path}`, options);
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(errorText || `Request failed with status ${res.status}`);
+        }
+        return await res.json();
+    }
+
+    function renderStats() {
+        document.getElementById('studentsTotal').textContent = users.length;
+
+        const activeUsers = users.filter((u) => u.role !== 'admin').length;
+        document.getElementById('studentsActive').textContent = activeUsers;
+
+        const now = new Date();
+        const newThisMonth = users.filter((u) => {
+            const created = u.createdAt ? new Date(u.createdAt) : null;
+            return (
+                created &&
+                created.getMonth() === now.getMonth() &&
+                created.getFullYear() === now.getFullYear()
+            );
+        }).length;
+
+        document.getElementById('studentsNew').textContent = newThisMonth;
+        document.getElementById('studentsRecordCount').textContent = `${users.length} Records`;
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('studentsTableBody');
+
+        if (!users.length) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No students found</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = users
+            .map(
+                (user) => `
+                    <tr>
+                        <td>${user.name || '-'}</td>
+                        <td>${user.email || '-'}</td>
+                        <td>${user.branch || '-'}</td>
+                        <td>${user.semester || '-'}</td>
+                        <td><span class="badge bg-info text-dark">${user.role || 'student'}</span></td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="deleteUser('${user._id}')">Delete</button>
+                        </td>
+                    </tr>
+                `
+            )
+            .join('');
+    }
+
+    async function loadUsers() {
+        try {
+            const data = await fetchFromApi('/users');
+            users = Array.isArray(data.users) ? data.users : [];
+            renderStats();
+            renderTable();
+        } catch (error) {
+            console.error('Failed to load users:', error.message);
+            document.getElementById('studentsTableBody').innerHTML =
+                `<tr><td colspan="6" class="text-danger text-center">${error.message}</td></tr>`;
+        }
+    }
+
+    async function deleteUser(id) {
+        if (!confirm('Delete this user?')) return;
+        try {
+            await fetchFromApi(`/users/${id}`, { method: 'DELETE' });
+            await loadUsers();
+        } catch (error) {
+            alert(`Failed to delete user: ${error.message}`);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadUsers);
+</script>
 
 </html>

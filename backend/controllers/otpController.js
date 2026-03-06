@@ -20,6 +20,25 @@ const sendOtp = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Channel must be sms or email' });
         }
 
+        // Validate recipient format before calling Twilio.
+        if (channel === 'sms') {
+            // Twilio Verify expects E.164 format, e.g. +14155552671.
+            const e164Pattern = /^\+[1-9]\d{7,14}$/;
+            if (!e164Pattern.test(to)) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Phone number must be in E.164 format (example: +14155552671)',
+                });
+            }
+        }
+
+        if (channel === 'email') {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(to)) {
+                return res.status(400).json({ success: false, message: 'Invalid email address format' });
+            }
+        }
+
         // If email, check if already registered
         if (channel === 'email') {
             const existingUser = await User.findOne({ email: to });

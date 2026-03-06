@@ -21,34 +21,34 @@
 
             <div class="sidebar-nav">
                 <a href="admin-dashboard.html">
-                    <span class="icon">DASH</span>
+                    <span class="icon"><i class="bi bi-speedometer2"></i></span>
                     <span>Dashboard</span>
                 </a>
                 <a href="manage-students.html">
-                    <span class="icon">USERS</span>
+                    <span class="icon"><i class="bi bi-people"></i></span>
                     <span>Students</span>
                 </a>
                 <a href="manage-courses.html" class="active">
-                    <span class="icon">COURSES</span>
+                    <span class="icon"><i class="bi bi-journal-bookmark"></i></span>
                     <span>Courses</span>
                 </a>
                 <a href="manage-assignments.html">
-                    <span class="icon">ASSIGN</span>
+                    <span class="icon"><i class="bi bi-clipboard-check"></i></span>
                     <span>Assignments</span>
                 </a>
                 <a href="quiz-scheduler.html">
-                    <span class="icon">🧠</span>
+                    <span class="icon"><i class="bi bi-ui-checks-grid"></i></span>
                     <span>Quiz Scheduler</span>
                 </a>
 
                 <div class="nav-divider"></div>
 
                 <a href="../dashboard.html">
-                    <span class="icon">CERT</span>
+                    <span class="icon"><i class="bi bi-mortarboard"></i></span>
                     <span>Student Portal</span>
                 </a>
                 <a href="../index.html" class="logout-link">
-                    <span class="icon">LOGOUT</span>
+                    <span class="icon"><i class="bi bi-box-arrow-right"></i></span>
                     <span>Logout</span>
                 </a>
             </div>
@@ -69,34 +69,34 @@
                         <h2>Course Management</h2>
                         <p>Add, edit, and organize your learning courses</p>
                     </div>
-                    <button class="btn btn-primary">+ Add New Course</button>
+                    <button id="addCourseBtn" class="btn btn-primary">+ Add New Course</button>
                 </div>
 
                 <!-- Stats Row -->
                 <div class="row g-4 mb-4">
                     <div class="col-lg-4 col-md-6">
                         <div class="stat-card">
-                            <div class="stat-icon green">COURSES</div>
+                            <div class="stat-icon green"><i class="bi bi-journal-bookmark"></i></div>
                             <div class="stat-info">
-                                <h3>10</h3>
+                                <h3 id="courseTotal">0</h3>
                                 <p>Total Courses</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6">
                         <div class="stat-card">
-                            <div class="stat-icon blue">TEACHER</div>
+                            <div class="stat-icon blue"><i class="bi bi-person-workspace"></i></div>
                             <div class="stat-info">
-                                <h3>6</h3>
+                                <h3 id="instructorTotal">0</h3>
                                 <p>Instructors</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6">
                         <div class="stat-card">
-                            <div class="stat-icon purple">GROWTH</div>
+                            <div class="stat-icon purple"><i class="bi bi-graph-up-arrow"></i></div>
                             <div class="stat-info">
-                                <h3>95%</h3>
+                                <h3 id="activeRate">0%</h3>
                                 <p>Enrollment Rate</p>
                             </div>
                         </div>
@@ -106,25 +106,19 @@
                 <div class="table-wrapper">
                     <div class="table-header">
                         <h5>All Courses</h5>
-                        <span class="record-count">1 Record</span>
+                        <span id="coursesRecordCount" class="record-count">0 Records</span>
                     </div>
                     <table class="table">
                         <thead>
                             <tr>
                                 <th>Course Name</th>
+                                <th>Category</th>
+                                <th>Level</th>
                                 <th>Instructor</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>Web Development</td>
-                                <td>John Sir</td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-                                    <button class="btn btn-danger btn-sm">Delete</button>
-                                </td>
-                            </tr>
+                        <tbody id="coursesTableBody">
                         </tbody>
                     </table>
                 </div>
@@ -136,5 +130,153 @@
     </div>
 
 </body>
+
+<script>
+    const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
+        (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
+    );
+
+    let apiBase = null;
+    let courses = [];
+
+    async function getApiBase() {
+        if (apiBase) return apiBase;
+        for (const base of API_CANDIDATES) {
+            try {
+                const res = await fetch(`${base}/courses`);
+                if (res.ok) {
+                    apiBase = base;
+                    return apiBase;
+                }
+            } catch (_) {
+                // Try next candidate.
+            }
+        }
+        throw new Error('Unable to connect to backend API (ports 5000-5005).');
+    }
+
+    async function fetchFromApi(path, options) {
+        const base = await getApiBase();
+        const res = await fetch(`${base}${path}`, options);
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(errorText || `Request failed with status ${res.status}`);
+        }
+        return await res.json();
+    }
+
+    function renderStats() {
+        document.getElementById('courseTotal').textContent = courses.length;
+        const uniqueInstructors = new Set(courses.map((c) => c.instructor));
+        document.getElementById('instructorTotal').textContent = uniqueInstructors.size;
+        const active = courses.filter((c) => c.isActive).length;
+        const rate = courses.length ? Math.round((active / courses.length) * 100) : 0;
+        document.getElementById('activeRate').textContent = `${rate}%`;
+        document.getElementById('coursesRecordCount').textContent = `${courses.length} Records`;
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('coursesTableBody');
+
+        if (!courses.length) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No courses found</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = courses
+            .map(
+                (course) => `
+                    <tr>
+                        <td>${course.title}</td>
+                        <td>${course.category}</td>
+                        <td>${course.level}</td>
+                        <td>${course.instructor}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm me-1" onclick="editCourse('${course._id}')">Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteCourse('${course._id}')">Delete</button>
+                        </td>
+                    </tr>
+                `
+            )
+            .join('');
+    }
+
+    async function loadCourses() {
+        try {
+            const data = await fetchFromApi('/courses');
+            courses = Array.isArray(data.courses) ? data.courses : [];
+            renderStats();
+            renderTable();
+        } catch (error) {
+            console.error('Failed to load courses:', error.message);
+            document.getElementById('coursesTableBody').innerHTML =
+                `<tr><td colspan="5" class="text-danger text-center">${error.message}</td></tr>`;
+        }
+    }
+
+    async function createCourse() {
+        const title = prompt('Course title:');
+        if (!title) return;
+        const instructor = prompt('Instructor name:');
+        if (!instructor) return;
+        const category = prompt('Category (Development/Data Science/Cloud/etc):', 'Development');
+        if (!category) return;
+        const level = prompt('Level (Beginner/Intermediate/Advanced):', 'Beginner');
+        if (!level) return;
+        const lessons = Number(prompt('Number of lessons:', '10')) || 10;
+        const durationHours = Number(prompt('Duration in hours:', '8')) || 8;
+
+        try {
+            await fetchFromApi('/courses', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, instructor, category, level, lessons, durationHours, isActive: true }),
+            });
+            await loadCourses();
+        } catch (error) {
+            alert(`Failed to create course: ${error.message}`);
+        }
+    }
+
+    async function editCourse(id) {
+        const course = courses.find((c) => c._id === id);
+        if (!course) return;
+
+        const title = prompt('Course title:', course.title);
+        if (!title) return;
+        const instructor = prompt('Instructor name:', course.instructor);
+        if (!instructor) return;
+        const category = prompt('Category:', course.category);
+        if (!category) return;
+        const level = prompt('Level (Beginner/Intermediate/Advanced):', course.level);
+        if (!level) return;
+        const lessons = Number(prompt('Number of lessons:', String(course.lessons))) || course.lessons;
+        const durationHours = Number(prompt('Duration in hours:', String(course.durationHours))) || course.durationHours;
+
+        try {
+            await fetchFromApi(`/courses/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, instructor, category, level, lessons, durationHours }),
+            });
+            await loadCourses();
+        } catch (error) {
+            alert(`Failed to update course: ${error.message}`);
+        }
+    }
+
+    async function deleteCourse(id) {
+        if (!confirm('Delete this course?')) return;
+        try {
+            await fetchFromApi(`/courses/${id}`, { method: 'DELETE' });
+            await loadCourses();
+        } catch (error) {
+            alert(`Failed to delete course: ${error.message}`);
+        }
+    }
+
+    document.getElementById('addCourseBtn').addEventListener('click', createCourse);
+    document.addEventListener('DOMContentLoaded', loadCourses);
+</script>
 
 </html>

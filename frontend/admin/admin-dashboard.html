@@ -21,34 +21,34 @@
 
             <div class="sidebar-nav">
                 <a href="admin-dashboard.html" class="active">
-                    <span class="icon">█</span>
+                    <span class="icon"><i class="bi bi-speedometer2"></i></span>
                     <span>Dashboard</span>
                 </a>
                 <a href="manage-students.html">
-                    <span class="icon">USERS</span>
+                    <span class="icon"><i class="bi bi-people"></i></span>
                     <span>Students</span>
                 </a>
                 <a href="manage-courses.html">
-                    <span class="icon">█</span>
+                    <span class="icon"><i class="bi bi-journal-bookmark"></i></span>
                     <span>Courses</span>
                 </a>
                 <a href="manage-assignments.html">
-                    <span class="icon">█</span>
+                    <span class="icon"><i class="bi bi-clipboard-check"></i></span>
                     <span>Assignments</span>
                 </a>
                 <a href="quiz-scheduler.html">
-                    <span class="icon">🧠</span>
+                    <span class="icon"><i class="bi bi-ui-checks-grid"></i></span>
                     <span>Quiz Scheduler</span>
                 </a>
 
                 <div class="nav-divider"></div>
 
                 <a href="../dashboard.html">
-                    <span class="icon">█</span>
+                    <span class="icon"><i class="bi bi-mortarboard"></i></span>
                     <span>Student Portal</span>
                 </a>
                 <a href="../index.html" class="logout-link">
-                    <span class="icon">LOGOUT</span>
+                    <span class="icon"><i class="bi bi-box-arrow-right"></i></span>
                     <span>Logout</span>
                 </a>
             </div>
@@ -75,9 +75,9 @@
 
                     <div class="col-lg-3 col-md-6">
                         <div class="stat-card">
-                            <div class="stat-icon purple">USERS</div>
+                            <div class="stat-icon purple"><i class="bi bi-people"></i></div>
                             <div class="stat-info">
-                                <h3>120</h3>
+                                <h3 id="statStudents">0</h3>
                                 <p>Total Students</p>
                             </div>
                         </div>
@@ -85,9 +85,9 @@
 
                     <div class="col-lg-3 col-md-6">
                         <div class="stat-card">
-                            <div class="stat-icon green">COURSES</div>
+                            <div class="stat-icon green"><i class="bi bi-journal-bookmark"></i></div>
                             <div class="stat-info">
-                                <h3>10</h3>
+                                <h3 id="statCourses">0</h3>
                                 <p>Total Courses</p>
                             </div>
                         </div>
@@ -95,9 +95,9 @@
 
                     <div class="col-lg-3 col-md-6">
                         <div class="stat-card">
-                            <div class="stat-icon orange">ASSIGN</div>
+                            <div class="stat-icon orange"><i class="bi bi-clipboard-check"></i></div>
                             <div class="stat-info">
-                                <h3>15</h3>
+                                <h3 id="statAssignments">0</h3>
                                 <p>Assignments</p>
                             </div>
                         </div>
@@ -107,7 +107,7 @@
                         <div class="stat-card">
                             <div class="stat-icon blue">🧠</div>
                             <div class="stat-info">
-                                <h3>8</h3>
+                                <h3 id="statQuizzes">0</h3>
                                 <p>Quizzes</p>
                             </div>
                         </div>
@@ -123,17 +123,17 @@
 
                 <div class="quick-actions">
                     <a href="manage-students.html" class="action-card">
-                        <div class="action-icon" style="background: linear-gradient(135deg, #ede9fe, #ddd6fe);">USERS</div>
+                        <div class="action-icon" style="background: linear-gradient(135deg, #ede9fe, #ddd6fe);"><i class="bi bi-people"></i></div>
                         <h6>Manage Students</h6>
                         <p>View & edit students</p>
                     </a>
                     <a href="manage-courses.html" class="action-card">
-                        <div class="action-icon" style="background: linear-gradient(135deg, #dcfce7, #bbf7d0);">COURSES</div>
+                        <div class="action-icon" style="background: linear-gradient(135deg, #dcfce7, #bbf7d0);"><i class="bi bi-journal-bookmark"></i></div>
                         <h6>Manage Courses</h6>
                         <p>Add or edit courses</p>
                     </a>
                     <a href="manage-assignments.html" class="action-card">
-                        <div class="action-icon" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">ASSIGN</div>
+                        <div class="action-icon" style="background: linear-gradient(135deg, #fef3c7, #fde68a);"><i class="bi bi-clipboard-check"></i></div>
                         <h6>Assignments</h6>
                         <p>Create assignments</p>
                     </a>
@@ -151,5 +151,44 @@
     </div>
 
 </body>
+
+<script>
+    const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
+        (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
+    );
+
+    async function fetchFromApi(path) {
+        for (const base of API_CANDIDATES) {
+            try {
+                const res = await fetch(`${base}${path}`);
+                if (!res.ok) continue;
+                return await res.json();
+            } catch (_) {
+                // Try next candidate.
+            }
+        }
+        throw new Error('Unable to connect to backend API (ports 5000-5005).');
+    }
+
+    async function initDashboardStats() {
+        try {
+            const [usersRes, coursesRes, assignmentsRes, testsRes] = await Promise.all([
+                fetchFromApi('/users'),
+                fetchFromApi('/courses'),
+                fetchFromApi('/assignments'),
+                fetchFromApi('/tests'),
+            ]);
+
+            document.getElementById('statStudents').textContent = usersRes.count || 0;
+            document.getElementById('statCourses').textContent = coursesRes.count || 0;
+            document.getElementById('statAssignments').textContent = assignmentsRes.count || 0;
+            document.getElementById('statQuizzes').textContent = testsRes.count || 0;
+        } catch (error) {
+            console.error('Admin dashboard data load failed:', error.message);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', initDashboardStats);
+</script>
 
 </html>

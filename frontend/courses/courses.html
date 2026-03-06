@@ -3,554 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Courses - CRISMATECH</title>
+    <title>Courses | CRISMATECH</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="../css/style.css">
     <style>
-        /* Modern Courses Layout */
-        body {
-            display: flex;
-            background: #f5f7fa;
-            margin: 0;
+        :root {
+            --navy-900: #0d1b36;
+            --navy-800: #13264a;
+            --surface: #ffffff;
+            --bg: #f3f6fb;
+            --text: #1f2b46;
+            --muted: #6f7f9f;
+            --line: #e6ecf5;
+            --blue: #2f6bff;
+            --shadow: 0 12px 30px rgba(17, 40, 89, 0.08);
+            --radius: 14px;
         }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
 
-        /* Sidebar */
+        .shell { min-height: 100vh; display: grid; grid-template-columns: 250px 1fr; }
         .sidebar {
-            width: 260px;
-            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-            min-height: 100vh;
-            position: fixed;
-            left: 0;
+            background: linear-gradient(180deg, var(--navy-900) 0%, var(--navy-800) 100%);
+            color: #dce6ff;
+            padding: 22px 14px;
+            position: sticky;
             top: 0;
-            z-index: 1000;
-            padding: 24px 0;
-            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+            height: 100vh;
         }
-
-        .sidebar-brand {
-            padding: 0 24px 30px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
+        .brand { padding: 10px 12px 22px; border-bottom: 1px solid rgba(255,255,255,0.12); margin-bottom: 14px; }
+        .brand h1 { font-size: 1.05rem; color: #fff; }
+        .brand p { color: #9fb1d8; font-size: 0.78rem; margin-top: 6px; }
+        .nav a {
+            display: flex; align-items: center; gap: 10px;
+            color: #cad7f7; text-decoration: none; padding: 11px 12px;
+            border-radius: 10px; margin-bottom: 4px; font-weight: 500; font-size: 0.92rem;
+            transition: 0.2s ease;
         }
+        .nav a:hover, .nav a.active { background: rgba(255,255,255,0.14); color: #fff; }
 
-        .sidebar-brand h2 {
-            color: white;
-            font-size: 1.3rem;
-            margin: 0;
-            font-weight: 700;
-            letter-spacing: 1px;
+        .main { padding: 24px; }
+        .hero {
+            background: linear-gradient(135deg, #2f6bff 0%, #36a5ff 100%);
+            color: #fff;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 14px;
         }
+        .hero h2 { font-size: 1.35rem; }
+        .hero p { margin-top: 6px; opacity: 0.95; font-size: 0.9rem; }
 
-        .sidebar-nav {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar-nav li { margin: 0; }
-
-        .sidebar-nav a {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 24px;
-            color: rgba(255, 255, 255, 0.6);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: all 0.3s;
-            border-left: 3px solid transparent;
-            margin: 2px 0;
-        }
-
-        .sidebar-nav a:hover,
-        .sidebar-nav a.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-left-color: #3b82f6;
-        }
-
-        .sidebar-nav i {
-            font-size: 1.2rem;
-            width: 24px;
-            text-align: center;
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-left: 260px;
-            flex: 1;
-            padding: 0;
-        }
-
-        .courses-hero {
-            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
-            color: white;
-            padding: 50px 40px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .courses-hero h1 {
-            margin: 0 0 10px 0;
-            font-size: 32px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .courses-hero p {
-            margin: 0;
-            opacity: 0.9;
-            font-size: 15px;
-        }
-
-        /* Filter Section */
-        .filter-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            padding: 30px 40px;
-            background: white;
-            border-bottom: 1px solid #e2e8f0;
-            flex-wrap: wrap;
-        }
-
-        .search-input {
-            flex: 1;
-            min-width: 250px;
-            padding: 10px 15px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.3s;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .filter-buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 8px 16px;
-            border: 1px solid #e2e8f0;
-            background: white;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            transition: all 0.3s;
-            color: #64748b;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .filter-btn:hover {
-            border-color: #3b82f6;
-            color: #3b82f6;
-            background: #f0f4f8;
-        }
-
-        .filter-btn.active {
-            background: #3b82f6;
-            color: white;
-            border-color: #3b82f6;
-        }
-
-        /* Courses Grid */
-        .courses-container {
-            padding: 40px;
-        }
-
-        .courses-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 24px;
-        }
-
-        .course-card {
-            background: white;
+        .tools {
+            background: var(--surface);
+            border: 1px solid var(--line);
             border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .search {
+            display: flex; align-items: center; gap: 8px;
+            background: #f8faff; border: 1px solid var(--line);
+            border-radius: 9px; padding: 8px 10px; flex: 1; min-width: 220px; color: var(--muted);
+        }
+        .search input { border: 0; outline: 0; width: 100%; background: transparent; font-family: inherit; }
+        .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+        .chip {
+            border: 1px solid var(--line); background: #f9fbff; color: #3b4d74;
+            padding: 8px 10px; border-radius: 9px; cursor: pointer; font-family: inherit; font-weight: 600; font-size: 0.8rem;
+        }
+        .chip.active { background: #2f6bff; border-color: #2f6bff; color: #fff; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 11px;
+        }
+
+        .course {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s;
             display: flex;
             flex-direction: column;
-            cursor: pointer;
         }
 
-        .course-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
-        }
-
-        .course-img {
-            height: 160px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            position: relative;
+        .banner {
+            min-height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 3rem;
-        }
-
-        .course-img.blue { background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); }
-        .course-img.pink { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-        .course-img.cyan { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-        .course-img.orange { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
-        .course-img.green { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
-        .course-img.purple { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); }
-
-        .course-tag {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.75rem;
+            color: #fff;
+            font-size: 1.65rem;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: white;
-            background: rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        .b1 { background: linear-gradient(135deg, #2f6bff, #35a2ff); }
+        .b2 { background: linear-gradient(135deg, #19b878, #5fe2ad); }
+        .b3 { background: linear-gradient(135deg, #f2a53a, #ffd07f); }
+        .b4 { background: linear-gradient(135deg, #7f6bf5, #ae9dff); }
+
+        .tag {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            font-size: 0.68rem;
+            font-weight: 700;
         }
 
-        .course-body {
-            padding: 18px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .course-title {
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 8px;
-            line-height: 1.4;
-        }
-
-        .course-instructor {
-            font-size: 0.85rem;
-            color: #64748b;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .course-rating {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.85rem;
-            margin-bottom: 10px;
-        }
-
-        .stars { color: #f59e0b; }
-
-        .course-meta {
-            font-size: 0.8rem;
-            color: #94a3b8;
-            margin-bottom: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .course-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .course-button {
-            flex: 1;
-            padding: 10px;
-            background: #3b82f6;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
+        .body { padding: 11px; display: flex; flex-direction: column; gap: 7px; }
+        .title { font-size: 0.94rem; font-weight: 700; }
+        .instructor { color: var(--muted); font-size: 0.8rem; }
+        .meta { color: #42557f; font-size: 0.76rem; }
+        .btn {
+            margin-top: 3px;
+            border: 0;
+            border-radius: 9px;
+            padding: 8px;
             cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            background: var(--blue);
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.8rem;
         }
 
-        .course-button:hover {
-            background: #2563eb;
-        }
-
-        /* Responsive */
-        @media (max-width: 992px) {
-            .sidebar { width: 200px; }
-            .main-content { margin-left: 200px; }
-            .filter-section { padding: 20px; }
-            .courses-hero { padding: 30px 20px; }
-            .courses-container { padding: 20px; }
-            .courses-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                left: -260px;
-                transition: left 0.3s;
-                width: 260px;
-            }
-            .sidebar.active { left: 0; }
-            .main-content { margin-left: 0; }
-            .filter-section { flex-direction: column; align-items: stretch; }
-            .search-input { min-width: auto; }
-            .courses-grid { grid-template-columns: 1fr; }
+        @media (max-width: 820px) {
+            .shell { grid-template-columns: 1fr; }
+            .sidebar { position: static; height: auto; }
+            .main { padding: 14px; }
         }
     </style>
 </head>
 <body>
-    <!-- SIDEBAR NAVIGATION -->
-    <div class="sidebar">
-        <div class="sidebar-brand">
-            <h2><i class="bi bi-book"></i> CRISMATECH</h2>
-        </div>
-        <ul class="sidebar-nav">
-            <li><a href="../dashboard.html"><i class="bi bi-house-door-fill"></i> Dashboard</a></li>
-            <li><a href="courses.html" class="active"><i class="bi bi-play-circle-fill"></i> Courses</a></li>
-            <li><a href="../assignments/assignments.html"><i class="bi bi-file-earmark-text"></i> Assignments</a></li>
-            <li><a href="../tests/test.html"><i class="bi bi-pencil-square"></i> Tests</a></li>
-            <li><a href="../attendance/attendance.html"><i class="bi bi-calendar-check"></i> Attendance</a></li>
-            <li><a href="../certificate/certificate.html"><i class="bi bi-award-fill"></i> Certificates</a></li>
-            <li><hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 15px 0;"></li>
-            <li><a href="../profile/profile.html"><i class="bi bi-person-circle"></i> Profile</a></li>
-            <li><a href="#" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
-        </ul>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div class="main-content">
-        <!-- Hero Section -->
-        <div class="courses-hero">
-            <h1><i class="bi bi-play-circle-fill" style="font-size: 2rem;"></i> Explore Our Courses</h1>
-            <p>Choose from a wide range of expert-led courses to expand your skills</p>
-        </div>
-
-        <!-- Filter Section -->
-        <div class="filter-section">
-            <input type="text" class="search-input" placeholder="Search courses...">
-            <div class="filter-buttons">
-                <button class="filter-btn active">All</button>
-                <button class="filter-btn">Web Development</button>
-                <button class="filter-btn">Data Science</button>
-                <button class="filter-btn">Machine Learning</button>
-                <button class="filter-btn">Security</button>
+    <div class="shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1><i class="bi bi-mortarboard-fill"></i> CRISMATECH</h1>
+                <p>Student Learning Portal</p>
             </div>
-        </div>
+            <nav class="nav">
+                <a href="../index.html"><i class="bi bi-house-door"></i> Home</a>
+                <a href="../dashboard.html"><i class="bi bi-grid"></i> Dashboard</a>
+                <a class="active" href="courses.html"><i class="bi bi-journal-bookmark"></i> Courses</a>
+                <a href="../assignments/assignments.html"><i class="bi bi-file-earmark-check"></i> Assignments</a>
+                <a href="../tests/test.html"><i class="bi bi-ui-checks-grid"></i> Tests</a>
+                <a href="../certificate/certificate.html"><i class="bi bi-award"></i> Certificates</a>
+                <a href="../profile/profile.html"><i class="bi bi-person"></i> Profile</a>
+                <a href="#" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</a>
+            </nav>
+        </aside>
 
-        <!-- Courses Grid -->
-        <div class="courses-container">
-            <div class="courses-grid">
-                <!-- Web Development -->
-                <div class="course-card">
-                    <div class="course-img blue">
-                        <i class="bi bi-code-slash"></i>
-                        <span class="course-tag">HTML/CSS</span>
-                    </div>
-                    <div class="course-body">
-                        <div class="course-title">Web Development Masterclass</div>
-                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Sharma</div>
-                        <div class="course-rating">
-                            <span class="stars">★★★★★</span>
-                            <span style="color: #94a3b8;">(1,250)</span>
-                        </div>
-                        <div class="course-meta">22 Lessons • 16 Hours • Advanced</div>
-                    </div>
-                    <div class="course-footer">
-                        <button class="course-button">Enroll Now</button>
-                    </div>
-                </div>
+        <main class="main">
+            <section class="hero">
+                <h2>Explore Courses</h2>
+                <p>Discover curated learning paths designed for practical skills and placements.</p>
+            </section>
 
-                <!-- Python Data Science -->
-                <div class="course-card">
-                    <div class="course-img pink">
-                        <i class="bi bi-snake"></i>
-                        <span class="course-tag">PYTHON</span>
-                    </div>
-                    <div class="course-body">
-                        <div class="course-title">Python for Data Science</div>
-                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Rao</div>
-                        <div class="course-rating">
-                            <span class="stars">★★★★☆</span>
-                            <span style="color: #94a3b8;">(1,102)</span>
-                        </div>
-                        <div class="course-meta">18 Lessons • 14 Hours • Intermediate</div>
-                    </div>
-                    <div class="course-footer">
-                        <button class="course-button">Enroll Now</button>
-                    </div>
+            <section class="tools">
+                <label class="search">
+                    <i class="bi bi-search"></i>
+                    <input id="courseSearch" type="text" placeholder="Search by title, topic, instructor...">
+                </label>
+                <div class="chips">
+                    <button class="chip active">All</button>
+                    <button class="chip">Development</button>
+                    <button class="chip">Data Science</button>
+                    <button class="chip">Cloud</button>
+                    <button class="chip">Security</button>
                 </div>
+            </section>
 
-                <!-- IoT -->
-                <div class="course-card">
-                    <div class="course-img cyan">
-                        <i class="bi bi-cpu"></i>
-                        <span class="course-tag">IoT</span>
-                    </div>
-                    <div class="course-body">
-                        <div class="course-title">IoT Fundamentals</div>
-                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Mehta</div>
-                        <div class="course-rating">
-                            <span class="stars">★★★★★</span>
-                            <span style="color: #94a3b8;">(875)</span>
-                        </div>
-                        <div class="course-meta">16 Lessons • 12 Hours • Intermediate</div>
-                    </div>
-                    <div class="course-footer">
-                        <button class="course-button">Enroll Now</button>
-                    </div>
-                </div>
-
-                <!-- Machine Learning -->
-                <div class="course-card">
-                    <div class="course-img orange">
-                        <i class="bi bi-robot"></i>
-                        <span class="course-tag">ML</span>
-                    </div>
-                    <div class="course-body">
-                        <div class="course-title">Machine Learning Basics</div>
-                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Singh</div>
-                        <div class="course-rating">
-                            <span class="stars">★★★★★</span>
-                            <span style="color: #94a3b8;">(1,203)</span>
-                        </div>
-                        <div class="course-meta">20 Lessons • 18 Hours • Advanced</div>
-                    </div>
-                    <div class="course-footer">
-                        <button class="course-button">Enroll Now</button>
-                    </div>
-                </div>
-
-                <!-- Cybersecurity -->
-                <div class="course-card">
-                    <div class="course-img green">
-                        <i class="bi bi-shield-lock"></i>
-                        <span class="course-tag">SECURITY</span>
-                    </div>
-                    <div class="course-body">
-                        <div class="course-title">Cybersecurity Essentials</div>
-                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Nair</div>
-                        <div class="course-rating">
-                            <span class="stars">★★★★☆</span>
-                            <span style="color: #94a3b8;">(956)</span>
-                        </div>
-                        <div class="course-meta">15 Lessons • 10 Hours • Intermediate</div>
-                    </div>
-                    <div class="course-footer">
-                        <button class="course-button">Enroll Now</button>
-                    </div>
-                </div>
-
-                <!-- Cloud Computing -->
-                <div class="course-card">
-                    <div class="course-img purple">
-                        <i class="bi bi-cloud"></i>
-                        <span class="course-tag">CLOUD</span>
-                    </div>
-                    <div class="course-body">
-                        <div class="course-title">Cloud Computing</div>
-                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Kumar</div>
-                        <div class="course-rating">
-                            <span class="stars">★★★★★</span>
-                            <span style="color: #94a3b8;">(1,450)</span>
-                        </div>
-                        <div class="course-meta">22 Lessons • 16 Hours • Advanced</div>
-                    </div>
-                    <div class="course-footer">
-                        <button class="course-button">Enroll Now</button>
-                    </div>
-                </div>
-
-                <!-- Mobile Development -->
-                <div class="course-card">
-                    <div class="course-img blue">
-                        <i class="bi bi-phone"></i>
-                        <span class="course-tag">MOBILE</span>
-                    </div>
-                    <div class="course-body">
-                        <div class="course-title">Mobile App Development</div>
-                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Gupta</div>
-                        <div class="course-rating">
-                            <span class="stars">★★★★★</span>
-                            <span style="color: #94a3b8;">(1,150)</span>
-                        </div>
-                        <div class="course-meta">20 Lessons • 15 Hours • Advanced</div>
-                    </div>
-                    <div class="course-footer">
-                        <button class="course-button">Enroll Now</button>
-                    </div>
-                </div>
-
-                <!-- DevOps -->
-                <div class="course-card">
-                    <div class="course-img pink">
-                        <i class="bi bi-gear"></i>
-                        <span class="course-tag">DEVOPS</span>
-                    </div>
-                    <div class="course-body">
-                        <div class="course-title">DevOps & CI/CD</div>
-                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Verma</div>
-                        <div class="course-rating">
-                            <span class="stars">★★★★☆</span>
-                            <span style="color: #94a3b8;">(862)</span>
-                        </div>
-                        <div class="course-meta">18 Lessons • 13 Hours • Advanced</div>
-                    </div>
-                    <div class="course-footer">
-                        <button class="course-button">Enroll Now</button>
-                    </div>
-                </div>
-
-                <!-- Database Design -->
-                <div class="course-card">
-                    <div class="course-img cyan">
-                        <i class="bi bi-database"></i>
-                        <span class="course-tag">DATABASE</span>
-                    </div>
-                    <div class="course-body">
-                        <div class="course-title">Advanced Database Design</div>
-                        <div class="course-instructor"><i class="bi bi-person-circle"></i> Prof. Chopra</div>
-                        <div class="course-rating">
-                            <span class="stars">★★★★★</span>
-                            <span style="color: #94a3b8;">(725)</span>
-                        </div>
-                        <div class="course-meta">17 Lessons • 12 Hours • Intermediate</div>
-                    </div>
-                    <div class="course-footer">
-                        <button class="course-button">Enroll Now</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <section class="grid" id="coursesGrid">
+            </section>
+        </main>
     </div>
 
     <script>
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.href = '../login.html';
+        const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
+            (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
+        );
+
+        const bannerClasses = ['b1', 'b2', 'b3', 'b4'];
+        const tagByLevel = {
+            Beginner: 'New',
+            Intermediate: 'Popular',
+            Advanced: 'Featured',
+        };
+
+        let allCourses = [];
+        let currentCategory = 'all';
+
+        async function fetchFromApi(path) {
+            for (const base of API_CANDIDATES) {
+                try {
+                    const res = await fetch(`${base}${path}`);
+                    if (!res.ok) continue;
+                    return await res.json();
+                } catch (_) {
+                    // Try next candidate.
+                }
+            }
+            throw new Error('Unable to connect to backend API (ports 5000-5005).');
+        }
+
+        function getIconLabel(title = '') {
+            const words = title.split(' ').filter(Boolean);
+            return (words[0] || 'CR').slice(0, 3).toUpperCase();
+        }
+
+        function renderCourses(courses) {
+            const grid = document.getElementById('coursesGrid');
+
+            if (!courses.length) {
+                grid.innerHTML = `
+                    <article class="course" style="grid-column:1/-1; padding:20px; text-align:center;">
+                        <div class="body">
+                            <div class="title">No courses found</div>
+                            <div class="instructor">Try a different search or category.</div>
+                        </div>
+                    </article>
+                `;
+                return;
+            }
+
+            grid.innerHTML = courses
+                .map((course, index) => {
+                    const bannerClass = bannerClasses[index % bannerClasses.length];
+                    const tag = tagByLevel[course.level] || 'Course';
+
+                    return `
+                        <article class="course">
+                            <div class="banner ${bannerClass}">${getIconLabel(course.title)} <span class="tag">${tag}</span></div>
+                            <div class="body">
+                                <div class="title">${course.title}</div>
+                                <div class="instructor">${course.instructor}</div>
+                                <div class="meta">${course.lessons} lessons • ${course.durationHours} hours • ${course.level}</div>
+                                <button class="btn">Enroll Now</button>
+                            </div>
+                        </article>
+                    `;
+                })
+                .join('');
+        }
+
+        function applyFilters() {
+            const query = document.getElementById('courseSearch').value.trim().toLowerCase();
+            const filtered = allCourses.filter((course) => {
+                const matchesCategory =
+                    currentCategory === 'all' ||
+                    (course.category || '').toLowerCase().includes(currentCategory);
+                const matchesQuery =
+                    !query ||
+                    course.title.toLowerCase().includes(query) ||
+                    (course.instructor || '').toLowerCase().includes(query) ||
+                    (course.category || '').toLowerCase().includes(query);
+                return matchesCategory && matchesQuery;
+            });
+
+            renderCourses(filtered);
+        }
+
+        async function initCourses() {
+            const grid = document.getElementById('coursesGrid');
+            grid.innerHTML = '<article class="course" style="grid-column:1/-1; padding:20px; text-align:center;"><div class="body"><div class="title">Loading courses...</div></div></article>';
+
+            try {
+                const data = await fetchFromApi('/courses');
+                allCourses = Array.isArray(data.courses) ? data.courses : [];
+                applyFilters();
+            } catch (error) {
+                grid.innerHTML = `
+                    <article class="course" style="grid-column:1/-1; padding:20px; text-align:center;">
+                        <div class="body">
+                            <div class="title">Could not load courses</div>
+                            <div class="instructor">${error.message}</div>
+                        </div>
+                    </article>
+                `;
             }
         }
+
+        document.getElementById('courseSearch').addEventListener('input', applyFilters);
+        document.querySelectorAll('.chip').forEach((chip) => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.chip').forEach((c) => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentCategory = chip.textContent.trim().toLowerCase();
+                applyFilters();
+            });
+        });
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', initCourses);
     </script>
 </body>
 </html>

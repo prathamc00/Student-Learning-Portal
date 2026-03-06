@@ -21,34 +21,34 @@
 
             <div class="sidebar-nav">
                 <a href="admin-dashboard.html">
-                    <span class="icon">DASH</span>
+                    <span class="icon"><i class="bi bi-speedometer2"></i></span>
                     <span>Dashboard</span>
                 </a>
                 <a href="manage-students.html">
-                    <span class="icon">USERS</span>
+                    <span class="icon"><i class="bi bi-people"></i></span>
                     <span>Students</span>
                 </a>
                 <a href="manage-courses.html">
-                    <span class="icon">COURSES</span>
+                    <span class="icon"><i class="bi bi-journal-bookmark"></i></span>
                     <span>Courses</span>
                 </a>
                 <a href="manage-assignments.html" class="active">
-                    <span class="icon">ASSIGN</span>
+                    <span class="icon"><i class="bi bi-clipboard-check"></i></span>
                     <span>Assignments</span>
                 </a>
                 <a href="quiz-scheduler.html">
-                    <span class="icon">🧠</span>
+                    <span class="icon"><i class="bi bi-ui-checks-grid"></i></span>
                     <span>Quiz Scheduler</span>
                 </a>
 
                 <div class="nav-divider"></div>
 
                 <a href="../dashboard.html">
-                    <span class="icon">CERT</span>
+                    <span class="icon"><i class="bi bi-mortarboard"></i></span>
                     <span>Student Portal</span>
                 </a>
                 <a href="../index.html" class="logout-link">
-                    <span class="icon">LOGOUT</span>
+                    <span class="icon"><i class="bi bi-box-arrow-right"></i></span>
                     <span>Logout</span>
                 </a>
             </div>
@@ -69,25 +69,25 @@
                         <h2>Assignment Management</h2>
                         <p>Create, review, and manage student assignments</p>
                     </div>
-                    <button class="btn btn-primary">+ Create Assignment</button>
+                    <button id="addAssignmentBtn" class="btn btn-primary">+ Create Assignment</button>
                 </div>
 
                 <!-- Stats Row -->
                 <div class="row g-4 mb-4">
                     <div class="col-lg-4 col-md-6">
                         <div class="stat-card">
-                            <div class="stat-icon purple">ASSIGN</div>
+                            <div class="stat-icon purple"><i class="bi bi-clipboard-check"></i></div>
                             <div class="stat-info">
-                                <h3>15</h3>
+                                <h3 id="assignmentTotal">0</h3>
                                 <p>Total Assignments</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6">
                         <div class="stat-card">
-                            <div class="stat-icon green">DONE</div>
+                            <div class="stat-icon green"><i class="bi bi-check2-circle"></i></div>
                             <div class="stat-info">
-                                <h3>9</h3>
+                                <h3 id="assignmentSubmitted">0</h3>
                                 <p>Submitted</p>
                             </div>
                         </div>
@@ -96,7 +96,7 @@
                         <div class="stat-card">
                             <div class="stat-icon orange">⏳</div>
                             <div class="stat-info">
-                                <h3>6</h3>
+                                <h3 id="assignmentPending">0</h3>
                                 <p>Pending</p>
                             </div>
                         </div>
@@ -106,7 +106,7 @@
                 <div class="table-wrapper">
                     <div class="table-header">
                         <h5>All Assignments</h5>
-                        <span class="record-count">5 Records</span>
+                        <span id="assignmentRecordCount" class="record-count">0 Records</span>
                     </div>
                     <table class="table">
                         <thead>
@@ -115,66 +115,11 @@
                                 <th>Course</th>
                                 <th>Due Date</th>
                                 <th>Status</th>
-                                <th>Submissions</th>
+                                <th>Max Marks</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>Build a Portfolio Website</td>
-                                <td>Web Development</td>
-                                <td>10 Mar 2026</td>
-                                <td><span class="badge bg-success">Active</span></td>
-                                <td>45 / 60</td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-                                    <button class="btn btn-danger btn-sm">Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>IoT Sensor Data Logger</td>
-                                <td>IoT Fundamentals</td>
-                                <td>15 Mar 2026</td>
-                                <td><span class="badge bg-success">Active</span></td>
-                                <td>30 / 55</td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-                                    <button class="btn btn-danger btn-sm">Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Python Calculator App</td>
-                                <td>Python Programming</td>
-                                <td>05 Mar 2026</td>
-                                <td><span class="badge bg-secondary">Closed</span></td>
-                                <td>52 / 58</td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-                                    <button class="btn btn-danger btn-sm">Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Database ER Diagram</td>
-                                <td>Database Management</td>
-                                <td>20 Mar 2026</td>
-                                <td><span class="badge bg-success">Active</span></td>
-                                <td>18 / 40</td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-                                    <button class="btn btn-danger btn-sm">Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Responsive Landing Page</td>
-                                <td>Web Development</td>
-                                <td>28 Feb 2026</td>
-                                <td><span class="badge bg-secondary">Closed</span></td>
-                                <td>58 / 60</td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm me-1">Edit</button>
-                                    <button class="btn btn-danger btn-sm">Delete</button>
-                                </td>
-                            </tr>
+                        <tbody id="assignmentsTableBody">
                         </tbody>
                     </table>
                 </div>
@@ -186,5 +131,157 @@
     </div>
 
 </body>
+
+<script>
+    const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
+        (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
+    );
+
+    let apiBase = null;
+    let assignments = [];
+
+    async function getApiBase() {
+        if (apiBase) return apiBase;
+        for (const base of API_CANDIDATES) {
+            try {
+                const res = await fetch(`${base}/assignments`);
+                if (res.ok) {
+                    apiBase = base;
+                    return apiBase;
+                }
+            } catch (_) {
+                // Try next candidate.
+            }
+        }
+        throw new Error('Unable to connect to backend API (ports 5000-5005).');
+    }
+
+    async function fetchFromApi(path, options) {
+        const base = await getApiBase();
+        const res = await fetch(`${base}${path}`, options);
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(errorText || `Request failed with status ${res.status}`);
+        }
+        return await res.json();
+    }
+
+    function badgeClass(status) {
+        if (status === 'submitted') return 'bg-success';
+        if (status === 'overdue') return 'bg-danger';
+        return 'bg-warning text-dark';
+    }
+
+    function renderStats() {
+        document.getElementById('assignmentTotal').textContent = assignments.length;
+        document.getElementById('assignmentSubmitted').textContent = assignments.filter((a) => a.status === 'submitted').length;
+        document.getElementById('assignmentPending').textContent = assignments.filter((a) => a.status === 'pending').length;
+        document.getElementById('assignmentRecordCount').textContent = `${assignments.length} Records`;
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('assignmentsTableBody');
+
+        if (!assignments.length) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No assignments found</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = assignments
+            .map((assignment) => {
+                const dueDate = assignment.dueDate ? new Date(assignment.dueDate).toLocaleDateString() : 'N/A';
+                return `
+                    <tr>
+                        <td>${assignment.title}</td>
+                        <td>${assignment.course}</td>
+                        <td>${dueDate}</td>
+                        <td><span class="badge ${badgeClass(assignment.status)}">${assignment.status}</span></td>
+                        <td>${assignment.maxMarks ?? 100}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm me-1" onclick="editAssignment('${assignment._id}')">Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteAssignment('${assignment._id}')">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            })
+            .join('');
+    }
+
+    async function loadAssignments() {
+        try {
+            const data = await fetchFromApi('/assignments');
+            assignments = Array.isArray(data.assignments) ? data.assignments : [];
+            renderStats();
+            renderTable();
+        } catch (error) {
+            console.error('Failed to load assignments:', error.message);
+            document.getElementById('assignmentsTableBody').innerHTML =
+                `<tr><td colspan="6" class="text-danger text-center">${error.message}</td></tr>`;
+        }
+    }
+
+    async function createAssignment() {
+        const title = prompt('Assignment title:');
+        if (!title) return;
+        const course = prompt('Course name:');
+        if (!course) return;
+        const dueDate = prompt('Due date (YYYY-MM-DD):', '2026-03-25');
+        if (!dueDate) return;
+        const status = prompt('Status (pending/submitted/overdue):', 'pending');
+        if (!status) return;
+        const maxMarks = Number(prompt('Max marks:', '100')) || 100;
+
+        try {
+            await fetchFromApi('/assignments', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, course, dueDate, status, maxMarks }),
+            });
+            await loadAssignments();
+        } catch (error) {
+            alert(`Failed to create assignment: ${error.message}`);
+        }
+    }
+
+    async function editAssignment(id) {
+        const assignment = assignments.find((a) => a._id === id);
+        if (!assignment) return;
+
+        const title = prompt('Assignment title:', assignment.title);
+        if (!title) return;
+        const course = prompt('Course name:', assignment.course);
+        if (!course) return;
+        const dueDateDefault = assignment.dueDate ? assignment.dueDate.slice(0, 10) : '2026-03-25';
+        const dueDate = prompt('Due date (YYYY-MM-DD):', dueDateDefault);
+        if (!dueDate) return;
+        const status = prompt('Status (pending/submitted/overdue):', assignment.status);
+        if (!status) return;
+        const maxMarks = Number(prompt('Max marks:', String(assignment.maxMarks ?? 100))) || (assignment.maxMarks ?? 100);
+
+        try {
+            await fetchFromApi(`/assignments/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, course, dueDate, status, maxMarks }),
+            });
+            await loadAssignments();
+        } catch (error) {
+            alert(`Failed to update assignment: ${error.message}`);
+        }
+    }
+
+    async function deleteAssignment(id) {
+        if (!confirm('Delete this assignment?')) return;
+        try {
+            await fetchFromApi(`/assignments/${id}`, { method: 'DELETE' });
+            await loadAssignments();
+        } catch (error) {
+            alert(`Failed to delete assignment: ${error.message}`);
+        }
+    }
+
+    document.getElementById('addAssignmentBtn').addEventListener('click', createAssignment);
+    document.addEventListener('DOMContentLoaded', loadAssignments);
+</script>
 
 </html>

@@ -3,274 +3,468 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRISMATECH - Learn Skills That Shape Your Future</title>
+    <title>CRISMATECH | Student Home</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css">
     <style>
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-dark);
+        :root {
+            --navy-900: #0d1b36;
+            --navy-800: #13264a;
+            --surface: #ffffff;
+            --bg: #f3f6fb;
+            --text: #1f2b46;
+            --muted: #6f7f9f;
+            --line: #e6ecf5;
+            --blue: #2f6bff;
+            --blue-600: #1f57df;
+            --mint: #a8f0d4;
+            --violet: #d7cbff;
+            --amber: #ffe2b8;
+            --shadow: 0 12px 30px rgba(17, 40, 89, 0.08);
+            --radius: 14px;
         }
 
-        @media (max-width: 768px) {
-            .mobile-menu-btn {
-                display: block;
-            }
-            .navbar-menu {
-                display: none;
-                position: absolute;
-                top: 60px;
-                left: 0;
-                right: 0;
-                flex-direction: column;
-                background-color: var(--bg-white);
-                padding: var(--spacing-lg);
-                box-shadow: var(--card-shadow);
-                z-index: 998;
-            }
-            .navbar-menu.active {
-                display: flex;
-            }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .shell {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, var(--navy-900) 0%, var(--navy-800) 100%);
+            color: #dce6ff;
+            padding: 22px 14px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .brand {
+            padding: 10px 12px 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            margin-bottom: 14px;
+        }
+
+        .brand h1 {
+            font-size: 1.05rem;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        .brand p {
+            color: #9fb1d8;
+            font-size: 0.78rem;
+            margin-top: 6px;
+        }
+
+        .nav a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #cad7f7;
+            text-decoration: none;
+            padding: 11px 12px;
+            border-radius: 10px;
+            margin-bottom: 4px;
+            font-weight: 500;
+            font-size: 0.92rem;
+            transition: 0.2s ease;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            background: rgba(255, 255, 255, 0.14);
+            color: #fff;
+        }
+
+        .main {
+            padding: 26px;
+        }
+
+        .topbar {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 16px 18px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .welcome h2 { font-size: 1.35rem; }
+        .welcome p { color: var(--muted); margin-top: 4px; font-size: 0.92rem; }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8faff;
+            border: 1px solid var(--line);
+            padding: 9px 11px;
+            border-radius: 10px;
+            width: 230px;
+            color: var(--muted);
+        }
+
+        .search input {
+            border: 0;
+            outline: 0;
+            width: 100%;
+            background: transparent;
+            font-family: inherit;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .stat {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat .label {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .stat .value {
+            margin-top: 8px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--blue);
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 14px;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 16px;
+        }
+
+        .panel h3 {
+            font-size: 1.02rem;
+            margin-bottom: 12px;
+        }
+
+        .courses {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .course {
+            border-radius: 12px;
+            padding: 12px;
+            color: #122;
+        }
+
+        .course:nth-child(1) { background: var(--mint); }
+        .course:nth-child(2) { background: var(--amber); }
+        .course:nth-child(3) { background: var(--violet); }
+
+        .course h4 {
+            font-size: 0.92rem;
+            margin-bottom: 6px;
+        }
+
+        .course p {
+            color: #33415c;
+            font-size: 0.78rem;
+            margin-bottom: 10px;
+        }
+
+        .mini {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.76rem;
+            color: #25314d;
+        }
+
+        .list {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .list-item {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 11px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .list-item small { color: var(--muted); }
+
+        .tag {
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 0.74rem;
+            font-weight: 600;
+        }
+
+        .tag.blue { background: #dce8ff; color: #2f6bff; }
+        .tag.green { background: #daf6ea; color: #16895f; }
+        .tag.orange { background: #ffeccf; color: #b56600; }
+
+        .cta {
+            margin-top: 14px;
+            background: linear-gradient(135deg, #2f6bff 0%, #35a2ff 100%);
+            border-radius: 12px;
+            padding: 18px;
+            color: #fff;
+        }
+
+        .cta h4 { margin-bottom: 7px; }
+        .cta p { opacity: 0.95; font-size: 0.85rem; }
+
+        .cta a {
+            margin-top: 12px;
+            display: inline-block;
+            text-decoration: none;
+            color: var(--blue-600);
+            background: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 1080px) {
+            .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .content { grid-template-columns: 1fr; }
+            .courses { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 820px) {
+            .shell { grid-template-columns: 1fr; }
+            .sidebar { position: static; height: auto; }
+            .main { padding: 16px; }
+            .topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .search { width: 100%; }
         }
     </style>
 </head>
 <body>
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <div class="navbar-logo">
-                <span>CRISMATECH</span>
+    <div class="shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1><i class="bi bi-mortarboard-fill"></i> CRISMATECH</h1>
+                <p>Student Learning Portal</p>
             </div>
-            <ul class="navbar-menu">
-                <li><a href="#home">Home</a></li>
-                <li><a href="courses/courses.html">Courses</a></li>
-                <li><a href="#categories">Categories</a></li>
-            </ul>
-            <div class="navbar-auth">
-                <a href="login.html" class="btn-outline">Login</a>
-                <a href="register.html" class="btn-primary">Register</a>
-                <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
-            </div>
-        </div>
-    </nav>
+            <nav class="nav">
+                <a class="active" href="index.html"><i class="bi bi-house-door"></i> Home</a>
+                <a href="dashboard.html"><i class="bi bi-grid"></i> Dashboard</a>
+                <a href="courses/courses.html"><i class="bi bi-journal-bookmark"></i> Courses</a>
+                <a href="assignments/assignments.html"><i class="bi bi-file-earmark-check"></i> Assignments</a>
+                <a href="tests/test.html"><i class="bi bi-ui-checks-grid"></i> Tests</a>
+                <a href="certificate/certificate.html"><i class="bi bi-award"></i> Certificates</a>
+                <a href="login.html"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+            </nav>
+        </aside>
 
-    <!-- HERO SECTION -->
-    <section class="hero" id="home">
-        <div class="hero-container">
-            <h1>Learn Skills That Shape Your Future</h1>
-            <p>Join millions learning on CRISMATECH. Gain new skills from industry experts.</p>
-            
-            <div class="search-bar-container">
-                <div class="search-bar">
-                    <input type="text" placeholder="Search for courses, skills, and instructors...">
-                    <button>Search</button>
+        <main class="main">
+            <div class="topbar">
+                <div class="welcome">
+                    <h2>Welcome, Learner</h2>
+                    <p>Your semester progress is looking strong. Keep the pace.</p>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FEATURED COURSES -->
-    <section class="section">
-        <div class="container">
-            <h2 class="section-title">Featured Courses</h2>
-            <div class="grid grid-3">
-                <div class="course-card">
-                    <div class="course-img"></div>
-                    <div class="course-body">
-                        <div class="course-title">Web Development Masterclass</div>
-                        <div class="course-instructor">Prof. Sharma</div>
-                        <div class="course-rating">
-                            <span class="stars">★★★★★</span>
-                            <span class="rating-count">(2,845)</span>
-                        </div>
-                        <div class="course-meta">
-                            <span>16 Lessons</span>
-                            <span>Intermediate</span>
-                        </div>
-                    </div>
-                    <div class="course-footer">
-                        <span>$49.99</span>
-                        <button class="course-button">Enroll Now</button>
-                    </div>
-                </div>
-
-                <div class="course-card">
-                    <div class="course-img"></div>
-                    <div class="course-body">
-                        <div class="course-title">Python for Data Science</div>
-                        <div class="course-instructor">Prof. Rao</div>
-                        <div class="course-rating">
-                            <span class="stars">★★★★★</span>
-                            <span class="rating-count">(1,920)</span>
-                        </div>
-                        <div class="course-meta">
-                            <span>20 Lessons</span>
-                            <span>Advanced</span>
-                        </div>
-                    </div>
-                    <div class="course-footer">
-                        <span>$59.99</span>
-                        <button class="course-button">Enroll Now</button>
-                    </div>
-                </div>
-
-                <div class="course-card">
-                    <div class="course-img"></div>
-                    <div class="course-body">
-                        <div class="course-title">IoT Fundamentals</div>
-                        <div class="course-instructor">Prof. Mehta</div>
-                        <div class="course-rating">
-                            <span class="stars">★★★★☆</span>
-                            <span class="rating-count">(1,254)</span>
-                        </div>
-                        <div class="course-meta">
-                            <span>18 Lessons</span>
-                            <span>Intermediate</span>
-                        </div>
-                    </div>
-                    <div class="course-footer">
-                        <span>$39.99</span>
-                        <button class="course-button">Enroll Now</button>
-                    </div>
+                <div class="actions">
+                    <label class="search">
+                        <i class="bi bi-search"></i>
+                        <input type="text" placeholder="Search courses...">
+                    </label>
+                    <i class="bi bi-bell" style="font-size:1.15rem;color:#7383a5"></i>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- CATEGORIES -->
-    <section class="section" style="background-color: var(--bg-gray);" id="categories">
-        <div class="container">
-            <h2 class="section-title">Popular Categories</h2>
-            <div class="grid grid-4">
-                <div class="category-card">
-                    <div class="category-icon">💻</div>
-                    <h3>Development</h3>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">📊</div>
-                    <h3>Data Science</h3>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">🎨</div>
-                    <h3>Design</h3>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon">📱</div>
-                    <h3>Mobile Apps</h3>
-                </div>
-            </div>
-        </div>
-    </section>
+            <section class="grid">
+                <div class="stat"><div class="label">Enrolled Courses</div><div id="homeCoursesCount" class="value">0</div></div>
+                <div class="stat"><div class="label">Assignments Due</div><div id="homeAssignmentsCount" class="value">0</div></div>
+                <div class="stat"><div class="label">Completed Tests</div><div id="homeTestsCount" class="value">0</div></div>
+                <div class="stat"><div class="label">Certificates</div><div id="homeCertificatesCount" class="value">0</div></div>
+            </section>
 
-    <!-- TESTIMONIALS -->
-    <section class="section">
-        <div class="container">
-            <h2 class="section-title">What Learners Say</h2>
-            <div class="grid grid-3">
-                <div class="testimonial-card">
-                    <div class="testimonial-text">
-                        "CRISMATECH transformed my career. The courses are well-structured and the instructors are incredibly knowledgeable. I landed my dream job thanks to the skills I learned here!"
+            <section class="content">
+                <div class="panel">
+                    <h3>Continue Learning</h3>
+                    <div id="homeCoursesList" class="courses">
                     </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">AS</div>
-                        <div class="author-info">
-                            <h4>Aisha Singh</h4>
-                            <div class="author-role">Software Engineer</div>
-                        </div>
+                    <div class="cta">
+                        <h4>New Path Available: AI Foundations</h4>
+                        <p>Start a curated learning path built for placements and practical projects.</p>
+                        <a href="courses/courses.html">Explore Courses</a>
                     </div>
                 </div>
 
-                <div class="testimonial-card">
-                    <div class="testimonial-text">
-                        "The best learning platform I've used. Flexible scheduling, excellent instructors, and practical projects that mirror real-world scenarios. Highly recommended!"
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">RK</div>
-                        <div class="author-info">
-                            <h4>Rajesh Kumar</h4>
-                            <div class="author-role">Data Analyst</div>
-                        </div>
+                <div class="panel">
+                    <h3>Today & This Week</h3>
+                    <div id="homeTimeline" class="list">
                     </div>
                 </div>
-
-                <div class="testimonial-card">
-                    <div class="testimonial-text">
-                        "Outstanding content and supportive community. I was able to upskill while working full-time. The certificates are recognized by top companies!"
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">PM</div>
-                        <div class="author-info">
-                            <h4>Priya Malik</h4>
-                            <div class="author-role">Product Manager</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA SECTION -->
-    <section class="section" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); text-align: center; color: white; margin: 0;">
-        <div class="container">
-            <h2 style="color: white; margin-bottom: var(--spacing-md);">Ready to Start Learning?</h2>
-            <p style="color: rgba(255,255,255,0.9); margin-bottom: var(--spacing-lg);">Join thousands of students learning on CRISMATECH today</p>
-            <a href="register.html" class="btn-primary" style="display: inline-block;">Get Started</a>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>CRISMATECH</h4>
-                    <p>Empowering learners worldwide with quality education and professional development.</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <a href="#home">Home</a>
-                    <a href="courses/courses.html">Courses</a>
-                    <a href="#categories">Categories</a>
-                </div>
-                <div class="footer-section">
-                    <h4>Support</h4>
-                    <a href="#contact">Contact Us</a>
-                    <a href="#faq">FAQ</a>
-                    <a href="#help">Help Center</a>
-                </div>
-                <div class="footer-section">
-                    <h4>Follow Us</h4>
-                    <div class="social-icons">
-                        <div class="social-icon">f</div>
-                        <div class="social-icon">t</div>
-                        <div class="social-icon">in</div>
-                        <div class="social-icon">ig</div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 CRISMATECH. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+            </section>
+        </main>
+    </div>
 
     <script>
-        function toggleMenu() {
-            const menu = document.querySelector('.navbar-menu');
-            menu.classList.toggle('active');
+        const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
+            (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
+        );
+
+        let apiBase = null;
+
+        async function getApiBase() {
+            if (apiBase) return apiBase;
+            for (const base of API_CANDIDATES) {
+                try {
+                    const res = await fetch(`${base}/courses`);
+                    if (res.ok) {
+                        apiBase = base;
+                        return apiBase;
+                    }
+                } catch (_) {
+                    // Try next candidate.
+                }
+            }
+            throw new Error('Unable to connect to backend API (ports 5000-5005).');
         }
 
-        // Close menu when clicking on a link
-        document.querySelectorAll('.navbar-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                document.querySelector('.navbar-menu').classList.remove('active');
+        async function fetchFromApi(path) {
+            const base = await getApiBase();
+            const res = await fetch(`${base}${path}`);
+            if (!res.ok) {
+                const errorText = await res.text();
+                throw new Error(errorText || `Request failed with status ${res.status}`);
+            }
+            return await res.json();
+        }
+
+        function updateHomeStats(courses, assignments, tests, certificates) {
+            document.getElementById('homeCoursesCount').textContent = courses.length;
+            document.getElementById('homeAssignmentsCount').textContent = assignments.filter((a) => a.status !== 'submitted').length;
+            document.getElementById('homeTestsCount').textContent = tests.filter((t) => t.status === 'completed').length;
+            document.getElementById('homeCertificatesCount').textContent = certificates.length;
+        }
+
+        function renderHomeCourses(courses) {
+            const container = document.getElementById('homeCoursesList');
+
+            if (!courses.length) {
+                container.innerHTML = '<article class="course"><h4>No Courses Yet</h4><p>Courses will appear here once available.</p><div class="mini"><span>0 lessons</span><span>0%</span></div></article>';
+                return;
+            }
+
+            container.innerHTML = courses
+                .slice(0, 3)
+                .map((course) => {
+                    const lessons = Number(course.lessons) || 0;
+                    const progress = Math.min(100, Math.max(10, lessons * 4));
+                    return `
+                        <article class="course">
+                            <h4>${course.title}</h4>
+                            <p>${course.category || 'General'} • ${course.instructor || 'Instructor'}</p>
+                            <div class="mini"><span>${lessons} lessons</span><span>${progress}%</span></div>
+                        </article>
+                    `;
+                })
+                .join('');
+        }
+
+        function renderHomeTimeline(assignments, tests, certificates) {
+            const container = document.getElementById('homeTimeline');
+            const entries = [];
+
+            assignments.slice(0, 1).forEach((assignment) => {
+                const due = assignment.dueDate ? new Date(assignment.dueDate).toLocaleDateString() : 'No due date';
+                entries.push({ title: assignment.title, subtitle: `Due ${due}`, tagClass: 'orange', tagText: 'Due' });
             });
-        });
+
+            tests.slice(0, 1).forEach((test) => {
+                const when = test.scheduledDate ? new Date(test.scheduledDate).toLocaleDateString() : 'To be announced';
+                entries.push({ title: test.title, subtitle: `${when}`, tagClass: 'blue', tagText: 'Scheduled' });
+            });
+
+            certificates
+                .filter((certificate) => certificate.status === 'earned')
+                .slice(0, 1)
+                .forEach((certificate) => {
+                    entries.push({ title: certificate.title, subtitle: 'Certificate earned', tagClass: 'green', tagText: 'Ready' });
+                });
+
+            if (!entries.length) {
+                container.innerHTML = '<div class="list-item"><div><strong>No updates yet</strong><br><small>Upcoming tasks and milestones will appear here.</small></div><span class="tag blue">Info</span></div>';
+                return;
+            }
+
+            container.innerHTML = entries
+                .map(
+                    (entry) => `
+                        <div class="list-item">
+                            <div>
+                                <strong>${entry.title}</strong><br>
+                                <small>${entry.subtitle}</small>
+                            </div>
+                            <span class="tag ${entry.tagClass}">${entry.tagText}</span>
+                        </div>
+                    `
+                )
+                .join('');
+        }
+
+        async function initHomeData() {
+            try {
+                const [coursesRes, assignmentsRes, testsRes, certificatesRes] = await Promise.all([
+                    fetchFromApi('/courses'),
+                    fetchFromApi('/assignments'),
+                    fetchFromApi('/tests'),
+                    fetchFromApi('/certificates'),
+                ]);
+
+                const courses = Array.isArray(coursesRes.courses) ? coursesRes.courses : [];
+                const assignments = Array.isArray(assignmentsRes.assignments) ? assignmentsRes.assignments : [];
+                const tests = Array.isArray(testsRes.tests) ? testsRes.tests : [];
+                const certificates = Array.isArray(certificatesRes.certificates) ? certificatesRes.certificates : [];
+
+                updateHomeStats(courses, assignments, tests, certificates);
+                renderHomeCourses(courses);
+                renderHomeTimeline(assignments, tests, certificates);
+            } catch (error) {
+                console.error('Home data load failed:', error.message);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initHomeData);
     </script>
 </body>
 </html>
