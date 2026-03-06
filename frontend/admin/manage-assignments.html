@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Manage Assignments</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body>
+
+    <div class="d-flex">
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-brand">
+                <h4>⚡ Admin Panel</h4>
+                <div class="brand-sub">Learning Portal</div>
+            </div>
+
+            <div class="sidebar-nav">
+                <a href="admin-dashboard.html">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="manage-students.html">
+                    <span class="icon">👥</span>
+                    <span>Students</span>
+                </a>
+                <a href="manage-courses.html">
+                    <span class="icon">📚</span>
+                    <span>Courses</span>
+                </a>
+                <a href="manage-assignments.html" class="active">
+                    <span class="icon">📝</span>
+                    <span>Assignments</span>
+                </a>
+                <a href="quiz-scheduler.html">
+                    <span class="icon">🧠</span>
+                    <span>Quiz Scheduler</span>
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <a href="../dashboard.html">
+                    <span class="icon">🎓</span>
+                    <span>Student Portal</span>
+                </a>
+                <a href="../index.html" class="logout-link">
+                    <span class="icon">🚪</span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+
+            <div class="top-bar">
+                <h1>Assignment Management</h1>
+                <span class="admin-badge">ADMIN</span>
+            </div>
+
+            <div class="page-container">
+
+                <div class="page-header d-flex justify-content-between align-items-start">
+                    <div>
+                        <h2>Assignment Management</h2>
+                        <p>Create, review, and manage student assignments</p>
+                    </div>
+                    <button class="btn btn-primary">+ Create Assignment</button>
+                </div>
+
+                <!-- Stats Row -->
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-icon purple">📝</div>
+                            <div class="stat-info">
+                                <h3>15</h3>
+                                <p>Total Assignments</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-icon green">✅</div>
+                            <div class="stat-info">
+                                <h3>9</h3>
+                                <p>Submitted</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-icon orange">⏳</div>
+                            <div class="stat-info">
+                                <h3>6</h3>
+                                <p>Pending</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h5>All Assignments</h5>
+                        <span class="record-count">5 Records</span>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Assignment Title</th>
+                                <th>Course</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Submissions</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Build a Portfolio Website</td>
+                                <td>Web Development</td>
+                                <td>10 Mar 2026</td>
+                                <td><span class="badge bg-success">Active</span></td>
+                                <td>45 / 60</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                                    <button class="btn btn-danger btn-sm">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>IoT Sensor Data Logger</td>
+                                <td>IoT Fundamentals</td>
+                                <td>15 Mar 2026</td>
+                                <td><span class="badge bg-success">Active</span></td>
+                                <td>30 / 55</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                                    <button class="btn btn-danger btn-sm">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Python Calculator App</td>
+                                <td>Python Programming</td>
+                                <td>05 Mar 2026</td>
+                                <td><span class="badge bg-secondary">Closed</span></td>
+                                <td>52 / 58</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                                    <button class="btn btn-danger btn-sm">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Database ER Diagram</td>
+                                <td>Database Management</td>
+                                <td>20 Mar 2026</td>
+                                <td><span class="badge bg-success">Active</span></td>
+                                <td>18 / 40</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                                    <button class="btn btn-danger btn-sm">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Responsive Landing Page</td>
+                                <td>Web Development</td>
+                                <td>28 Feb 2026</td>
+                                <td><span class="badge bg-secondary">Closed</span></td>
+                                <td>58 / 60</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm me-1">Edit</button>
+                                    <button class="btn btn-danger btn-sm">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
