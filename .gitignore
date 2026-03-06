@@ -22,3 +22,7 @@ Thumbs.db
 dist/
 build/
 coverage/
+
+# Large or sensitive local artifacts
+*.msi
+*recovery_code*.txt
