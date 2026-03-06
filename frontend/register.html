@@ -1,36 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register – Student Learning Portal</title>
-
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
+    <title>Create Account - CRISMATECH</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-
     <style>
-        .register-page {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #4f46e5, #9333ea);
-            padding: 40px 20px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .register-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 44px 40px;
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e8eef8 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Decorative backgrounds */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 86, 210, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -20%;
+            left: -15%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(79, 172, 254, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .registration-container {
+            position: relative;
+            z-index: 1;
             width: 100%;
-            max-width: 520px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.5s ease-out;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            background: none;
+            border: none;
+            color: #0056D2;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            color: #003fa3;
+            transform: translateX(-4px);
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 48px 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+            animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin-top: 20px;
         }
 
         @keyframes slideUp {
@@ -38,219 +96,866 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        .register-card .brand-icon {
-            font-size: 48px;
-            margin-bottom: 8px;
+        .form-header {
+            text-align: center;
+            margin-bottom: 32px;
         }
 
-        .register-card h2 {
+        .form-header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 32px;
             font-weight: 700;
-            color: #1a1a2e;
-            margin-bottom: 6px;
+            color: #1a202c;
+            margin-bottom: 8px;
+            line-height: 1.2;
         }
 
-        .register-card .subtitle {
-            color: #666;
-            font-size: 14px;
+        .form-header p {
+            font-size: 15px;
+            color: #64748b;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .form-section {
             margin-bottom: 28px;
         }
 
-        .form-floating {
-            margin-bottom: 14px;
+        .form-section-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #0056D2;
+            margin-bottom: 16px;
+            display: block;
         }
 
-        .form-floating .form-control {
-            border-radius: 12px;
-            border: 2px solid #e5e7eb;
-            padding: 16px 14px;
-            font-size: 15px;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-
-        .form-floating .form-control:focus {
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-        }
-
-        .form-row {
+        .input-group {
+            position: relative;
+            margin-bottom: 16px;
             display: flex;
-            gap: 12px;
+            align-items: center;
         }
 
-        .form-row .form-floating {
-            flex: 1;
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            color: #cbd5e1;
+            font-size: 18px;
+            transition: color 0.3s ease;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
         }
 
-        .btn-register {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            border: none;
-            border-radius: 12px;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: 600;
-            color: white;
+        .input-group:focus-within .input-icon {
+            color: #0056D2;
+        }
+
+        .form-input {
             width: 100%;
-            margin-top: 8px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            color: #1a202c;
+            background: #f8fafc;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
         }
 
-        .btn-register:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+        .form-input::placeholder {
+            color: #a0aec0;
+            font-weight: 400;
+        }
+
+        .form-input:hover {
+            border-color: #cbd5e1;
+            background: #ffffff;
+        }
+
+        .form-input:focus {
+            border-color: #0056D2;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 86, 210, 0.08);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .input-row .input-group {
+            margin-bottom: 0;
+        }
+
+        .select-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .select-wrapper .input-icon {
+            left: 14px;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            color: #1a202c;
+            background: #f8fafc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a0aec0' d='M1 4l5 4 5-4'/%3E%3C/svg%3E") no-repeat right 14px center;
+            padding-right: 40px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            appearance: none;
+            outline: none;
+        }
+
+        .form-select:hover {
+            border-color: #cbd5e1;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%230056D2' d='M1 4l5 4 5-4'/%3E%3C/svg%3E");
+            background-color: #ffffff;
+        }
+
+        .form-select:focus {
+            border-color: #0056D2;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 86, 210, 0.08);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%230056D2' d='M1 4l5 4 5-4'/%3E%3C/svg%3E");
+        }
+
+        .form-select option {
+            padding: 10px;
+            color: #1a202c;
+        }
+
+        /* OTP Verification Section */
+        .otp-section {
+            background: linear-gradient(135deg, #f0f4ff 0%, #f8fafc 100%);
+            border: 1px solid #e0e7ff;
+            border-radius: 12px;
+            padding: 24px 20px;
+            margin-bottom: 28px;
+        }
+
+        .otp-header {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #0056D2;
+            margin-bottom: 12px;
+        }
+
+        .otp-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .otp-tab {
+            padding: 11px 14px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .otp-tab:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+
+        .otp-tab.active {
+            border-color: #0056D2;
+            background: #0056D2;
             color: white;
+            box-shadow: 0 4px 12px rgba(0, 86, 210, 0.2);
         }
 
-        .btn-register:active {
+        .otp-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .otp-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .otp-method-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .btn-send-otp {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #0056D2;
+            background: white;
+            color: #0056D2;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 12px;
+        }
+
+        .btn-send-otp:hover {
+            background: #f0f4ff;
+        }
+
+        .btn-send-otp:active {
+            transform: scale(0.98);
+        }
+
+        .btn-send-otp:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .otp-input-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .otp-input-row .form-input {
+            padding: 12px 14px 12px 44px;
+            font-size: 14px;
+        }
+
+        .btn-verify-otp {
+            padding: 12px 20px;
+            background: #16a34a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+        }
+
+        .btn-verify-otp:hover {
+            background: #15803d;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
+        }
+
+        .btn-verify-otp:active {
+            transform: scale(0.98);
+        }
+
+        .btn-verify-otp:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .otp-status {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .otp-status.show {
+            display: block;
+        }
+
+        .otp-status.success {
+            background: #ecfdf5;
+            color: #16a34a;
+            border: 1px solid #dcfce7;
+        }
+
+        .otp-status.error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fee2e2;
+        }
+
+        /* Submit Button */
+        .btn-create-account {
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #0056D2 0%, #003fa3 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 8px;
+            box-shadow: 0 4px 15px rgba(0, 86, 210, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-create-account::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-create-account:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 86, 210, 0.35);
+        }
+
+        .btn-create-account:hover::before {
+            left: 100%;
+        }
+
+        .btn-create-account:active {
             transform: translateY(0);
         }
 
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 22px 0;
-            color: #999;
-            font-size: 13px;
+        .btn-create-account:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #e5e7eb;
-        }
-
-        .divider span {
-            padding: 0 16px;
-        }
-
-        .register-card .links {
+        /* Form footer */
+        .form-footer {
             text-align: center;
-            margin-top: 8px;
-        }
-
-        .register-card .links a {
-            color: #4f46e5;
-            text-decoration: none;
-            font-weight: 500;
+            margin-top: 24px;
             font-size: 14px;
+            color: #475569;
         }
 
-        .register-card .links a:hover {
-            text-decoration: underline;
-        }
-
-        .back-home {
-            position: absolute;
-            top: 24px;
-            left: 24px;
-            color: rgba(255, 255, 255, 0.8);
+        .form-footer a {
+            color: #0056D2;
             text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            font-weight: 600;
             transition: color 0.3s;
         }
 
-        .back-home:hover {
-            color: white;
+        .form-footer a:hover {
+            color: #003fa3;
+            text-decoration: underline;
         }
 
-        .password-hint {
-            font-size: 12px;
-            color: #888;
-            margin-top: -8px;
-            margin-bottom: 14px;
-            padding-left: 4px;
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            body {
+                padding: 24px 16px;
+            }
+
+            .form-card {
+                padding: 32px 20px;
+                border-radius: 14px;
+            }
+
+            .form-header h1 {
+                font-size: 28px;
+            }
+
+            .form-header p {
+                font-size: 14px;
+            }
+
+            .input-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .input-row .input-group {
+                margin-bottom: 16px;
+            }
+
+            .back-button {
+                position: static;
+                margin-bottom: 16px;
+                padding: 0;
+            }
+
+            .btn-create-account {
+                padding: 14px 20px;
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-card {
+                padding: 28px 16px;
+            }
+
+            .form-header h1 {
+                font-size: 26px;
+            }
+
+            .form-input,
+            .form-select,
+            .btn-send-otp,
+            .btn-create-account {
+                font-size: 16px;
+            }
+
+            .input-icon {
+                left: 12px;
+            }
+
+            .form-input {
+                padding: 12px 12px 12px 44px;
+            }
+
+            .form-select {
+                padding: 12px 12px 12px 44px;
+                padding-right: 36px;
+            }
         }
     </style>
 </head>
-
 <body>
-    <div class="register-page">
-        <a href="index.html" class="back-home">← Back to Home</a>
+    <div class="registration-container">
+        <a href="index.html" class="back-button">← Back to Home</a>
 
-        <div class="register-card text-center">
-            <div class="brand-icon">🚀</div>
-            <h2>Create Account</h2>
-            <p class="subtitle">Join CRISMATECH and start your learning journey</p>
+        <div class="form-card">
+            <!-- Form Header -->
+            <div class="form-header">
+                <h1>Create Your Account</h1>
+                <p>Join CRISMATECH today and unlock a world of learning opportunities</p>
+            </div>
 
             <form id="registerForm">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="fullName" placeholder="Full Name" required>
-                    <label for="fullName">Full Name</label>
-                </div>
+                <!-- Personal Information Section -->
+                <div class="form-section">
+                    <label class="form-section-title">Personal Information</label>
 
-                <div class="form-row">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="collegeName" placeholder="College Name" required>
-                        <label for="collegeName">College Name</label>
+                    <div class="input-group">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <input type="text" class="form-input" id="fullName" placeholder="Full Name" required>
                     </div>
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="branch" placeholder="Branch" required>
-                        <label for="branch">Branch</label>
-                    </div>
-                </div>
 
-                <div class="form-row">
-                    <div class="form-floating">
-                        <select class="form-control form-select" id="semester" required>
-                            <option value="" disabled selected></option>
-                            <option value="1">Semester 1</option>
-                            <option value="2">Semester 2</option>
-                            <option value="3">Semester 3</option>
-                            <option value="4">Semester 4</option>
-                            <option value="5">Semester 5</option>
-                            <option value="6">Semester 6</option>
-                            <option value="7">Semester 7</option>
-                            <option value="8">Semester 8</option>
-                        </select>
-                        <label for="semester">Semester</label>
-                    </div>
-                    <div class="form-floating">
-                        <input type="tel" class="form-control" id="phone" placeholder="Phone Number" required>
-                        <label for="phone">Phone Number</label>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            <input type="email" class="form-input" id="email" placeholder="Email Address" required>
+                        </div>
+
+                        <div class="input-group">
+                            <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                            <input type="tel" class="form-input" id="phone" placeholder="Phone Number" required>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-floating">
-                    <input type="email" class="form-control" id="email" placeholder="Email" required>
-                    <label for="email">Email Address</label>
+                <!-- Academic Information Section -->
+                <div class="form-section">
+                    <label class="form-section-title">Academic Information</label>
+
+                    <div class="input-group">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        <input type="text" class="form-input" id="collegeName" placeholder="College Name" required>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="input-group">
+                            <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 6v12"></path>
+                                <path d="M6 12h12"></path>
+                            </svg>
+                            <input type="text" class="form-input" id="branch" placeholder="Branch/Department" required>
+                        </div>
+
+                        <div class="select-wrapper">
+                            <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="19" cy="12" r="1"></circle>
+                                <circle cx="5" cy="12" r="1"></circle>
+                            </svg>
+                            <select class="form-select" id="semester" required>
+                                <option value="">Select Semester</option>
+                                <option value="1">Semester 1</option>
+                                <option value="2">Semester 2</option>
+                                <option value="3">Semester 3</option>
+                                <option value="4">Semester 4</option>
+                                <option value="5">Semester 5</option>
+                                <option value="6">Semester 6</option>
+                                <option value="7">Semester 7</option>
+                                <option value="8">Semester 8</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-floating">
-                    <input type="password" class="form-control" id="password" placeholder="Password" required>
-                    <label for="password">Password</label>
+                <!-- Verification Section -->
+                <div class="otp-section">
+                    <div class="otp-header">Verify Your Identity</div>
+
+                    <div class="otp-tabs">
+                        <button type="button" class="otp-tab active" data-method="phone">
+                            <svg style="display:inline; margin-right: 6px;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                            Phone
+                        </button>
+                        <button type="button" class="otp-tab" data-method="email">
+                            <svg style="display:inline; margin-right: 6px;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            Email
+                        </button>
+                    </div>
+
+                    <!-- Phone OTP Content -->
+                    <div class="otp-content active" data-method="phone">
+                        <label class="otp-method-label">We'll send an OTP to your phone number</label>
+                        <button type="button" class="btn-send-otp" id="sendPhoneOtpBtn">Send OTP to Phone</button>
+
+                        <div id="phoneOtpInputSection" style="display: none;">
+                            <div class="otp-input-row">
+                                <input type="text" class="form-input" id="phoneOtpInput" placeholder="Enter 6-digit OTP" maxlength="6" inputmode="numeric">
+                                <button type="button" class="btn-verify-otp" id="verifyPhoneOtpBtn">Verify</button>
+                            </div>
+                            <div id="phoneOtpStatus" class="otp-status"></div>
+                        </div>
+                    </div>
+
+                    <!-- Email OTP Content -->
+                    <div class="otp-content" data-method="email">
+                        <label class="otp-method-label">We'll send an OTP to your email address</label>
+                        <button type="button" class="btn-send-otp" id="sendEmailOtpBtn">Send OTP to Email</button>
+
+                        <div id="emailOtpInputSection" style="display: none;">
+                            <div class="otp-input-row">
+                                <input type="text" class="form-input" id="emailOtpInput" placeholder="Enter 6-digit OTP" maxlength="6" inputmode="numeric">
+                                <button type="button" class="btn-verify-otp" id="verifyEmailOtpBtn">Verify</button>
+                            </div>
+                            <div id="emailOtpStatus" class="otp-status"></div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-floating">
-                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password"
-                        required>
-                    <label for="confirmPassword">Confirm Password</label>
-                </div>
-                <p class="password-hint text-start">Must be at least 8 characters with a number and symbol.</p>
+                <!-- Security Section -->
+                <div class="form-section">
+                    <label class="form-section-title">Create Password</label>
 
-                <button type="submit" class="btn btn-register">Create Account</button>
+                    <div class="input-group">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <input type="password" class="form-input" id="password" placeholder="Create a strong password" required>
+                    </div>
+
+                    <div class="input-group">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <input type="password" class="form-input" id="confirmPassword" placeholder="Confirm password" required>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-create-account">Create Account</button>
             </form>
 
-            <div class="divider"><span>or</span></div>
-
-            <div class="links">
-                Already have an account? <a href="login.html">Sign in</a>
+            <!-- Form Footer -->
+            <div class="form-footer">
+                Already have an account? <a href="login.html">Sign in here</a>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        let phoneVerified = false;
+        let emailVerified = false;
 
+        // OTP Tab Switching
+        document.querySelectorAll('.otp-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                const method = tab.dataset.method;
+
+                // Update active tab
+                document.querySelectorAll('.otp-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Update active content
+                document.querySelectorAll('.otp-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.querySelector(`.otp-content[data-method="${method}"]`).classList.add('active');
+            });
+        });
+
+        // Phone OTP
+        document.getElementById('sendPhoneOtpBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('phone').value.trim();
+            if (!phone) {
+                alert('Please enter your phone number first');
+                return;
+            }
+
+            const btn = e.target;
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+
+            try {
+                const res = await fetch(`${API_URL}/otp/send`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ to: phone, channel: 'sms' }),
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    document.getElementById('phoneOtpInputSection').style.display = 'block';
+                    const status = document.getElementById('phoneOtpStatus');
+                    status.textContent = '✓ OTP sent to your phone';
+                    status.classList.add('show', 'success');
+                    btn.textContent = 'Resend OTP';
+                } else {
+                    alert(data.message || 'Failed to send OTP');
+                    btn.textContent = 'Send OTP to Phone';
+                }
+            } catch (err) {
+                alert('Server error. Please try again.');
+                btn.textContent = 'Send OTP to Phone';
+            }
+            btn.disabled = false;
+        });
+
+        document.getElementById('verifyPhoneOtpBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('phone').value.trim();
+            const code = document.getElementById('phoneOtpInput').value.trim();
+
+            if (!code || code.length !== 6) {
+                alert('Please enter a valid 6-digit OTP');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_URL}/otp/verify`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ to: phone, code }),
+                });
+                const data = await res.json();
+
+                const status = document.getElementById('phoneOtpStatus');
+                if (data.success) {
+                    phoneVerified = true;
+                    status.textContent = '✓ Phone verified successfully!';
+                    status.classList.remove('error');
+                    status.classList.add('show', 'success');
+                    document.getElementById('phoneOtpInput').disabled = true;
+                    document.getElementById('verifyPhoneOtpBtn').disabled = true;
+                    document.getElementById('sendPhoneOtpBtn').disabled = true;
+                    document.getElementById('phone').readOnly = true;
+                } else {
+                    status.textContent = '✗ ' + (data.message || 'Invalid OTP');
+                    status.classList.remove('success');
+                    status.classList.add('show', 'error');
+                }
+            } catch (err) {
+                const status = document.getElementById('phoneOtpStatus');
+                status.textContent = '✗ Server error. Please try again.';
+                status.classList.remove('success');
+                status.classList.add('show', 'error');
+            }
+        });
+
+        // Email OTP
+        document.getElementById('sendEmailOtpBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            if (!email) {
+                alert('Please enter your email first');
+                return;
+            }
+
+            const btn = e.target;
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+
+            try {
+                const res = await fetch(`${API_URL}/otp/send`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ to: email, channel: 'email' }),
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    document.getElementById('emailOtpInputSection').style.display = 'block';
+                    const status = document.getElementById('emailOtpStatus');
+                    status.textContent = '✓ OTP sent to your email';
+                    status.classList.add('show', 'success');
+                    btn.textContent = 'Resend OTP';
+                } else {
+                    alert(data.message || 'Failed to send OTP');
+                    btn.textContent = 'Send OTP to Email';
+                }
+            } catch (err) {
+                alert('Server error. Please try again.');
+                btn.textContent = 'Send OTP to Email';
+            }
+            btn.disabled = false;
+        });
+
+        document.getElementById('verifyEmailOtpBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const code = document.getElementById('emailOtpInput').value.trim();
+
+            if (!code || code.length !== 6) {
+                alert('Please enter a valid 6-digit OTP');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_URL}/otp/verify`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ to: email, code }),
+                });
+                const data = await res.json();
+
+                const status = document.getElementById('emailOtpStatus');
+                if (data.success) {
+                    emailVerified = true;
+                    status.textContent = '✓ Email verified successfully!';
+                    status.classList.remove('error');
+                    status.classList.add('show', 'success');
+                    document.getElementById('emailOtpInput').disabled = true;
+                    document.getElementById('verifyEmailOtpBtn').disabled = true;
+                    document.getElementById('sendEmailOtpBtn').disabled = true;
+                    document.getElementById('email').readOnly = true;
+                } else {
+                    status.textContent = '✗ ' + (data.message || 'Invalid OTP');
+                    status.classList.remove('success');
+                    status.classList.add('show', 'error');
+                }
+            } catch (err) {
+                const status = document.getElementById('emailOtpStatus');
+                status.textContent = '✗ Server error. Please try again.';
+                status.classList.remove('success');
+                status.classList.add('show', 'error');
+            }
+        });
+
+        // Form Submission
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!phoneVerified && !emailVerified) {
+                alert('Please verify either your phone number or email before proceeding');
+                return;
+            }
+
+            const name = document.getElementById('fullName').value.trim();
+            const college = document.getElementById('collegeName').value.trim();
+            const branch = document.getElementById('branch').value.trim();
+            const semester = document.getElementById('semester').value;
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!name || !college || !branch || !semester) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+
+            if (password.length < 8) {
+                alert('Password must be at least 8 characters long');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, college, branch, semester, phone }),
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    alert('Registration successful! Redirecting to dashboard...');
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert(data.message || 'Registration failed. Please try again.');
+                }
+            } catch (err) {
+                alert('Server error. Please try again later.');
+            }
+        });
+    </script>
+</body>
 </html>

@@ -1,239 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Student Learning Portal</title>
-
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
+    <title>CRISMATECH - Learn Skills That Shape Your Future</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
 
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            .navbar-menu {
+                display: none;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                background-color: var(--bg-white);
+                padding: var(--spacing-lg);
+                box-shadow: var(--card-shadow);
+                z-index: 998;
+            }
+            .navbar-menu.active {
+                display: flex;
+            }
+        }
+    </style>
 </head>
-
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
-
-        <div class="container">
-
-            <a class="navbar-brand d-flex align-items-center" href="index.html">
-
-                <img src="assets/images/logo.png" height="40" class="me-2">
-
-                CRISMATECH AUTOMATION
-
-            </a>
-
-            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
-
-                <span class="navbar-toggler-icon"></span>
-
-            </button>
-
-            <div class="collapse navbar-collapse" id="menu">
-
-                <ul class="navbar-nav ms-auto">
-
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Home</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Courses</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="login.html">Login</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="btn btn-primary ms-3" href="register.html">Register</a>
-                    </li>
-
-                </ul>
-
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <span>CRISMATECH</span>
             </div>
-
+            <ul class="navbar-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="courses/courses.html">Courses</a></li>
+                <li><a href="#categories">Categories</a></li>
+            </ul>
+            <div class="navbar-auth">
+                <a href="login.html" class="btn-outline">Login</a>
+                <a href="register.html" class="btn-primary">Register</a>
+                <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+            </div>
         </div>
-
     </nav>
 
-    <section class="hero">
-
-        <div class="container text-center text-white">
-
-            <h1 class="hero-title">
-                Learn Skills That Shape Your Future
-            </h1>
-
-            <p class="hero-subtitle">
-                Courses, assignments, tests and certificates in one platform.
-            </p>
-
-            <div class="mt-4">
-
-                <a href="register.html" class="btn btn-light btn-lg me-3">
-                    Start Learning
-                </a>
-
-                <a href="login.html" class="btn btn-outline-light btn-lg">
-                    Login
-                </a>
-
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+        <div class="hero-container">
+            <h1>Learn Skills That Shape Your Future</h1>
+            <p>Join millions learning on CRISMATECH. Gain new skills from industry experts.</p>
+            
+            <div class="search-bar-container">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search for courses, skills, and instructors...">
+                    <button>Search</button>
+                </div>
             </div>
-
         </div>
-
     </section>
 
-    <section class="container mt-5">
-
-        <h2 class="text-center mb-5">Platform Features</h2>
-
-        <div class="row text-center">
-
-            <div class="col-md-3">
-
-                <div class="card feature-card p-4">
-
-                    <h4>📚 Courses</h4>
-
-                    <p>Access structured course materials and lectures.</p>
-
-                </div>
-
-            </div>
-
-            <div class="col-md-3">
-
-                <div class="card feature-card p-4">
-
-                    <h4>📝 Assignments</h4>
-
-                    <p>Submit assignments and track your progress.</p>
-
-                </div>
-
-            </div>
-
-            <div class="col-md-3">
-
-                <div class="card feature-card p-4">
-
-                    <h4>🧠 Tests</h4>
-
-                    <p>Evaluate your knowledge with online tests.</p>
-
-                </div>
-
-            </div>
-
-            <div class="col-md-3">
-
-                <div class="card feature-card p-4">
-
-                    <h4>🎓 Certificates</h4>
-
-                    <p>Earn certificates after completing courses.</p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-    <section class="courses-section">
-
+    <!-- FEATURED COURSES -->
+    <section class="section">
         <div class="container">
-
-            <h2 class="text-center mb-5">Popular Courses</h2>
-
-            <div class="row">
-
-                <div class="col-md-4">
-
-                    <div class="card course-card">
-
-                        <img src="https://source.unsplash.com/400x250/?coding">
-
-                        <div class="card-body">
-
-                            <h5>Web Development</h5>
-
-                            <p>HTML, CSS, JavaScript basics</p>
-
-                            <button class="btn btn-primary">View Course</button>
-
+            <h2 class="section-title">Featured Courses</h2>
+            <div class="grid grid-3">
+                <div class="course-card">
+                    <div class="course-img"></div>
+                    <div class="course-body">
+                        <div class="course-title">Web Development Masterclass</div>
+                        <div class="course-instructor">Prof. Sharma</div>
+                        <div class="course-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-count">(2,845)</span>
                         </div>
-
+                        <div class="course-meta">
+                            <span>16 Lessons</span>
+                            <span>Intermediate</span>
+                        </div>
                     </div>
-
+                    <div class="course-footer">
+                        <span>$49.99</span>
+                        <button class="course-button">Enroll Now</button>
+                    </div>
                 </div>
 
-                <div class="col-md-4">
-
-                    <div class="card course-card">
-
-                        <img src="https://source.unsplash.com/400x250/?iot">
-
-                        <div class="card-body">
-
-                            <h5>IoT Fundamentals</h5>
-
-                            <p>Internet of Things Basics</p>
-
-                            <button class="btn btn-primary">View Course</button>
-
+                <div class="course-card">
+                    <div class="course-img"></div>
+                    <div class="course-body">
+                        <div class="course-title">Python for Data Science</div>
+                        <div class="course-instructor">Prof. Rao</div>
+                        <div class="course-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-count">(1,920)</span>
                         </div>
-
+                        <div class="course-meta">
+                            <span>20 Lessons</span>
+                            <span>Advanced</span>
+                        </div>
                     </div>
-
+                    <div class="course-footer">
+                        <span>$59.99</span>
+                        <button class="course-button">Enroll Now</button>
+                    </div>
                 </div>
 
-                <div class="col-md-4">
-
-                    <div class="card course-card">
-
-                        <img src="https://source.unsplash.com/400x250/?programming">
-
-                        <div class="card-body">
-
-                            <h5>Python Programming</h5>
-
-                            <p>Learn Python from scratch</p>
-
-                            <button class="btn btn-primary">View Course</button>
-
+                <div class="course-card">
+                    <div class="course-img"></div>
+                    <div class="course-body">
+                        <div class="course-title">IoT Fundamentals</div>
+                        <div class="course-instructor">Prof. Mehta</div>
+                        <div class="course-rating">
+                            <span class="stars">★★★★☆</span>
+                            <span class="rating-count">(1,254)</span>
                         </div>
-
+                        <div class="course-meta">
+                            <span>18 Lessons</span>
+                            <span>Intermediate</span>
+                        </div>
                     </div>
-
+                    <div class="course-footer">
+                        <span>$39.99</span>
+                        <button class="course-button">Enroll Now</button>
+                    </div>
                 </div>
-
             </div>
-
         </div>
-
     </section>
-    <footer class="footer">
 
-        <div class="container text-center">
-
-            <h4>CRISMATECH Learning Portal</h4>
-
-            <p>Email: support@crismatech.com</p>
-
-            <p>© 2026 All Rights Reserved</p>
-
+    <!-- CATEGORIES -->
+    <section class="section" style="background-color: var(--bg-gray);" id="categories">
+        <div class="container">
+            <h2 class="section-title">Popular Categories</h2>
+            <div class="grid grid-4">
+                <div class="category-card">
+                    <div class="category-icon">💻</div>
+                    <h3>Development</h3>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">📊</div>
+                    <h3>Data Science</h3>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🎨</div>
+                    <h3>Design</h3>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">📱</div>
+                    <h3>Mobile Apps</h3>
+                </div>
+            </div>
         </div>
+    </section>
 
+    <!-- TESTIMONIALS -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">What Learners Say</h2>
+            <div class="grid grid-3">
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        "CRISMATECH transformed my career. The courses are well-structured and the instructors are incredibly knowledgeable. I landed my dream job thanks to the skills I learned here!"
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">AS</div>
+                        <div class="author-info">
+                            <h4>Aisha Singh</h4>
+                            <div class="author-role">Software Engineer</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        "The best learning platform I've used. Flexible scheduling, excellent instructors, and practical projects that mirror real-world scenarios. Highly recommended!"
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">RK</div>
+                        <div class="author-info">
+                            <h4>Rajesh Kumar</h4>
+                            <div class="author-role">Data Analyst</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        "Outstanding content and supportive community. I was able to upskill while working full-time. The certificates are recognized by top companies!"
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">PM</div>
+                        <div class="author-info">
+                            <h4>Priya Malik</h4>
+                            <div class="author-role">Product Manager</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="section" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); text-align: center; color: white; margin: 0;">
+        <div class="container">
+            <h2 style="color: white; margin-bottom: var(--spacing-md);">Ready to Start Learning?</h2>
+            <p style="color: rgba(255,255,255,0.9); margin-bottom: var(--spacing-lg);">Join thousands of students learning on CRISMATECH today</p>
+            <a href="register.html" class="btn-primary" style="display: inline-block;">Get Started</a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>CRISMATECH</h4>
+                    <p>Empowering learners worldwide with quality education and professional development.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="#home">Home</a>
+                    <a href="courses/courses.html">Courses</a>
+                    <a href="#categories">Categories</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <a href="#contact">Contact Us</a>
+                    <a href="#faq">FAQ</a>
+                    <a href="#help">Help Center</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-icons">
+                        <div class="social-icon">f</div>
+                        <div class="social-icon">t</div>
+                        <div class="social-icon">in</div>
+                        <div class="social-icon">ig</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 CRISMATECH. All rights reserved.</p>
+            </div>
+        </div>
     </footer>
-</body>
 
+    <script>
+        function toggleMenu() {
+            const menu = document.querySelector('.navbar-menu');
+            menu.classList.toggle('active');
+        }
+
+        // Close menu when clicking on a link
+        document.querySelectorAll('.navbar-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.navbar-menu').classList.remove('active');
+            });
+        });
+    </script>
+</body>
 </html>

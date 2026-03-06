@@ -1,412 +1,337 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tests – Student Learning Portal</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Tests - CRISMATECH</title>
     <link rel="stylesheet" href="../css/style.css">
     <style>
-        .page-hero {
-            background: linear-gradient(135deg, #4f46e5, #9333ea);
-            padding: 50px 0;
+        .tests-hero {
+            background: linear-gradient(135deg, var(--primary-color), #0040a3);
             color: white;
+            padding: 60px var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .tests-hero h1 {
+            margin: 0 0 var(--spacing-sm) 0;
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .tests-hero p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--spacing-2xl);
+            margin-bottom: var(--spacing-2xl);
         }
 
         .test-card {
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
-            transition: 0.3s;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: all var(--transition-duration) ease;
+            display: flex;
+            flex-direction: column;
         }
 
         .test-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+            box-shadow: var(--card-shadow-hover);
+            transform: translateY(-4px);
+        }
+
+        .test-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .test-icon {
-            font-size: 40px;
-            width: 70px;
-            height: 70px;
-            border-radius: 14px;
+            width: 56px;
+            height: 56px;
+            border-radius: var(--border-radius);
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .score-circle {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            font-weight: 700;
-            border: 4px solid;
-        }
-
-        .timer-badge {
-            font-size: 13px;
-            color: #888;
-        }
-
-        .status-pill {
-            font-size: 12px;
-            border-radius: 20px;
-            padding: 4px 12px;
-            font-weight: 600;
-        }
-
-        .question-card {
-            border: none;
-            border-radius: 12px;
-            background: #f8f9ff;
-            margin-bottom: 16px;
-        }
-
-        .option-label {
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 12px 16px;
-            cursor: pointer;
-            transition: 0.2s;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .option-label:hover {
-            border-color: #4f46e5;
-            background: #f0edff;
-        }
-
-        input[type=radio]:checked+.option-label {
-            border-color: #4f46e5;
-            background: #ede9fe;
-            color: #4f46e5;
-            font-weight: 600;
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, #4f46e5, #9333ea);
-            color: white;
-            border-radius: 14px 14px 0 0;
-        }
-
-        .modal-content {
-            border-radius: 14px;
-            border: none;
-        }
-
-        .test-timer {
-            background: linear-gradient(135deg, #4f46e5, #9333ea);
-            color: white;
-            border-radius: 14px;
-            padding: 16px 24px;
             font-size: 28px;
+            background: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .test-title {
+            font-size: 16px;
             font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .test-course {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .test-body {
+            padding: var(--spacing-lg);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .test-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .test-info-item {
             text-align: center;
         }
 
-        .result-bar {
-            height: 10px;
-            border-radius: 5px;
+        .test-info-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .test-info-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .test-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .status-upcoming {
+            background: #FFF3E0;
+            color: #E65100;
+        }
+
+        .status-completed {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .test-button {
+            padding: var(--spacing-md);
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all var(--transition-duration) ease;
+            margin-top: auto;
+        }
+
+        .test-button.start {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .test-button.start:hover {
+            background: #003fa3;
+        }
+
+        .test-button.view {
+            background: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-light);
+        }
+
+        .test-button.view:hover {
+            background: var(--primary-light);
+        }
+
+        @media (max-width: 768px) {
+            .tests-hero h1 {
+                font-size: 28px;
+            }
+
+            .test-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .test-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .test-info {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
-
 <body>
     <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="../index.html">🎓 CRISMATECH AUTOMATION</a>
-            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="menu">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="../dashboard.html">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../courses/courses.html">Courses</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../assignments/assignments.html">Assignments</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="test.html">Tests</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../attendance/attendance.html">Attendance</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../certificate/certificate.html">Certificates</a>
-                    </li>
-                    <li class="nav-item ms-2"><a class="nav-link" href="../profile/profile.html">👤 Profile</a></li>
-                </ul>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <span>CRISMATECH</span>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="../dashboard.html">Dashboard</a></li>
+                <li><a href="../courses/courses.html">Courses</a></li>
+                <li><a href="../assignments/assignments.html">Assignments</a></li>
+                <li><a href="test.html" style="color: var(--primary-color); font-weight: 700;">Tests</a></li>
+                <li><a href="../certificate/certificate.html">Certificates</a></li>
+            </ul>
+            <div class="navbar-auth">
+                <a href="../profile/profile.html" style="color: var(--text-dark); font-weight: 500;">Profile</a>
+                <button class="btn-outline" onclick="logout()" style="padding: var(--spacing-sm) var(--spacing-lg);">Logout</button>
             </div>
         </div>
     </nav>
 
-    <!-- HERO -->
-    <div class="page-hero">
-        <div class="container">
-            <h1 class="fw-bold mb-1">🧠 Tests &amp; Assessments</h1>
-            <p class="mb-0 opacity-75">Evaluate your knowledge and track your performance.</p>
+    <!-- HERO SECTION -->
+    <div class="tests-hero">
+        <h1>Tests & Assessments</h1>
+        <p>Evaluate your knowledge and track your performance</p>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="dashboard-container">
+        <!-- TESTS GRID -->
+        <div class="test-grid" id="testsGrid">
+            <!-- Tests will be inserted here -->
         </div>
     </div>
 
-    <div class="container mt-4 mb-5">
+    <script>
+        const tests = [
+            {
+                id: 1,
+                title: "Web Dev Mid-Term Test",
+                course: "Web Development",
+                questions: 50,
+                duration: 90,
+                status: "completed",
+                score: 87,
+                scoreTotal: 100,
+                date: "Feb 20, 2026"
+            },
+            {
+                id: 2,
+                title: "Python Programming Quiz",
+                course: "Python Programming",
+                questions: 30,
+                duration: 60,
+                status: "completed",
+                score: 92,
+                scoreTotal: 100,
+                date: "Feb 25, 2026"
+            },
+            {
+                id: 3,
+                title: "IoT Fundamentals Test",
+                course: "IoT Fundamentals",
+                questions: 40,
+                duration: 75,
+                status: "upcoming",
+                scheduleDate: "Mar 10, 2026"
+            },
+            {
+                id: 4,
+                title: "Machine Learning Mid-Term",
+                course: "Machine Learning",
+                questions: 45,
+                duration: 120,
+                status: "upcoming",
+                scheduleDate: "Mar 15, 2026"
+            },
+            {
+                id: 5,
+                title: "Cybersecurity Assessment",
+                course: "Cybersecurity Essentials",
+                questions: 35,
+                duration: 60,
+                status: "completed",
+                score: 85,
+                scoreTotal: 100,
+                date: "Mar 1, 2026"
+            },
+            {
+                id: 6,
+                title: "Cloud Computing Final",
+                course: "Cloud Computing",
+                questions: 50,
+                duration: 120,
+                status: "upcoming",
+                scheduleDate: "Mar 20, 2026"
+            }
+        ];
 
-        <!-- Stats -->
-        <div class="row g-3 mb-4">
-            <div class="col-6 col-md-3">
-                <div class="card border-0 p-3 text-center" style="border-radius:12px; background:#f0edff;">
-                    <div style="font-size:26px;">📋</div>
-                    <div class="fw-bold fs-4 text-primary">6</div>
-                    <div class="small text-muted">Total Tests</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="card border-0 p-3 text-center" style="border-radius:12px; background:#fff7ed;">
-                    <div style="font-size:26px;">🔓</div>
-                    <div class="fw-bold fs-4" style="color:#f59e0b;">2</div>
-                    <div class="small text-muted">Available</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="card border-0 p-3 text-center" style="border-radius:12px; background:#f0fdf4;">
-                    <div style="font-size:26px;">✅</div>
-                    <div class="fw-bold fs-4 text-success">3</div>
-                    <div class="small text-muted">Attempted</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="card border-0 p-3 text-center" style="border-radius:12px; background:#f0f9ff;">
-                    <div style="font-size:26px;">⭐</div>
-                    <div class="fw-bold fs-4 text-info">85%</div>
-                    <div class="small text-muted">Avg Score</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Upcoming Tests -->
-        <h5 class="fw-bold mb-3" style="color:#1a1a2e;">🔓 Available Tests</h5>
-        <div class="row g-3 mb-4">
-
-            <div class="col-md-6">
-                <div class="card test-card p-4">
-                    <div class="d-flex gap-3 align-items-start">
-                        <div class="test-icon" style="background:#f0edff;">🌐</div>
-                        <div class="flex-grow-1">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <h6 class="fw-bold mb-1">Web Dev Mid-Term Test</h6>
-                                <span class="badge bg-success status-pill">Open</span>
-                            </div>
-                            <div class="small text-muted mb-1">📚 Web Development</div>
-                            <div class="d-flex gap-3 small text-muted">
-                                <span>⏱ 30 min</span>
-                                <span>❓ 20 Questions</span>
-                                <span>📅 Due: 8 Mar</span>
-                            </div>
-                            <button class="btn btn-primary btn-sm mt-3 fw-semibold" data-bs-toggle="modal"
-                                data-bs-target="#testModal">Start Test →</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="card test-card p-4">
-                    <div class="d-flex gap-3 align-items-start">
-                        <div class="test-icon" style="background:#fff7ed;">📡</div>
-                        <div class="flex-grow-1">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <h6 class="fw-bold mb-1">IoT Mid-Term Test</h6>
-                                <span class="badge bg-success status-pill">Open</span>
-                            </div>
-                            <div class="small text-muted mb-1">📡 IoT Fundamentals</div>
-                            <div class="d-flex gap-3 small text-muted">
-                                <span>⏱ 45 min</span>
-                                <span>❓ 25 Questions</span>
-                                <span>📅 Due: 12 Mar</span>
-                            </div>
-                            <button class="btn btn-primary btn-sm mt-3 fw-semibold" data-bs-toggle="modal"
-                                data-bs-target="#testModal">Start Test →</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Completed Tests -->
-        <h5 class="fw-bold mb-3" style="color:#1a1a2e;">✅ Completed Tests</h5>
-        <div class="row g-3">
-
-            <div class="col-md-4">
-                <div class="card test-card p-4">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
+        function renderTests() {
+            const grid = document.getElementById('testsGrid');
+            grid.innerHTML = tests.map(test => `
+                <div class="test-card">
+                    <div class="test-header">
                         <div>
-                            <h6 class="fw-bold mb-1">Python Basics Quiz</h6>
-                            <div class="small text-muted">🐍 Python Programming</div>
-                        </div>
-                        <div class="score-circle text-success" style="border-color:#22c55e;">92%</div>
-                    </div>
-                    <div class="progress result-bar mb-2">
-                        <div class="progress-bar bg-success" style="width:92%"></div>
-                    </div>
-                    <div class="d-flex justify-content-between small text-muted">
-                        <span>23/25 Correct</span>
-                        <span>⏱ 18 min 40 sec</span>
-                    </div>
-                    <div class="small text-muted mt-1">📅 Attempted: 1 Mar 2026</div>
-                    <button class="btn btn-outline-primary btn-sm mt-3" data-bs-toggle="modal"
-                        data-bs-target="#resultModal">View Result</button>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card test-card p-4">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div>
-                            <h6 class="fw-bold mb-1">Python OOP Test</h6>
-                            <div class="small text-muted">🐍 Python Programming</div>
-                        </div>
-                        <div class="score-circle text-primary" style="border-color:#4f46e5;">80%</div>
-                    </div>
-                    <div class="progress result-bar mb-2">
-                        <div class="progress-bar bg-primary" style="width:80%"></div>
-                    </div>
-                    <div class="d-flex justify-content-between small text-muted">
-                        <span>16/20 Correct</span>
-                        <span>⏱ 22 min 10 sec</span>
-                    </div>
-                    <div class="small text-muted mt-1">📅 Attempted: 20 Feb 2026</div>
-                    <button class="btn btn-outline-primary btn-sm mt-3" data-bs-toggle="modal"
-                        data-bs-target="#resultModal">View Result</button>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card test-card p-4">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div>
-                            <h6 class="fw-bold mb-1">Web Dev Basics Quiz</h6>
-                            <div class="small text-muted">🌐 Web Development</div>
-                        </div>
-                        <div class="score-circle" style="color:#f59e0b; border-color:#f59e0b;">75%</div>
-                    </div>
-                    <div class="progress result-bar mb-2">
-                        <div class="progress-bar bg-warning" style="width:75%"></div>
-                    </div>
-                    <div class="d-flex justify-content-between small text-muted">
-                        <span>15/20 Correct</span>
-                        <span>⏱ 25 min 05 sec</span>
-                    </div>
-                    <div class="small text-muted mt-1">📅 Attempted: 10 Feb 2026</div>
-                    <button class="btn btn-outline-primary btn-sm mt-3" data-bs-toggle="modal"
-                        data-bs-target="#resultModal">View Result</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- TEST MODAL (Quiz Interface) -->
-    <div class="modal fade" id="testModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div>
-                        <h5 class="modal-title fw-bold">🌐 Web Dev Mid-Term Test</h5>
-                        <div class="small opacity-75">Question 1 of 20</div>
-                    </div>
-                    <div class="ms-auto me-3">
-                        <div class="test-timer" style="font-size:20px; padding:8px 18px;">⏱ 29:45</div>
-                    </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <div class="progress mb-4" style="height:6px; border-radius:4px;">
-                        <div class="progress-bar bg-primary" style="width:5%"></div>
-                    </div>
-                    <div class="question-card p-4">
-                        <h6 class="fw-bold mb-4">Q1. Which HTML tag is used to define an internal style sheet?</h6>
-                        <div>
-                            <input type="radio" name="q1" id="a" class="d-none">
-                            <label for="a" class="option-label">A. &lt;script&gt;</label>
-
-                            <input type="radio" name="q1" id="b" class="d-none">
-                            <label for="b" class="option-label">B. &lt;style&gt;</label>
-
-                            <input type="radio" name="q1" id="c" class="d-none">
-                            <label for="c" class="option-label">C. &lt;css&gt;</label>
-
-                            <input type="radio" name="q1" id="d" class="d-none">
-                            <label for="d" class="option-label">D. &lt;link&gt;</label>
+                            <h3 class="test-title">${test.title}</h3>
+                            <p class="test-course">${test.course}</p>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <button class="btn btn-outline-secondary">← Previous</button>
-                    <button class="btn btn-primary fw-semibold">Next →</button>
-                    <button class="btn btn-success fw-semibold ms-2">Submit Test</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- RESULT MODAL -->
-    <div class="modal fade" id="resultModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">📊 Test Result</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4 text-center">
-                    <div class="score-circle mx-auto mb-3 text-success"
-                        style="border-color:#22c55e; width:90px; height:90px; font-size:24px;">92%</div>
-                    <h5 class="fw-bold">Python Basics Quiz</h5>
-                    <p class="text-muted">You performed excellently!</p>
-                    <div class="row g-3 mt-2 text-start">
-                        <div class="col-6">
-                            <div class="p-3 rounded" style="background:#f0fdf4;">
-                                <div class="small text-muted">Correct</div>
-                                <div class="fw-bold text-success">23 / 25</div>
+                    <div class="test-body">
+                        <span class="test-status ${test.status === 'upcoming' ? 'status-upcoming' : 'status-completed'}">
+                            ${test.status === 'upcoming' ? 'Scheduled' : 'Completed'}
+                        </span>
+                        <div class="test-info">
+                            <div class="test-info-item">
+                                <div class="test-info-label">Questions</div>
+                                <div class="test-info-value">${test.questions}</div>
+                            </div>
+                            <div class="test-info-item">
+                                <div class="test-info-label">Duration</div>
+                                <div class="test-info-value">${test.duration}m</div>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <div class="p-3 rounded" style="background:#fef2f2;">
-                                <div class="small text-muted">Wrong</div>
-                                <div class="fw-bold text-danger">2 / 25</div>
+                        ${test.status === 'completed' ? `
+                            <div style="text-align: center; padding: var(--spacing-lg); background: var(--primary-light); border-radius: var(--border-radius); margin-bottom: var(--spacing-lg);">
+                                <div style="font-size: 12px; color: var(--text-light); margin-bottom: var(--spacing-xs);">Your Score</div>
+                                <div style="font-size: 28px; font-weight: 700; color: var(--primary-color);">${test.score}/${test.scoreTotal}</div>
+                                <div style="font-size: 12px; color: var(--text-light); margin-top: var(--spacing-xs);">Completed: ${test.date}</div>
                             </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="p-3 rounded" style="background:#f0edff;">
-                                <div class="small text-muted">Time Taken</div>
-                                <div class="fw-bold text-primary">18 min 40 sec</div>
+                            <button class="test-button view">View Results</button>
+                        ` : `
+                            <div style="text-align: center; padding: var(--spacing-lg); background: var(--bg-color); border-radius: var(--border-radius); margin-bottom: var(--spacing-lg);">
+                                <div style="font-size: 12px; color: var(--text-light);">Scheduled for</div>
+                                <div style="font-size: 16px; font-weight: 700; color: var(--text-dark); margin-top: var(--spacing-xs);">${test.scheduleDate}</div>
                             </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="p-3 rounded" style="background:#fff7ed;">
-                                <div class="small text-muted">Rank</div>
-                                <div class="fw-bold" style="color:#f59e0b;">#3 in Class</div>
-                            </div>
-                        </div>
+                            <button class="test-button start">Start Test</button>
+                        `}
                     </div>
                 </div>
-                <div class="modal-footer border-0">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-primary">View Answers</button>
-                </div>
-            </div>
-        </div>
-    </div>
+            `).join('');
+        }
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="container text-center">
-            <h4>CRISMATECH Learning Portal</h4>
-            <p>Email: support@crismatech.com</p>
-            <p>© 2026 All Rights Reserved</p>
-        </div>
-    </footer>
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '../login.html';
+            }
+        }
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        // Initial render
+        renderTests();
+    </script>
 </body>
-
 </html>
