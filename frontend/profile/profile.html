@@ -1,427 +1,597 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile – Student Learning Portal</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Profile - CRISMATECH</title>
     <link rel="stylesheet" href="../css/style.css">
     <style>
-        .page-hero {
-            background: linear-gradient(135deg, #4f46e5, #9333ea);
-            padding: 60px 0 120px;
-            color: white;
-        }
-
-        .avatar-wrapper {
-            margin-top: -80px;
+        .profile-banner {
+            background: linear-gradient(135deg, var(--primary-color), #0040a3);
+            height: 200px;
             position: relative;
-            display: inline-block;
         }
 
-        .avatar {
-            width: 120px;
-            height: 120px;
+        .profile-header {
+            display: flex;
+            align-items: flex-end;
+            gap: var(--spacing-lg);
+            margin-top: calc(-100px - var(--spacing-lg));
+            padding: 0 var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .profile-avatar {
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), #0040a3);
             border: 5px solid white;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-            background: linear-gradient(135deg, #4f46e5, #9333ea);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 48px;
+            font-size: 56px;
+            font-weight: 700;
             color: white;
+            box-shadow: var(--card-shadow-hover);
         }
 
-        .avatar-change {
+        .profile-info h1 {
+            margin: 0;
+            color: var(--text-dark);
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .profile-info p {
+            margin: var(--spacing-xs) 0 0 0;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .profile-tabs {
+            display: flex;
+            gap: var(--spacing-lg);
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .profile-tabs button {
+            background: none;
+            border: none;
+            padding: var(--spacing-md) 0;
+            color: var(--text-light);
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: color var(--transition-duration) ease;
+        }
+
+        .profile-tabs button:hover {
+            color: var(--text-dark);
+        }
+
+        .profile-tabs button.active {
+            color: var(--primary-color);
+        }
+
+        .profile-tabs button.active::after {
+            content: '';
             position: absolute;
-            bottom: 6px;
-            right: 6px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #4f46e5;
-            color: white;
-            border: 2px solid white;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary-color);
+        }
+
+        .profile-section {
+            display: none;
+        }
+
+        .profile-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            transition: border-color var(--transition-duration) ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 86, 210, 0.1);
+        }
+
+        .form-group input:disabled,
+        .form-group select:disabled {
+            background-color: #f8f9fc;
+            cursor: not-allowed;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+        }
+
+        .form-actions {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
+            gap: var(--spacing-md);
+            justify-content: flex-end;
+            margin-top: var(--spacing-2xl);
+        }
+
+        .btn {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--border-radius);
+            border: none;
+            font-weight: 600;
             cursor: pointer;
-        }
-
-        .profile-card {
-            border: none;
-            border-radius: 18px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
-
-        .form-control,
-        .form-select {
-            border-radius: 10px;
-            border: 1.5px solid #e2e8f0;
-            padding: 10px 14px;
+            transition: all var(--transition-duration) ease;
             font-size: 14px;
         }
 
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-
-        .form-label {
-            font-weight: 600;
-            font-size: 13px;
-            color: #444;
-        }
-
-        .section-divider {
-            border: none;
-            border-top: 1px solid #f0f0f0;
-            margin: 20px 0;
-        }
-
-        .stat-mini {
-            text-align: center;
-            padding: 16px;
-            border-radius: 12px;
-            border: none;
-        }
-
-        .stat-mini .number {
-            font-size: 26px;
-            font-weight: 800;
-            color: #4f46e5;
-        }
-
-        .stat-mini .label {
-            font-size: 12px;
-            color: #888;
-            margin-top: 2px;
-        }
-
-        .badge-item {
-            display: inline-flex;
-            align-items: center;
-            gap-6;
-            background: #f0edff;
-            border-radius: 20px;
-            padding: 6px 14px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #4f46e5;
-            margin: 4px;
-        }
-
-        .nav-pills .nav-link {
-            border-radius: 10px;
-            font-weight: 500;
-            color: #555;
-        }
-
-        .nav-pills .nav-link.active {
-            background: #4f46e5;
+        .btn-primary {
+            background: var(--primary-color);
             color: white;
         }
 
-        .save-btn {
-            border-radius: 10px;
-            padding: 10px 28px;
-            font-weight: 600;
+        .btn-primary:hover {
+            background: #003fa3;
         }
 
-        .danger-zone {
-            background: #fff5f5;
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid #fecaca;
+        .btn-secondary {
+            background: var(--bg-color);
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
         }
 
-        .toggle-switch .form-check-input {
-            width: 44px;
-            height: 22px;
-            cursor: pointer;
+        .btn-secondary:hover {
+            background: #f0f0f0;
         }
 
-        .toggle-switch .form-check-input:checked {
-            background-color: #4f46e5;
-            border-color: #4f46e5;
+        .stats-grid-profile {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: var(--spacing-lg);
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        .stat-item-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-item-label {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: var(--spacing-xs);
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid-profile {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .profile-header {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-top: -70px;
+            }
+
+            .profile-avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+            }
+
+            .profile-info h1 {
+                font-size: 22px;
+            }
         }
     </style>
 </head>
-
 <body>
     <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="../index.html">🎓 CRISMATECH AUTOMATION</a>
-            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="menu">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="../dashboard.html">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../courses/courses.html">Courses</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../assignments/assignments.html">Assignments</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../tests/test.html">Tests</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../attendance/attendance.html">Attendance</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../certificate/certificate.html">Certificates</a>
-                    </li>
-                    <li class="nav-item ms-2"><a class="nav-link active" href="profile.html">👤 Profile</a></li>
-                </ul>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <span>CRISMATECH</span>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="../dashboard.html">Dashboard</a></li>
+                <li><a href="../courses/courses.html">Courses</a></li>
+                <li><a href="../assignments/assignments.html">Assignments</a></li>
+                <li><a href="../tests/test.html">Tests</a></li>
+                <li><a href="../certificate/certificate.html">Certificates</a></li>
+            </ul>
+            <div class="navbar-auth">
+                <a href="profile.html" style="color: var(--primary-color); font-weight: 700;">Profile</a>
+                <button class="btn-outline" onclick="logout()" style="padding: var(--spacing-sm) var(--spacing-lg);">Logout</button>
             </div>
         </div>
     </nav>
 
-    <!-- HERO -->
-    <div class="page-hero">
-        <div class="container text-center">
-            <h1 class="fw-bold mb-1">My Profile</h1>
-            <p class="opacity-75">Manage your personal information and account settings.</p>
+    <!-- PROFILE BANNER -->
+    <div class="profile-banner"></div>
+
+    <!-- MAIN CONTENT -->
+    <div class="dashboard-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar" id="avatarInitial">S</div>
+            <div class="profile-info">
+                <h1 id="profileName">Student Name</h1>
+                <p id="profileEmail">student@example.com</p>
+                <p id="profileMeta">Student · Enrolled</p>
+            </div>
         </div>
-    </div>
 
-    <div class="container mb-5" style="max-width: 960px;">
-
-        <!-- Avatar + Name Card -->
-        <div class="card profile-card p-4 text-center mb-4">
-            <div class="d-flex justify-content-center">
-                <div class="avatar-wrapper">
-                    <div class="avatar">👤</div>
-                    <div class="avatar-change" title="Change photo">✏️</div>
-                </div>
+        <!-- Stats Section -->
+        <div class="stats-grid-profile">
+            <div class="stat-item">
+                <div class="stat-item-number">5</div>
+                <div class="stat-item-label">Courses Enrolled</div>
             </div>
-            <h4 class="fw-bold mt-3 mb-0">Pratham Choudhary</h4>
-            <div class="text-muted small mb-1">pratham@crismatech.com</div>
-            <div class="text-muted small">🎓 Student · Enrolled since Jan 2026</div>
-
-            <!-- Mini Stats -->
-            <div class="row g-2 mt-4">
-                <div class="col-3">
-                    <div class="stat-mini" style="background:#f0edff;">
-                        <div class="number">5</div>
-                        <div class="label">Courses</div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="stat-mini" style="background:#f0fdf4;">
-                        <div class="number text-success">87%</div>
-                        <div class="label">Attendance</div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="stat-mini" style="background:#fff7ed;">
-                        <div class="number" style="color:#f59e0b;">85%</div>
-                        <div class="label">Avg Score</div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="stat-mini" style="background:#fef2f2;">
-                        <div class="number text-danger">2</div>
-                        <div class="label">Certs</div>
-                    </div>
-                </div>
+            <div class="stat-item">
+                <div class="stat-item-number">2</div>
+                <div class="stat-item-label">Completed</div>
             </div>
-
-            <!-- Badges -->
-            <div class="mt-4 text-start">
-                <div class="fw-semibold small mb-2 text-muted">ACHIEVEMENTS</div>
-                <span class="badge-item">🏅 Python Expert</span>
-                <span class="badge-item">⚡ Fast Learner</span>
-                <span class="badge-item">📚 Course Completer</span>
-                <span class="badge-item">✅ Perfect Score</span>
+            <div class="stat-item">
+                <div class="stat-item-number">87%</div>
+                <div class="stat-item-label">Avg. Progress</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-item-number">3</div>
+                <div class="stat-item-label">Certificates</div>
             </div>
         </div>
 
         <!-- TABS -->
-        <ul class="nav nav-pills gap-2 mb-4">
-            <li class="nav-item"><a class="nav-link active" id="tab-personal" href="#"
-                    onclick="showTab('personal', this)">👤 Personal Info</a></li>
-            <li class="nav-item"><a class="nav-link" id="tab-security" href="#" onclick="showTab('security', this)">🔒
-                    Security</a></li>
-            <li class="nav-item"><a class="nav-link" id="tab-notif" href="#" onclick="showTab('notif', this)">🔔
-                    Notifications</a></li>
-        </ul>
+        <div class="profile-tabs">
+            <button class="active" onclick="switchTab(event, 'personal')">Personal Information</button>
+            <button onclick="switchTab(event, 'security')">Security</button>
+            <button onclick="switchTab(event, 'notifications')">Notifications</button>
+        </div>
 
-        <!-- TAB: Personal Info -->
-        <div id="panel-personal">
-            <div class="card profile-card p-4">
-                <h6 class="fw-bold mb-4">Personal Information</h6>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label">First Name</label>
-                        <input type="text" class="form-control" value="Pratham">
+        <!-- TAB: PERSONAL INFORMATION -->
+        <div id="personal" class="profile-section active">
+            <div class="card">
+                <div style="padding: var(--spacing-xl);">
+                    <h3 style="margin: 0 0 var(--spacing-xl) 0;">Personal Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inputName">Full Name</label>
+                            <input type="text" id="inputName" placeholder="Your full name" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail">Email Address</label>
+                            <input type="email" id="inputEmail" placeholder="Your email" disabled>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Last Name</label>
-                        <input type="text" class="form-control" value="Choudhary">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inputPhone">Phone Number</label>
+                            <input type="tel" id="inputPhone" placeholder="Your phone number" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputCollege">College / University</label>
+                            <input type="text" id="inputCollege" placeholder="Your college" disabled>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Email Address</label>
-                        <input type="email" class="form-control" value="pratham@crismatech.com">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inputBranch">Branch / Department</label>
+                            <input type="text" id="inputBranch" placeholder="Your branch" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputSemester">Semester</label>
+                            <select id="inputSemester" disabled>
+                                <option value="">Select Semester</option>
+                                <option value="1">Semester 1</option>
+                                <option value="2">Semester 2</option>
+                                <option value="3">Semester 3</option>
+                                <option value="4">Semester 4</option>
+                                <option value="5">Semester 5</option>
+                                <option value="6">Semester 6</option>
+                                <option value="7">Semester 7</option>
+                                <option value="8">Semester 8</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Phone Number</label>
-                        <input type="tel" class="form-control" value="+91 98765 43210">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inputRole">Role</label>
+                            <input type="text" id="inputRole" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputJoined">Member Since</label>
+                            <input type="text" id="inputJoined" disabled>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Date of Birth</label>
-                        <input type="date" class="form-control" value="2003-06-15">
+
+                    <div class="form-actions">
+                        <button class="btn btn-secondary" id="cancelBtn" style="display: none;" onclick="cancelEdit()">Cancel</button>
+                        <button class="btn btn-primary" id="editBtn" onclick="toggleEdit()">Edit Profile</button>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Gender</label>
-                        <select class="form-select">
-                            <option selected>Male</option>
-                            <option>Female</option>
-                            <option>Prefer not to say</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Roll Number</label>
-                        <input type="text" class="form-control" value="CT2026-031" readonly style="background:#f8f9ff;">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Branch / Department</label>
-                        <select class="form-select">
-                            <option selected>Computer Engineering</option>
-                            <option>Electronics</option>
-                            <option>Mechanical</option>
-                            <option>Civil</option>
-                        </select>
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label">Bio</label>
-                        <textarea class="form-control" rows="3"
-                            placeholder="Tell us a bit about yourself...">Passionate learner interested in Web Development and IoT technologies.</textarea>
-                    </div>
-                </div>
-                <hr class="section-divider">
-                <div class="d-flex justify-content-end gap-2">
-                    <button class="btn btn-outline-secondary save-btn">Cancel</button>
-                    <button class="btn btn-primary save-btn">Save Changes</button>
                 </div>
             </div>
         </div>
 
-        <!-- TAB: Security -->
-        <div id="panel-security" style="display:none;">
-            <div class="card profile-card p-4 mb-3">
-                <h6 class="fw-bold mb-4">Change Password</h6>
-                <div class="row g-3">
-                    <div class="col-12">
-                        <label class="form-label">Current Password</label>
-                        <input type="password" class="form-control" placeholder="Enter current password">
+        <!-- TAB: SECURITY -->
+        <div id="security" class="profile-section">
+            <div class="card">
+                <div style="padding: var(--spacing-xl);">
+                    <h3 style="margin: 0 0 var(--spacing-xl) 0;">Change Password</h3>
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" id="currentPassword" placeholder="Enter your current password">
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">New Password</label>
-                        <input type="password" class="form-control" placeholder="At least 8 characters">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Confirm New Password</label>
-                        <input type="password" class="form-control" placeholder="Repeat new password">
-                    </div>
-                </div>
-                <hr class="section-divider">
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-primary save-btn">Update Password</button>
-                </div>
-            </div>
-            <div class="danger-zone">
-                <h6 class="fw-bold text-danger mb-1">⚠️ Danger Zone</h6>
-                <p class="small text-muted mb-3">Deleting your account will permanently remove all your data including
-                    progress, certificates and assignments.</p>
-                <button class="btn btn-outline-danger btn-sm fw-semibold">Delete My Account</button>
-            </div>
-        </div>
-
-        <!-- TAB: Notifications -->
-        <div id="panel-notif" style="display:none;">
-            <div class="card profile-card p-4">
-                <h6 class="fw-bold mb-4">Notification Preferences</h6>
-                <div class="toggle-switch">
-                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3"
-                        style="border-bottom:1px solid #f0f0f0;">
-                        <div>
-                            <div class="fw-semibold small">📧 Email Notifications</div>
-                            <div class="text-muted" style="font-size:12px;">Receive updates via email</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="newPassword">New Password</label>
+                            <input type="password" id="newPassword" placeholder="At least 8 characters">
                         </div>
-                        <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" checked>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" placeholder="Repeat new password">
                         </div>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3"
-                        style="border-bottom:1px solid #f0f0f0;">
-                        <div>
-                            <div class="fw-semibold small">📝 Assignment Reminders</div>
-                            <div class="text-muted" style="font-size:12px;">Get reminded before due dates</div>
-                        </div>
-                        <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" checked>
-                        </div>
+                    <div class="form-actions">
+                        <button class="btn btn-primary">Update Password</button>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3"
-                        style="border-bottom:1px solid #f0f0f0;">
-                        <div>
-                            <div class="fw-semibold small">🧠 Test Alerts</div>
-                            <div class="text-muted" style="font-size:12px;">Notified when a test is available</div>
-                        </div>
-                        <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" checked>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3"
-                        style="border-bottom:1px solid #f0f0f0;">
-                        <div>
-                            <div class="fw-semibold small">🎓 Certificate Earned</div>
-                            <div class="text-muted" style="font-size:12px;">Celebration notification on earning certs
-                            </div>
-                        </div>
-                        <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" checked>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="fw-semibold small">📢 Announcements</div>
-                            <div class="text-muted" style="font-size:12px;">Portal news and updates</div>
-                        </div>
-                        <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox">
-                        </div>
-                    </div>
-                </div>
-                <hr class="section-divider">
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-primary save-btn">Save Preferences</button>
                 </div>
             </div>
         </div>
 
+        <!-- TAB: NOTIFICATIONS -->
+        <div id="notifications" class="profile-section">
+            <div class="card">
+                <div style="padding: var(--spacing-xl);">
+                    <h3 style="margin: 0 0 var(--spacing-xl) 0;">Notification Preferences</h3>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-lg) 0; border-bottom: 1px solid var(--border-color);">
+                        <div>
+                            <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: var(--text-dark);">Email Notifications</h4>
+                            <p style="margin: var(--spacing-xs) 0 0 0; font-size: 13px; color: var(--text-light);">Receive updates via email</p>
+                        </div>
+                        <input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;">
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-lg) 0; border-bottom: 1px solid var(--border-color);">
+                        <div>
+                            <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: var(--text-dark);">Assignment Reminders</h4>
+                            <p style="margin: var(--spacing-xs) 0 0 0; font-size: 13px; color: var(--text-light);">Get reminded before due dates</p>
+                        </div>
+                        <input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;">
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-lg) 0; border-bottom: 1px solid var(--border-color);">
+                        <div>
+                            <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: var(--text-dark);">Test Alerts</h4>
+                            <p style="margin: var(--spacing-xs) 0 0 0; font-size: 13px; color: var(--text-light);">Notified when a test is available</p>
+                        </div>
+                        <input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;">
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-lg) 0;">
+                        <div>
+                            <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: var(--text-dark);">Course Updates</h4>
+                            <p style="margin: var(--spacing-xs) 0 0 0; font-size: 13px; color: var(--text-light);">New course announcements and updates</p>
+                        </div>
+                        <input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;">
+                    </div>
+
+                    <div class="form-actions" style="margin-top: var(--spacing-2xl);">
+                        <button class="btn btn-primary">Save Preferences</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="container text-center">
-            <h4>CRISMATECH Learning Portal</h4>
-            <p>Email: support@crismatech.com</p>
-            <p>© 2026 All Rights Reserved</p>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function showTab(tab, el) {
-            event.preventDefault();
-            ['personal', 'security', 'notif'].forEach(t => {
-                document.getElementById('panel-' + t).style.display = 'none';
-                document.getElementById('tab-' + t).classList.remove('active');
-            });
-            document.getElementById('panel-' + tab).style.display = 'block';
-            el.classList.add('active');
+        const API_URL = 'http://localhost:5000/api';
+
+        // Load user profile on page load
+        async function loadProfile() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '../login.html';
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_URL}/auth/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+
+                if (!data.success) {
+                    window.location.href = '../login.html';
+                    return;
+                }
+
+                const u = data.user;
+                localStorage.setItem('user', JSON.stringify(u));
+
+                // Update avatar and header
+                const initials = u.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                document.getElementById('avatarInitial').textContent = initials;
+                document.getElementById('profileName').textContent = u.name || '';
+                document.getElementById('profileEmail').textContent = u.email || '';
+
+                const joined = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '';
+                const role = u.role ? u.role.charAt(0).toUpperCase() + u.role.slice(1) : 'Student';
+                document.getElementById('profileMeta').textContent = `${role} · Enrolled since ${joined}`;
+
+                // Update form fields
+                document.getElementById('inputName').value = u.name || '';
+                document.getElementById('inputEmail').value = u.email || '';
+                document.getElementById('inputPhone').value = u.phone || '';
+                document.getElementById('inputCollege').value = u.college || '';
+                document.getElementById('inputBranch').value = u.branch || '';
+                document.getElementById('inputSemester').value = u.semester || '';
+                document.getElementById('inputRole').value = role;
+                document.getElementById('inputJoined').value = joined;
+            } catch (err) {
+                console.error('Failed to load profile:', err);
+            }
         }
+
+        let isEditing = false;
+
+        function toggleEdit() {
+            if (!isEditing) {
+                // Enter edit mode
+                isEditing = true;
+                document.getElementById('inputName').disabled = false;
+                document.getElementById('inputPhone').disabled = false;
+                document.getElementById('inputCollege').disabled = false;
+                document.getElementById('inputBranch').disabled = false;
+                document.getElementById('inputSemester').disabled = false;
+                document.getElementById('editBtn').textContent = 'Save Changes';
+                document.getElementById('cancelBtn').style.display = 'inline-block';
+            } else {
+                // Save changes
+                saveProfile();
+            }
+        }
+
+        function cancelEdit() {
+            isEditing = false;
+            document.getElementById('inputName').disabled = true;
+            document.getElementById('inputPhone').disabled = true;
+            document.getElementById('inputCollege').disabled = true;
+            document.getElementById('inputBranch').disabled = true;
+            document.getElementById('inputSemester').disabled = true;
+            document.getElementById('editBtn').textContent = 'Edit Profile';
+            document.getElementById('cancelBtn').style.display = 'none';
+
+            // Reload original data
+            const u = JSON.parse(localStorage.getItem('user'));
+            if (u) {
+                document.getElementById('inputName').value = u.name || '';
+                document.getElementById('inputPhone').value = u.phone || '';
+                document.getElementById('inputCollege').value = u.college || '';
+                document.getElementById('inputBranch').value = u.branch || '';
+                document.getElementById('inputSemester').value = u.semester || '';
+            }
+        }
+
+        async function saveProfile() {
+            const token = localStorage.getItem('token');
+            const body = {
+                name: document.getElementById('inputName').value.trim(),
+                phone: document.getElementById('inputPhone').value.trim(),
+                college: document.getElementById('inputCollege').value.trim(),
+                branch: document.getElementById('inputBranch').value.trim(),
+                semester: document.getElementById('inputSemester').value || null,
+            };
+
+            try {
+                const res = await fetch(`${API_URL}/auth/me`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(body),
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    const u = data.user;
+                    localStorage.setItem('user', JSON.stringify(u));
+
+                    // Update header
+                    const initials = u.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                    document.getElementById('avatarInitial').textContent = initials;
+                    document.getElementById('profileName').textContent = u.name || '';
+
+                    // Exit edit mode
+                    isEditing = false;
+                    document.getElementById('inputName').disabled = true;
+                    document.getElementById('inputPhone').disabled = true;
+                    document.getElementById('inputCollege').disabled = true;
+                    document.getElementById('inputBranch').disabled = true;
+                    document.getElementById('inputSemester').disabled = true;
+                    document.getElementById('editBtn').textContent = 'Edit Profile';
+                    document.getElementById('cancelBtn').style.display = 'none';
+
+                    alert('Profile updated successfully!');
+                } else {
+                    alert(data.message || 'Failed to update profile');
+                }
+            } catch (err) {
+                alert('Server error. Please try again.');
+            }
+        }
+
+        function switchTab(e, tabName) {
+            e.preventDefault();
+            
+            // Hide all tabs
+            document.querySelectorAll('.profile-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            document.querySelectorAll('.profile-tabs button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab and mark button as active
+            document.getElementById(tabName).classList.add('active');
+            e.target.classList.add('active');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '../login.html';
+            }
+        }
+
+        // Load profile on page load
+        document.addEventListener('DOMContentLoaded', loadProfile);
     </script>
 </body>
-
 </html>

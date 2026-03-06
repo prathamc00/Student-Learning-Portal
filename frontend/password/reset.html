@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password - CRISMATECH</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #f0f3f7 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 12px;
+            padding: 48px 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .auth-label {
+            display: block;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .auth-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .auth-subtitle {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background: #f9fafb;
+        }
+
+        .form-input::placeholder {
+            color: #999;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 86, 210, 0.1);
+            background: white;
+        }
+
+        .alert {
+            padding: 12px 14px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .alert.success {
+            background: #ecfdf5;
+            color: #16a34a;
+            border: 1px solid #dcfce7;
+        }
+
+        .alert.error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fee2e2;
+        }
+
+        .alert-close {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0;
+        }
+
+        .password-strength {
+            margin-top: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .strength-meter {
+            width: 100%;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .strength-bar {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s, background-color 0.3s;
+            background: #dc2626;
+        }
+
+        .strength-bar.weak {
+            width: 33%;
+            background: #dc2626;
+        }
+
+        .strength-bar.fair {
+            width: 66%;
+            background: #f59e0b;
+        }
+
+        .strength-bar.strong {
+            width: 100%;
+            background: #16a34a;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 8px;
+        }
+
+        .btn-submit:hover {
+            background: #003fa3;
+            box-shadow: 0 4px 12px rgba(0, 86, 210, 0.2);
+        }
+
+        .btn-submit:active {
+            transform: translateY(1px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .back-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .back-link a:hover {
+            color: #003fa3;
+        }
+
+        .home-link {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .home-link:hover {
+            color: #003fa3;
+        }
+
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 36px 24px;
+            }
+
+            .auth-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="home-link">← Home</a>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <span class="auth-label">CREATE NEW PASSWORD</span>
+                <h1 class="auth-title">Reset Password</h1>
+                <p class="auth-subtitle">Enter your new password below. Make sure it's strong and secure.</p>
+            </div>
+
+            <div id="alertContainer"></div>
+
+            <form id="resetForm">
+                <div class="form-group">
+                    <label class="form-label">New Password</label>
+                    <input type="password" class="form-input" id="newPassword" placeholder="Enter new password" required>
+                    <div class="password-strength">
+                        <span>Strength:</span>
+                        <div class="strength-meter" style="flex: 1;">
+                            <div class="strength-bar" id="strengthBar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" class="form-input" id="confirmPassword" placeholder="Confirm your password" required>
+                </div>
+
+                <button type="submit" class="btn-submit">Reset Password</button>
+            </form>
+
+            <div class="back-link">
+                <a href="../login.html">← Back to Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+
+        function getPasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+            return strength;
+        }
+
+        function updatePasswordStrength() {
+            const password = document.getElementById('newPassword').value;
+            const strengthBar = document.getElementById('strengthBar');
+            const strength = getPasswordStrength(password);
+
+            strengthBar.classList.remove('weak', 'fair', 'strong');
+
+            if (strength <= 1) {
+                strengthBar.classList.add('weak');
+            } else if (strength <= 2) {
+                strengthBar.classList.add('fair');
+            } else {
+                strengthBar.classList.add('strong');
+            }
+        }
+
+        document.getElementById('newPassword').addEventListener('input', updatePasswordStrength);
+
+        function showAlert(message, type) {
+            const alertHTML = `
+                <div class="alert ${type}">
+                    <span>${message}</span>
+                    <button class="alert-close" onclick="this.parentElement.style.display='none';">×</button>
+                </div>
+            `;
+            document.getElementById('alertContainer').innerHTML = alertHTML;
+        }
+
+        function getTokenFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('token');
+        }
+
+        document.getElementById('resetForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const token = getTokenFromURL();
+            const btn = e.target.querySelector('button');
+
+            if (!token) {
+                showAlert('Invalid reset link. Please request a new one.', 'error');
+                return;
+            }
+
+            if (newPassword.length < 8) {
+                showAlert('Password must be at least 8 characters long.', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showAlert('Passwords do not match.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Resetting...';
+
+            try {
+                const res = await fetch(`${API_URL}/auth/reset-password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        token,
+                        newPassword
+                    }),
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    showAlert('Password reset successfully! Redirecting to login...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '../login.html';
+                    }, 2000);
+                } else {
+                    showAlert(data.message || 'Failed to reset password', 'error');
+                    btn.disabled = false;
+                    btn.textContent = 'Reset Password';
+                }
+            } catch (err) {
+                showAlert('Server error. Please try again later.', 'error');
+                btn.disabled = false;
+                btn.textContent = 'Reset Password';
+            }
+        });
+
+        // Check if token exists on page load
+        if (!getTokenFromURL()) {
+            showAlert('Invalid reset link. Please request a new password reset link.', 'error');
+        }
+    </script>
+</body>
+</html>
