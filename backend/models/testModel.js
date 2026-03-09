@@ -1,5 +1,11 @@
 const mongoose = require('mongoose');
 
+const questionSchema = new mongoose.Schema({
+    question: { type: String, required: true },
+    options: [{ type: String, required: true }],
+    correctAnswer: { type: Number, required: true, min: 0 },
+});
+
 const testSchema = new mongoose.Schema(
     {
         title: {
@@ -8,10 +14,11 @@ const testSchema = new mongoose.Schema(
             trim: true,
         },
         course: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Course',
             required: [true, 'Course is required'],
-            trim: true,
         },
+        questions: [questionSchema],
         totalQuestions: {
             type: Number,
             min: 1,
@@ -22,16 +29,22 @@ const testSchema = new mongoose.Schema(
             min: 1,
             required: true,
         },
+        startTime: {
+            type: Date,
+            required: [true, 'Start time is required'],
+        },
+        endTime: {
+            type: Date,
+            required: [true, 'End time is required'],
+        },
         status: {
             type: String,
-            enum: ['upcoming', 'completed'],
+            enum: ['upcoming', 'active', 'completed'],
             default: 'upcoming',
         },
-        scheduledDate: Date,
-        score: {
-            type: Number,
-            min: 0,
-            max: 100,
+        createdBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
         },
     },
     { timestamps: true }

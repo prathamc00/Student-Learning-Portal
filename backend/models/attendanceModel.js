@@ -2,26 +2,21 @@ const mongoose = require('mongoose');
 
 const attendanceSchema = new mongoose.Schema(
     {
-        studentName: {
-            type: String,
-            required: [true, 'Student name is required'],
-            trim: true,
+        student: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
         },
         course: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Course',
+        },
+        activityType: {
             type: String,
-            required: [true, 'Course is required'],
-            trim: true,
+            enum: ['login', 'video_watch', 'material_access', 'module_complete'],
+            required: true,
         },
-        date: {
-            type: Date,
-            required: [true, 'Attendance date is required'],
-        },
-        status: {
-            type: String,
-            enum: ['present', 'absent', 'late'],
-            default: 'present',
-        },
-        remarks: {
+        details: {
             type: String,
             trim: true,
         },

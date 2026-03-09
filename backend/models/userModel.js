@@ -44,6 +44,20 @@ const userSchema = new mongoose.Schema(
             enum: ['student', 'instructor', 'admin'],
             default: 'student',
         },
+        aadhaarCardPath: {
+            type: String,
+            default: null,
+        },
+        aadhaarVerified: {
+            type: Boolean,
+            default: false,
+        },
+        enrolledCourses: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Course',
+            },
+        ],
     },
     { timestamps: true }
 );

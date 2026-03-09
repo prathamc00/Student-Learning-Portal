@@ -1,80 +1,208 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Courses</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/theme.css">
     <link rel="stylesheet" href="../css/admin.css">
+    <style>
+        /* Video Manager Panel */
+        .video-manager {
+            display: none;
+        }
+
+        .video-manager.open {
+            display: block;
+        }
+
+        .vm-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .vm-header h3 {
+            margin: 0;
+        }
+
+        .vm-back {
+            background: none;
+            border: none;
+            color: #6c757d;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .vm-back:hover {
+            color: #0d6efd;
+        }
+
+        .lesson-card {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: box-shadow 0.2s, transform 0.1s;
+            cursor: grab;
+        }
+
+        .lesson-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .lesson-card.dragging {
+            opacity: 0.5;
+            transform: scale(0.98);
+        }
+
+        .lesson-num {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #e7f1ff;
+            color: #0d6efd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .lesson-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .lesson-info h5 {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0 0 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .lesson-info p {
+            font-size: 12px;
+            color: #6c757d;
+            margin: 0;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .lesson-meta .badge {
+            font-size: 11px;
+        }
+
+        .lesson-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .lesson-actions .btn {
+            padding: 4px 10px;
+            font-size: 12px;
+        }
+
+        .drag-handle {
+            cursor: grab;
+            color: #adb5bd;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .empty-lessons {
+            text-align: center;
+            padding: 60px 20px;
+            color: #adb5bd;
+        }
+
+        .empty-lessons i {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .video-thumb {
+            width: 60px;
+            height: 40px;
+            border-radius: 6px;
+            background: #f8f9fa;
+            overflow: hidden;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-thumb i {
+            font-size: 20px;
+            color: #adb5bd;
+        }
+
+        .video-thumb video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
 </head>
 
 <body>
-
-    <div class="d-flex">
-
-        <!-- SIDEBAR -->
-        <div class="sidebar">
-            <div class="sidebar-brand">
-                <h4>Admin Panel</h4>
-                <div class="brand-sub">Learning Portal</div>
+    <div class="admin-shell">
+        <aside class="admin-sidebar">
+            <div class="brand">
+                <h4><i class="bi bi-shield-lock-fill"></i> Admin Panel</h4><small>Learning Portal</small>
             </div>
-
-            <div class="sidebar-nav">
-                <a href="admin-dashboard.html">
-                    <span class="icon"><i class="bi bi-speedometer2"></i></span>
-                    <span>Dashboard</span>
-                </a>
-                <a href="manage-students.html">
-                    <span class="icon"><i class="bi bi-people"></i></span>
-                    <span>Students</span>
-                </a>
-                <a href="manage-courses.html" class="active">
-                    <span class="icon"><i class="bi bi-journal-bookmark"></i></span>
-                    <span>Courses</span>
-                </a>
-                <a href="manage-assignments.html">
-                    <span class="icon"><i class="bi bi-clipboard-check"></i></span>
-                    <span>Assignments</span>
-                </a>
-                <a href="quiz-scheduler.html">
-                    <span class="icon"><i class="bi bi-ui-checks-grid"></i></span>
-                    <span>Quiz Scheduler</span>
-                </a>
-
+            <nav>
+                <a href="admin-dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                <a href="manage-students.html"><i class="bi bi-people"></i> Students</a>
+                <a href="manage-courses.html" class="active"><i class="bi bi-journal-bookmark"></i> Courses</a>
+                <a href="manage-assignments.html"><i class="bi bi-clipboard-check"></i> Assignments</a>
+                <a href="quiz-scheduler.html"><i class="bi bi-ui-checks-grid"></i> Quiz Scheduler</a>
                 <div class="nav-divider"></div>
-
-                <a href="../dashboard.html">
-                    <span class="icon"><i class="bi bi-mortarboard"></i></span>
-                    <span>Student Portal</span>
-                </a>
-                <a href="../index.html" class="logout-link">
-                    <span class="icon"><i class="bi bi-box-arrow-right"></i></span>
-                    <span>Logout</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
-
-            <div class="top-bar">
-                <h1>Course Management</h1>
-                <span class="admin-badge">ADMIN</span>
+                <a href="../dashboard.html"><i class="bi bi-mortarboard"></i> Student Portal</a>
+                <a href="../index.html"><i class="bi bi-box-arrow-right"></i> Logout</a>
+            </nav>
+        </aside>
+        <main class="admin-main page-fade">
+            <div class="admin-topbar">
+                <h1>Course Management</h1><span class="admin-badge">ADMIN</span>
             </div>
 
-            <div class="page-container">
-
+            <!-- Main Course List View -->
+            <div class="page-container" id="courseListView">
                 <div class="page-header d-flex justify-content-between align-items-start">
                     <div>
                         <h2>Course Management</h2>
                         <p>Add, edit, and organize your learning courses</p>
                     </div>
-                    <button id="addCourseBtn" class="btn btn-primary">+ Add New Course</button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#courseModal"
+                        onclick="resetCourseForm()">+ Add New Course</button>
                 </div>
-
-                <!-- Stats Row -->
                 <div class="row g-4 mb-4">
-                    <div class="col-lg-4 col-md-6">
+                    <div class="col-lg-3 col-md-6">
                         <div class="stat-card">
                             <div class="stat-icon green"><i class="bi bi-journal-bookmark"></i></div>
                             <div class="stat-info">
@@ -83,7 +211,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6">
+                    <div class="col-lg-3 col-md-6">
                         <div class="stat-card">
                             <div class="stat-icon blue"><i class="bi bi-person-workspace"></i></div>
                             <div class="stat-info">
@@ -92,21 +220,28 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6">
+                    <div class="col-lg-3 col-md-6">
                         <div class="stat-card">
-                            <div class="stat-icon purple"><i class="bi bi-graph-up-arrow"></i></div>
+                            <div class="stat-icon purple"><i class="bi bi-collection-play"></i></div>
                             <div class="stat-info">
-                                <h3 id="activeRate">0%</h3>
-                                <p>Enrollment Rate</p>
+                                <h3 id="moduleTotal">0</h3>
+                                <p>Total Lessons</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-icon orange"><i class="bi bi-film"></i></div>
+                            <div class="stat-info">
+                                <h3 id="videoTotal">0</h3>
+                                <p>Videos Uploaded</p>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="table-wrapper">
                     <div class="table-header">
-                        <h5>All Courses</h5>
-                        <span id="coursesRecordCount" class="record-count">0 Records</span>
+                        <h5>All Courses</h5><span id="coursesRecordCount" class="record-count">0 Records</span>
                     </div>
                     <table class="table">
                         <thead>
@@ -115,178 +250,393 @@
                                 <th>Category</th>
                                 <th>Level</th>
                                 <th>Instructor</th>
+                                <th>Lessons</th>
+                                <th>Videos</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody id="coursesTableBody">
-                        </tbody>
+                        <tbody id="coursesTableBody"></tbody>
                     </table>
                 </div>
-
             </div>
 
-        </div>
-
+            <!-- Video Manager View (shown when "Manage Videos" clicked) -->
+            <div class="page-container video-manager" id="videoManagerView">
+                <div class="vm-header">
+                    <div>
+                        <button class="vm-back" onclick="closeVideoManager()"><i class="bi bi-arrow-left"></i> Back to
+                            Courses</button>
+                        <h3 id="vmCourseTitle" class="mt-2">Course Videos</h3>
+                        <p class="text-muted mb-0" id="vmLessonCount">0 lessons</p>
+                    </div>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#lessonModal"
+                        onclick="resetLessonForm()"><i class="bi bi-plus-circle"></i> Add Lesson</button>
+                </div>
+                <p class="text-muted mb-3" style="font-size:13px;"><i class="bi bi-grip-vertical"></i> Drag and drop
+                    lessons to reorder them</p>
+                <div id="lessonsContainer">
+                    <div class="empty-lessons"><i class="bi bi-film"></i>
+                        <p>No lessons added yet. Click "Add Lesson" to get started.</p>
+                    </div>
+                </div>
+            </div>
+    </div>
     </div>
 
-</body>
+    <!-- Course Modal -->
+    <div class="modal fade" id="courseModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="courseModalTitle">Add New Course</h5><button type="button"
+                        class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="courseForm">
+                        <input type="hidden" id="courseId">
+                        <div class="row mb-3">
+                            <div class="col-md-6"><label class="form-label">Course Title *</label><input type="text"
+                                    class="form-control" id="courseTitle" required></div>
+                            <div class="col-md-6"><label class="form-label">Instructor *</label><input type="text"
+                                    class="form-control" id="courseInstructor" required></div>
+                        </div>
+                        <div class="mb-3"><label class="form-label">Description</label><textarea class="form-control"
+                                id="courseDesc" rows="2"></textarea></div>
+                        <div class="row mb-3">
+                            <div class="col-md-4"><label class="form-label">Category *</label><input type="text"
+                                    class="form-control" id="courseCategory" placeholder="Development" required></div>
+                            <div class="col-md-4"><label class="form-label">Level</label><select class="form-select"
+                                    id="courseLevel">
+                                    <option>Beginner</option>
+                                    <option>Intermediate</option>
+                                    <option>Advanced</option>
+                                </select></div>
+                            <div class="col-md-4"><label class="form-label">Duration (hours)</label><input type="number"
+                                    class="form-control" id="courseDuration" value="8" min="1"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary"
+                        onclick="saveCourse()">Save Course</button></div>
+            </div>
+        </div>
+    </div>
 
-<script>
-    const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
-        (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
-    );
+    <!-- Lesson / Video Modal -->
+    <div class="modal fade" id="lessonModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="lessonModalTitle">Add New Lesson</h5><button type="button"
+                        class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="lessonId">
+                    <div class="row mb-3">
+                        <div class="col-md-8"><label class="form-label">Video Title *</label><input type="text"
+                                class="form-control" id="lessonTitle" placeholder="Introduction to React Hooks"
+                                required></div>
+                        <div class="col-md-4"><label class="form-label">Lesson Number</label><input type="number"
+                                class="form-control" id="lessonOrder" min="1" placeholder="Auto"></div>
+                    </div>
+                    <div class="mb-3"><label class="form-label">Description</label><textarea class="form-control"
+                            id="lessonDesc" rows="2"
+                            placeholder="What students will learn in this lesson..."></textarea></div>
+                    <div class="row mb-3">
+                        <div class="col-md-6"><label class="form-label">Duration</label><input type="text"
+                                class="form-control" id="lessonDuration" placeholder="e.g. 12:30 or 15 min"></div>
+                        <div class="col-md-6">
+                            <label class="form-label">Video Upload (MP4) <span class="text-muted"
+                                    style="font-size:12px">Max 5GB</span></label>
+                            <input type="file" class="form-control" id="lessonVideo" accept=".mp4,.mkv,.avi,.webm,.mov">
+                        </div>
+                    </div>
+                    <div id="currentVideoInfo" style="display:none;" class="alert alert-info py-2 mb-0">
+                        <small><i class="bi bi-film"></i> Current video: <span id="currentVideoName"></span></small>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary"
+                        id="saveLessonBtn" onclick="saveLesson()">Add Lesson</button></div>
+            </div>
+        </div>
+    </div>
 
-    let apiBase = null;
-    let courses = [];
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(p => `http://${window.location.hostname || 'localhost'}:${p}/api`);
+        let apiBase = null, courses = [], currentCourseId = null;
 
-    async function getApiBase() {
-        if (apiBase) return apiBase;
-        console.log('Searching for backend API on ports 5000-5005...');
-        for (const base of API_CANDIDATES) {
+        async function getApiBase() {
+            if (apiBase) return apiBase;
+            for (const b of API_CANDIDATES) { try { const r = await fetch(`${b}/courses`); if (r.ok) { apiBase = b; return b; } } catch (_) { } }
+            throw new Error('Unable to connect to backend API.');
+        }
+        function getToken() { return localStorage.getItem('token'); }
+
+        async function fetchFromApi(path, options = {}) {
+            const base = await getApiBase(); const token = getToken();
+            if (token && !options.headers?.['Authorization']) {
+                options.headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
+            }
+            const res = await fetch(`${base}${path}`, options);
+            if (!res.ok) { const e = await res.text(); throw new Error(e || `Request failed ${res.status}`); }
+            return await res.json();
+        }
+
+        // ─── Stats & Table ───
+        function renderStats() {
+            document.getElementById('courseTotal').textContent = courses.length;
+            document.getElementById('instructorTotal').textContent = new Set(courses.map(c => c.instructor)).size;
+            const totalModules = courses.reduce((s, c) => s + (c.modules?.length || 0), 0);
+            const totalVideos = courses.reduce((s, c) => s + (c.modules || []).filter(m => m.videoUrl).length, 0);
+            document.getElementById('moduleTotal').textContent = totalModules;
+            document.getElementById('videoTotal').textContent = totalVideos;
+            document.getElementById('coursesRecordCount').textContent = `${courses.length} Records`;
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('coursesTableBody');
+            if (!courses.length) { tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No courses found</td></tr>'; return; }
+            tbody.innerHTML = courses.map(c => {
+                const mods = c.modules || [];
+                const vids = mods.filter(m => m.videoUrl).length;
+                return `
+                <tr>
+                    <td><strong>${c.title}</strong></td><td>${c.category}</td><td><span class="badge bg-light text-dark">${c.level}</span></td><td>${c.instructor}</td>
+                    <td>${mods.length}</td>
+                    <td>${vids} <span class="text-muted">/ ${mods.length}</span></td>
+                    <td>
+                        <button class="btn btn-primary btn-sm me-1" onclick="openVideoManager('${c._id}')"><i class="bi bi-collection-play"></i> Manage Videos</button>
+                        <button class="btn btn-warning btn-sm me-1" onclick="editCourse('${c._id}')"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteCourse('${c._id}')"><i class="bi bi-trash"></i></button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        async function loadCourses() {
+            try { const d = await fetchFromApi('/courses'); courses = Array.isArray(d.courses) ? d.courses : []; renderStats(); renderTable(); }
+            catch (e) { console.error(e); }
+        }
+
+        // ─── Course CRUD ───
+        function resetCourseForm() {
+            document.getElementById('courseModalTitle').textContent = 'Add New Course';
+            document.getElementById('courseId').value = '';
+            document.getElementById('courseForm').reset();
+        }
+
+        function editCourse(id) {
+            const c = courses.find(x => x._id === id); if (!c) return;
+            document.getElementById('courseModalTitle').textContent = 'Edit Course';
+            document.getElementById('courseId').value = id;
+            document.getElementById('courseTitle').value = c.title;
+            document.getElementById('courseInstructor').value = c.instructor;
+            document.getElementById('courseDesc').value = c.description || '';
+            document.getElementById('courseCategory').value = c.category;
+            document.getElementById('courseLevel').value = c.level;
+            document.getElementById('courseDuration').value = c.durationHours || 8;
+            new bootstrap.Modal(document.getElementById('courseModal')).show();
+        }
+
+        async function saveCourse() {
+            const id = document.getElementById('courseId').value;
+            const data = {
+                title: document.getElementById('courseTitle').value,
+                instructor: document.getElementById('courseInstructor').value,
+                description: document.getElementById('courseDesc').value,
+                category: document.getElementById('courseCategory').value,
+                level: document.getElementById('courseLevel').value,
+                durationHours: Number(document.getElementById('courseDuration').value) || 8,
+                isActive: true,
+            };
             try {
-                console.log(`Trying ${base}...`);
-                const res = await fetch(`${base}/courses`);
-                if (res.ok) {
-                    apiBase = base;
-                    console.log(`✓ Connected to backend at ${apiBase}`);
-                    return apiBase;
-                }
-            } catch (err) {
-                console.log(`✗ Port ${base.split(':')[2].split('/')[0]} not available`);
+                if (id) await fetchFromApi(`/courses/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                else await fetchFromApi('/courses', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                bootstrap.Modal.getInstance(document.getElementById('courseModal')).hide();
+                await loadCourses();
+            } catch (e) { alert(`Failed: ${e.message}`); }
+        }
+
+        async function deleteCourse(id) {
+            if (!confirm('Delete this course and all its videos?')) return;
+            try { await fetchFromApi(`/courses/${id}`, { method: 'DELETE' }); await loadCourses(); }
+            catch (e) { alert(`Failed: ${e.message}`); }
+        }
+
+        // ─── Video Manager ───
+        async function openVideoManager(courseId) {
+            currentCourseId = courseId;
+            const c = courses.find(x => x._id === courseId);
+            document.getElementById('vmCourseTitle').textContent = c ? c.title + ' — Lessons' : 'Course Videos';
+            document.getElementById('courseListView').style.display = 'none';
+            document.getElementById('videoManagerView').classList.add('open');
+            await loadModules();
+        }
+
+        function closeVideoManager() {
+            document.getElementById('videoManagerView').classList.remove('open');
+            document.getElementById('courseListView').style.display = 'block';
+            currentCourseId = null;
+            loadCourses();
+        }
+
+        async function loadModules() {
+            try {
+                const d = await fetchFromApi(`/courses/${currentCourseId}/modules`);
+                const modules = d.modules || [];
+                document.getElementById('vmLessonCount').textContent = `${modules.length} lesson${modules.length !== 1 ? 's' : ''}`;
+                renderLessons(modules);
+            } catch (e) { console.error(e); }
+        }
+
+        function renderLessons(modules) {
+            const container = document.getElementById('lessonsContainer');
+            if (!modules.length) {
+                container.innerHTML = '<div class="empty-lessons"><i class="bi bi-film"></i><p>No lessons added yet. Click "Add Lesson" to get started.</p></div>';
+                return;
+            }
+            container.innerHTML = modules.map((m, i) => {
+                const hasVideo = !!m.videoUrl;
+                return `
+                <div class="lesson-card" draggable="true" data-module-id="${m._id}"
+                     ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)" ondragend="dragEnd(event)">
+                    <div class="drag-handle"><i class="bi bi-grip-vertical"></i></div>
+                    <div class="lesson-num">${i + 1}</div>
+                    <div class="video-thumb">
+                        ${hasVideo ? `<i class="bi bi-play-circle-fill" style="color:#0d6efd;font-size:22px;"></i>` : `<i class="bi bi-film"></i>`}
+                    </div>
+                    <div class="lesson-info">
+                        <h5>${m.title}</h5>
+                        <p>${m.description || 'No description'}</p>
+                    </div>
+                    <div class="lesson-meta">
+                        ${m.duration ? `<span class="badge bg-light text-dark"><i class="bi bi-clock"></i> ${m.duration}</span>` : ''}
+                        ${hasVideo ? '<span class="badge bg-success"><i class="bi bi-check-circle"></i> Video</span>' : '<span class="badge bg-warning text-dark">No Video</span>'}
+                    </div>
+                    <div class="lesson-actions">
+                        <button class="btn btn-outline-primary btn-sm" onclick="editLesson('${m._id}', ${JSON.stringify(m).replace(/'/g, "\\'").replace(/"/g, '&quot;')})"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-outline-danger btn-sm" onclick="deleteLesson('${m._id}')"><i class="bi bi-trash"></i></button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // ─── Lesson CRUD ───
+        function resetLessonForm() {
+            document.getElementById('lessonModalTitle').textContent = 'Add New Lesson';
+            document.getElementById('lessonId').value = '';
+            document.getElementById('lessonTitle').value = '';
+            document.getElementById('lessonDesc').value = '';
+            document.getElementById('lessonDuration').value = '';
+            document.getElementById('lessonOrder').value = '';
+            document.getElementById('lessonVideo').value = '';
+            document.getElementById('currentVideoInfo').style.display = 'none';
+            document.getElementById('saveLessonBtn').textContent = 'Add Lesson';
+        }
+
+        function editLesson(moduleId, moduleData) {
+            const m = typeof moduleData === 'string' ? JSON.parse(moduleData) : moduleData;
+            document.getElementById('lessonModalTitle').textContent = 'Edit Lesson';
+            document.getElementById('lessonId').value = moduleId;
+            document.getElementById('lessonTitle').value = m.title || '';
+            document.getElementById('lessonDesc').value = m.description || '';
+            document.getElementById('lessonDuration').value = m.duration || '';
+            document.getElementById('lessonOrder').value = (m.order !== undefined ? m.order + 1 : '');
+            document.getElementById('lessonVideo').value = '';
+            document.getElementById('saveLessonBtn').textContent = 'Save Changes';
+
+            if (m.videoUrl) {
+                document.getElementById('currentVideoInfo').style.display = 'block';
+                const fname = m.videoUrl.split('/').pop();
+                document.getElementById('currentVideoName').textContent = fname;
+            } else {
+                document.getElementById('currentVideoInfo').style.display = 'none';
+            }
+
+            new bootstrap.Modal(document.getElementById('lessonModal')).show();
+        }
+
+        async function saveLesson() {
+            const moduleId = document.getElementById('lessonId').value;
+            const isEdit = !!moduleId;
+
+            const formData = new FormData();
+            formData.append('title', document.getElementById('lessonTitle').value);
+            formData.append('description', document.getElementById('lessonDesc').value);
+            formData.append('duration', document.getElementById('lessonDuration').value);
+            const orderVal = document.getElementById('lessonOrder').value;
+            if (orderVal) formData.append('order', Number(orderVal) - 1);
+            const videoFile = document.getElementById('lessonVideo').files[0];
+            if (videoFile) formData.append('video', videoFile);
+
+            const base = await getApiBase();
+            const token = getToken();
+            const url = isEdit
+                ? `${base}/courses/${currentCourseId}/modules/${moduleId}`
+                : `${base}/courses/${currentCourseId}/modules`;
+            const method = isEdit ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, { method, headers: { 'Authorization': `Bearer ${token}` }, body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('lessonModal')).hide();
+                    await loadModules();
+                } else { alert(data.message || 'Failed'); }
+            } catch (e) { alert(`Error: ${e.message}`); }
+        }
+
+        async function deleteLesson(moduleId) {
+            if (!confirm('Delete this lesson?')) return;
+            try { await fetchFromApi(`/courses/${currentCourseId}/modules/${moduleId}`, { method: 'DELETE' }); await loadModules(); }
+            catch (e) { alert(`Failed: ${e.message}`); }
+        }
+
+        // ─── Drag & Drop Reorder ───
+        let draggedEl = null;
+
+        function dragStart(e) {
+            draggedEl = e.currentTarget;
+            draggedEl.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const target = e.currentTarget;
+            if (target !== draggedEl && target.classList.contains('lesson-card')) {
+                const container = document.getElementById('lessonsContainer');
+                const cards = [...container.querySelectorAll('.lesson-card')];
+                const draggedIdx = cards.indexOf(draggedEl);
+                const targetIdx = cards.indexOf(target);
+                if (draggedIdx < targetIdx) target.after(draggedEl);
+                else target.before(draggedEl);
             }
         }
-        throw new Error('Unable to connect to backend API (ports 5000-5005).');
-    }
 
-    async function fetchFromApi(path, options) {
-        const base = await getApiBase();
-        const res = await fetch(`${base}${path}`, options);
-        if (!res.ok) {
-            const errorText = await res.text();
-            throw new Error(errorText || `Request failed with status ${res.status}`);
-        }
-        return await res.json();
-    }
+        function drop(e) { e.preventDefault(); }
 
-    function renderStats() {
-        document.getElementById('courseTotal').textContent = courses.length;
-        const uniqueInstructors = new Set(courses.map((c) => c.instructor));
-        document.getElementById('instructorTotal').textContent = uniqueInstructors.size;
-        const active = courses.filter((c) => c.isActive).length;
-        const rate = courses.length ? Math.round((active / courses.length) * 100) : 0;
-        document.getElementById('activeRate').textContent = `${rate}%`;
-        document.getElementById('coursesRecordCount').textContent = `${courses.length} Records`;
-    }
-
-    function renderTable() {
-        const tbody = document.getElementById('coursesTableBody');
-
-        if (!courses.length) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No courses found</td></tr>';
-            return;
+        async function dragEnd(e) {
+            if (draggedEl) draggedEl.classList.remove('dragging');
+            draggedEl = null;
+            // Save new order
+            const cards = [...document.querySelectorAll('.lesson-card')];
+            const moduleOrder = cards.map(c => c.dataset.moduleId);
+            try {
+                await fetchFromApi(`/courses/${currentCourseId}/modules/reorder`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ moduleOrder }),
+                });
+                await loadModules();
+            } catch (e) { console.error('Reorder failed:', e); }
         }
 
-        tbody.innerHTML = courses
-            .map(
-                (course) => `
-                    <tr>
-                        <td>${course.title}</td>
-                        <td>${course.category}</td>
-                        <td>${course.level}</td>
-                        <td>${course.instructor}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm me-1" onclick="editCourse('${course._id}')">Edit</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteCourse('${course._id}')">Delete</button>
-                        </td>
-                    </tr>
-                `
-            )
-            .join('');
-    }
-
-    async function loadCourses() {
-        try {
-            console.log('Loading courses...');
-            const data = await fetchFromApi('/courses');
-            console.log('Received data:', data);
-            courses = Array.isArray(data.courses) ? data.courses : [];
-            console.log(`Loaded ${courses.length} courses`);
-            renderStats();
-            renderTable();
-        } catch (error) {
-            console.error('Failed to load courses:', error.message);
-            document.getElementById('coursesTableBody').innerHTML =
-                `<tr><td colspan="5" class="text-danger text-center">${error.message}</td></tr>`;
-        }
-    }
-
-    async function createCourse() {
-        const title = prompt('Course title:');
-        if (!title) return;
-        const instructor = prompt('Instructor name:');
-        if (!instructor) return;
-        const category = prompt('Category (Development/Data Science/Cloud/etc):', 'Development');
-        if (!category) return;
-        const level = prompt('Level (Beginner/Intermediate/Advanced):', 'Beginner');
-        if (!level) return;
-        const lessons = Number(prompt('Number of lessons:', '10')) || 10;
-        const durationHours = Number(prompt('Duration in hours:', '8')) || 8;
-
-        try {
-            console.log('Creating course with data:', { title, instructor, category, level, lessons, durationHours, isActive: true });
-            const response = await fetchFromApi('/courses', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, instructor, category, level, lessons, durationHours, isActive: true }),
-            });
-            console.log('Course created successfully:', response);
-            alert('Course created successfully!');
-            await loadCourses();
-        } catch (error) {
-            console.error('Failed to create course:', error);
-            alert(`Failed to create course: ${error.message}`);
-        }
-    }
-
-    async function editCourse(id) {
-        const course = courses.find((c) => c._id === id);
-        if (!course) return;
-
-        const title = prompt('Course title:', course.title);
-        if (!title) return;
-        const instructor = prompt('Instructor name:', course.instructor);
-        if (!instructor) return;
-        const category = prompt('Category:', course.category);
-        if (!category) return;
-        const level = prompt('Level (Beginner/Intermediate/Advanced):', course.level);
-        if (!level) return;
-        const lessons = Number(prompt('Number of lessons:', String(course.lessons))) || course.lessons;
-        const durationHours = Number(prompt('Duration in hours:', String(course.durationHours))) || course.durationHours;
-
-        try {
-            await fetchFromApi(`/courses/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, instructor, category, level, lessons, durationHours }),
-            });
-            await loadCourses();
-        } catch (error) {
-            alert(`Failed to update course: ${error.message}`);
-        }
-    }
-
-    async function deleteCourse(id) {
-        if (!confirm('Delete this course?')) return;
-        try {
-            await fetchFromApi(`/courses/${id}`, { method: 'DELETE' });
-            await loadCourses();
-        } catch (error) {
-            alert(`Failed to delete course: ${error.message}`);
-        }
-    }
-
-    document.getElementById('addCourseBtn').addEventListener('click', createCourse);
-    document.addEventListener('DOMContentLoaded', loadCourses);
-</script>
+        document.addEventListener('DOMContentLoaded', loadCourses);
+    </script>
+</body>
 
 </html>

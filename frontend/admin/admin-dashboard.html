@@ -1,194 +1,140 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard — CRISMATECH</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/theme.css">
     <link rel="stylesheet" href="../css/admin.css">
 </head>
 
 <body>
-
-    <div class="d-flex">
-
-        <!-- SIDEBAR -->
-        <div class="sidebar">
-            <div class="sidebar-brand">
-                <h4>Admin Panel</h4>
-                <div class="brand-sub">Learning Portal</div>
+    <div class="admin-shell">
+        <aside class="admin-sidebar">
+            <div class="brand">
+                <h4><i class="bi bi-shield-lock-fill"></i> Admin Panel</h4><small>Learning Portal</small>
             </div>
-
-            <div class="sidebar-nav">
-                <a href="admin-dashboard.html" class="active">
-                    <span class="icon"><i class="bi bi-speedometer2"></i></span>
-                    <span>Dashboard</span>
-                </a>
-                <a href="manage-students.html">
-                    <span class="icon"><i class="bi bi-people"></i></span>
-                    <span>Students</span>
-                </a>
-                <a href="manage-courses.html">
-                    <span class="icon"><i class="bi bi-journal-bookmark"></i></span>
-                    <span>Courses</span>
-                </a>
-                <a href="manage-assignments.html">
-                    <span class="icon"><i class="bi bi-clipboard-check"></i></span>
-                    <span>Assignments</span>
-                </a>
-                <a href="quiz-scheduler.html">
-                    <span class="icon"><i class="bi bi-ui-checks-grid"></i></span>
-                    <span>Quiz Scheduler</span>
-                </a>
-
+            <nav>
+                <a href="admin-dashboard.html" class="active"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                <a href="manage-students.html"><i class="bi bi-people"></i> Students</a>
+                <a href="manage-courses.html"><i class="bi bi-journal-bookmark"></i> Courses</a>
+                <a href="manage-assignments.html"><i class="bi bi-clipboard-check"></i> Assignments</a>
+                <a href="quiz-scheduler.html"><i class="bi bi-ui-checks-grid"></i> Quiz Scheduler</a>
                 <div class="nav-divider"></div>
+                <a href="../dashboard.html"><i class="bi bi-mortarboard"></i> Student Portal</a>
+                <a href="../index.html"><i class="bi bi-box-arrow-right"></i> Logout</a>
+            </nav>
+        </aside>
 
-                <a href="../dashboard.html">
-                    <span class="icon"><i class="bi bi-mortarboard"></i></span>
-                    <span>Student Portal</span>
-                </a>
-                <a href="../index.html" class="logout-link">
-                    <span class="icon"><i class="bi bi-box-arrow-right"></i></span>
-                    <span>Logout</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
-
-            <div class="top-bar">
+        <main class="admin-main page-fade">
+            <div class="admin-topbar">
                 <h1>Dashboard</h1>
                 <span class="admin-badge">ADMIN</span>
             </div>
 
-            <div class="page-container">
-
-                <!-- Welcome Banner -->
-                <div class="welcome-banner">
-                    <h2>👋 Welcome back, Admin!</h2>
-                    <p>Here's what's happening on your learning portal today.</p>
-                </div>
-
-                <!-- Stat Cards -->
-                <div class="row g-4">
-
-                    <div class="col-lg-3 col-md-6">
-                        <div class="stat-card">
-                            <div class="stat-icon purple"><i class="bi bi-people"></i></div>
-                            <div class="stat-info">
-                                <h3 id="statStudents">0</h3>
-                                <p>Total Students</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6">
-                        <div class="stat-card">
-                            <div class="stat-icon green"><i class="bi bi-journal-bookmark"></i></div>
-                            <div class="stat-info">
-                                <h3 id="statCourses">0</h3>
-                                <p>Total Courses</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6">
-                        <div class="stat-card">
-                            <div class="stat-icon orange"><i class="bi bi-clipboard-check"></i></div>
-                            <div class="stat-info">
-                                <h3 id="statAssignments">0</h3>
-                                <p>Assignments</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6">
-                        <div class="stat-card">
-                            <div class="stat-icon blue">🧠</div>
-                            <div class="stat-info">
-                                <h3 id="statQuizzes">0</h3>
-                                <p>Quizzes</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="page-header" style="margin-top: 40px;">
-                    <h2>Quick Actions</h2>
-                    <p>Jump into common tasks</p>
-                </div>
-
-                <div class="quick-actions">
-                    <a href="manage-students.html" class="action-card">
-                        <div class="action-icon" style="background: linear-gradient(135deg, #ede9fe, #ddd6fe);"><i class="bi bi-people"></i></div>
-                        <h6>Manage Students</h6>
-                        <p>View & edit students</p>
-                    </a>
-                    <a href="manage-courses.html" class="action-card">
-                        <div class="action-icon" style="background: linear-gradient(135deg, #dcfce7, #bbf7d0);"><i class="bi bi-journal-bookmark"></i></div>
-                        <h6>Manage Courses</h6>
-                        <p>Add or edit courses</p>
-                    </a>
-                    <a href="manage-assignments.html" class="action-card">
-                        <div class="action-icon" style="background: linear-gradient(135deg, #fef3c7, #fde68a);"><i class="bi bi-clipboard-check"></i></div>
-                        <h6>Assignments</h6>
-                        <p>Create assignments</p>
-                    </a>
-                    <a href="quiz-scheduler.html" class="action-card">
-                        <div class="action-icon" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe);">🧠</div>
-                        <h6>Schedule Quiz</h6>
-                        <p>Plan upcoming quizzes</p>
-                    </a>
-                </div>
-
+            <div class="welcome-banner slide-up">
+                <h2>Welcome back, Admin!</h2>
+                <p>Here's what's happening on your learning portal today.</p>
             </div>
 
-        </div>
+            <div class="admin-stats stagger">
+                <div class="stat-card-modern slide-up">
+                    <div class="stat-icon-wrap indigo"><i class="bi bi-people"></i></div>
+                    <div>
+                        <div class="stat-value" id="statStudents">0</div>
+                        <div class="stat-label">Total Students</div>
+                    </div>
+                </div>
+                <div class="stat-card-modern slide-up">
+                    <div class="stat-icon-wrap emerald"><i class="bi bi-journal-bookmark"></i></div>
+                    <div>
+                        <div class="stat-value" id="statCourses">0</div>
+                        <div class="stat-label">Total Courses</div>
+                    </div>
+                </div>
+                <div class="stat-card-modern slide-up">
+                    <div class="stat-icon-wrap amber"><i class="bi bi-clipboard-check"></i></div>
+                    <div>
+                        <div class="stat-value" id="statAssignments">0</div>
+                        <div class="stat-label">Assignments</div>
+                    </div>
+                </div>
+                <div class="stat-card-modern slide-up">
+                    <div class="stat-icon-wrap cyan"><i class="bi bi-ui-checks-grid"></i></div>
+                    <div>
+                        <div class="stat-value" id="statQuizzes">0</div>
+                        <div class="stat-label">Quizzes</div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="admin-section-header" style="margin-top:16px;">
+                <h2>Quick Actions</h2>
+                <p>Jump into common tasks</p>
+            </div>
+
+            <div class="quick-actions stagger">
+                <a href="manage-students.html" class="action-card slide-up">
+                    <div class="action-icon" style="background:linear-gradient(135deg,#EEF2FF,#C7D2FE);color:#4F46E5;">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <h6>Manage Students</h6>
+                    <p>View & edit students</p>
+                </a>
+                <a href="manage-courses.html" class="action-card slide-up">
+                    <div class="action-icon" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0);color:#059669;">
+                        <i class="bi bi-journal-bookmark"></i>
+                    </div>
+                    <h6>Manage Courses</h6>
+                    <p>Add or edit courses</p>
+                </a>
+                <a href="manage-assignments.html" class="action-card slide-up">
+                    <div class="action-icon" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);color:#B45309;">
+                        <i class="bi bi-clipboard-check"></i>
+                    </div>
+                    <h6>Assignments</h6>
+                    <p>Create assignments</p>
+                </a>
+                <a href="quiz-scheduler.html" class="action-card slide-up">
+                    <div class="action-icon" style="background:linear-gradient(135deg,#ECFEFF,#A5F3FC);color:#0891B2;">
+                        <i class="bi bi-ui-checks-grid"></i>
+                    </div>
+                    <h6>Schedule Quiz</h6>
+                    <p>Plan upcoming quizzes</p>
+                </a>
+            </div>
+        </main>
     </div>
 
-</body>
+    <script>
+        const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
+            (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
+        );
 
-<script>
-    const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
-        (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
-    );
-
-    async function fetchFromApi(path) {
-        for (const base of API_CANDIDATES) {
-            try {
-                const res = await fetch(`${base}${path}`);
-                if (!res.ok) continue;
-                return await res.json();
-            } catch (_) {
-                // Try next candidate.
+        async function fetchFromApi(path) {
+            for (const base of API_CANDIDATES) {
+                try { const res = await fetch(`${base}${path}`); if (!res.ok) continue; return await res.json(); } catch (_) { }
             }
+            throw new Error('Unable to connect to backend API.');
         }
-        throw new Error('Unable to connect to backend API (ports 5000-5005).');
-    }
 
-    async function initDashboardStats() {
-        try {
-            const [usersRes, coursesRes, assignmentsRes, testsRes] = await Promise.all([
-                fetchFromApi('/users'),
-                fetchFromApi('/courses'),
-                fetchFromApi('/assignments'),
-                fetchFromApi('/tests'),
-            ]);
-
-            document.getElementById('statStudents').textContent = usersRes.count || 0;
-            document.getElementById('statCourses').textContent = coursesRes.count || 0;
-            document.getElementById('statAssignments').textContent = assignmentsRes.count || 0;
-            document.getElementById('statQuizzes').textContent = testsRes.count || 0;
-        } catch (error) {
-            console.error('Admin dashboard data load failed:', error.message);
+        async function initDashboardStats() {
+            try {
+                const [usersRes, coursesRes, assignmentsRes, testsRes] = await Promise.all([
+                    fetchFromApi('/users'), fetchFromApi('/courses'),
+                    fetchFromApi('/assignments'), fetchFromApi('/tests'),
+                ]);
+                document.getElementById('statStudents').textContent = usersRes.count || 0;
+                document.getElementById('statCourses').textContent = coursesRes.count || 0;
+                document.getElementById('statAssignments').textContent = assignmentsRes.count || 0;
+                document.getElementById('statQuizzes').textContent = testsRes.count || 0;
+            } catch (error) { console.error('Admin dashboard data load failed:', error.message); }
         }
-    }
 
-    document.addEventListener('DOMContentLoaded', initDashboardStats);
-</script>
+        document.addEventListener('DOMContentLoaded', initDashboardStats);
+    </script>
+</body>
 
 </html>

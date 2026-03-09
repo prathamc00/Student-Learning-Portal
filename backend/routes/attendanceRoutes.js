@@ -1,15 +1,11 @@
 const express = require('express');
-const {
-    getAttendanceRecords,
-    getAttendanceById,
-    createAttendance,
-    updateAttendance,
-    deleteAttendance,
-} = require('../controllers/attendanceController');
-
 const router = express.Router();
+const { trackActivity, getMyAttendance, getCourseAttendance, getAllAttendance } = require('../controllers/attendanceController');
+const { protect, adminOnly } = require('../middleware/authMiddleware');
 
-router.route('/').get(getAttendanceRecords).post(createAttendance);
-router.route('/:id').get(getAttendanceById).put(updateAttendance).delete(deleteAttendance);
+router.post('/', protect, trackActivity);
+router.get('/my', protect, getMyAttendance);
+router.get('/course/:courseId', protect, adminOnly, getCourseAttendance);
+router.get('/', protect, adminOnly, getAllAttendance);
 
 module.exports = router;

@@ -1,78 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Scheduler</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/theme.css">
     <link rel="stylesheet" href="../css/admin.css">
 </head>
 
 <body>
-
-    <div class="d-flex">
-
-        <!-- SIDEBAR -->
-        <div class="sidebar">
-            <div class="sidebar-brand">
-                <h4>Admin Panel</h4>
-                <div class="brand-sub">Learning Portal</div>
+    <div class="admin-shell">
+        <aside class="admin-sidebar">
+            <div class="brand">
+                <h4><i class="bi bi-shield-lock-fill"></i> Admin Panel</h4><small>Learning Portal</small>
             </div>
-
-            <div class="sidebar-nav">
-                <a href="admin-dashboard.html">
-                    <span class="icon"><i class="bi bi-speedometer2"></i></span>
-                    <span>Dashboard</span>
-                </a>
-                <a href="manage-students.html">
-                    <span class="icon"><i class="bi bi-people"></i></span>
-                    <span>Students</span>
-                </a>
-                <a href="manage-courses.html">
-                    <span class="icon"><i class="bi bi-journal-bookmark"></i></span>
-                    <span>Courses</span>
-                </a>
-                <a href="manage-assignments.html">
-                    <span class="icon"><i class="bi bi-clipboard-check"></i></span>
-                    <span>Assignments</span>
-                </a>
-                <a href="quiz-scheduler.html" class="active">
-                    <span class="icon"><i class="bi bi-ui-checks-grid"></i></span>
-                    <span>Quiz Scheduler</span>
-                </a>
-
+            <nav>
+                <a href="admin-dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                <a href="manage-students.html"><i class="bi bi-people"></i> Students</a>
+                <a href="manage-courses.html"><i class="bi bi-journal-bookmark"></i> Courses</a>
+                <a href="manage-assignments.html"><i class="bi bi-clipboard-check"></i> Assignments</a>
+                <a href="quiz-scheduler.html" class="active"><i class="bi bi-ui-checks-grid"></i> Quiz Scheduler</a>
                 <div class="nav-divider"></div>
-
-                <a href="../dashboard.html">
-                    <span class="icon"><i class="bi bi-mortarboard"></i></span>
-                    <span>Student Portal</span>
-                </a>
-                <a href="../index.html" class="logout-link">
-                    <span class="icon"><i class="bi bi-box-arrow-right"></i></span>
-                    <span>Logout</span>
-                </a>
+                <a href="../dashboard.html"><i class="bi bi-mortarboard"></i> Student Portal</a>
+                <a href="../index.html"><i class="bi bi-box-arrow-right"></i> Logout</a>
+            </nav>
+        </aside>
+        <main class="admin-main page-fade">
+            <div class="admin-topbar">
+                <h1>Quiz Scheduler</h1><span class="admin-badge">ADMIN</span>
             </div>
-        </div>
-
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
-
-            <div class="top-bar">
-                <h1>Quiz Scheduler</h1>
-                <span class="admin-badge">ADMIN</span>
-            </div>
-
             <div class="page-container">
-
                 <div class="page-header d-flex justify-content-between align-items-start">
                     <div>
                         <h2>Quiz Scheduling</h2>
                         <p>Plan, schedule, and manage quizzes across all courses</p>
                     </div>
-                    <button id="addQuizBtn" class="btn btn-primary">+ Schedule Quiz</button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#quizModal"
+                        onclick="resetForm()">+ Schedule Quiz</button>
                 </div>
-
-                <!-- Stats Row -->
                 <div class="row g-4 mb-4">
                     <div class="col-lg-4 col-md-6">
                         <div class="stat-card">
@@ -102,186 +70,268 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="table-wrapper">
                     <div class="table-header">
-                        <h5>Scheduled Quizzes</h5>
-                        <span id="quizRecordCount" class="record-count">0 Records</span>
+                        <h5>Scheduled Quizzes</h5><span id="quizRecordCount" class="record-count">0 Records</span>
                     </div>
                     <table class="table">
                         <thead>
                             <tr>
                                 <th>Quiz</th>
                                 <th>Course</th>
-                                <th>Date</th>
+                                <th>Schedule</th>
                                 <th>Duration</th>
-                                <th>Status</th>
+                                <th>Questions</th>
+                                <th>Results</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody id="quizTableBody">
-                        </tbody>
+                        <tbody id="quizTableBody"></tbody>
                     </table>
                 </div>
-
             </div>
-
-        </div>
-
+    </div>
     </div>
 
-<script>
-    const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
-        (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
-    );
+    <!-- Quiz Modal -->
+    <div class="modal fade" id="quizModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="quizModalTitle">Schedule Quiz</h5><button type="button"
+                        class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="quizId">
+                    <div class="row mb-3">
+                        <div class="col-md-6"><label class="form-label">Quiz Title *</label><input type="text"
+                                class="form-control" id="qTitle" required></div>
+                        <div class="col-md-6"><label class="form-label">Course *</label><select class="form-select"
+                                id="qCourse" required></select></div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3"><label class="form-label">Start Date & Time *</label><input
+                                type="datetime-local" class="form-control" id="qStartTime" required></div>
+                        <div class="col-md-3"><label class="form-label">End Date & Time *</label><input
+                                type="datetime-local" class="form-control" id="qEndTime" required></div>
+                        <div class="col-md-3"><label class="form-label">Duration (min) *</label><input type="number"
+                                class="form-control" id="qDuration" value="30" min="1" required></div>
+                        <div class="col-md-3"><label class="form-label">Status</label>
+                            <select class="form-select" id="qStatus">
+                                <option value="upcoming">Upcoming</option>
+                                <option value="active">Active</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
 
-    let apiBase = null;
-    let quizzes = [];
+                    <!-- MCQ Questions Builder -->
+                    <hr>
+                    <h6 class="mb-3"><i class="bi bi-list-check"></i> Questions</h6>
+                    <div id="questionsBuilder"></div>
+                    <button type="button" class="btn btn-outline-primary btn-sm mt-2" onclick="addQuestion()"><i
+                            class="bi bi-plus"></i> Add Question</button>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary"
+                        onclick="saveQuiz()">Save Quiz</button></div>
+            </div>
+        </div>
+    </div>
 
-    async function getApiBase() {
-        if (apiBase) return apiBase;
-        for (const base of API_CANDIDATES) {
+    <!-- Results Modal -->
+    <div class="modal fade" id="resultsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Quiz Results</h5><button type="button" class="btn-close"
+                        data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="resultsBody">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(p => `http://${window.location.hostname || 'localhost'}:${p}/api`);
+        let apiBase = null, quizzes = [], coursesList = [], questionCount = 0;
+
+        async function getApiBase() {
+            if (apiBase) return apiBase;
+            for (const b of API_CANDIDATES) { try { const r = await fetch(`${b}/courses`); if (r.ok) { apiBase = b; return b; } } catch (_) { } }
+            throw new Error('Unable to connect to backend API.');
+        }
+        function getToken() { return localStorage.getItem('token'); }
+
+        async function fetchFromApi(path, options = {}) {
+            const base = await getApiBase(); const token = getToken();
+            if (token) options.headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
+            const res = await fetch(`${base}${path}`, options);
+            if (!res.ok) throw new Error(await res.text());
+            return await res.json();
+        }
+
+        async function loadCourses() {
+            const d = await fetchFromApi('/courses');
+            coursesList = Array.isArray(d.courses) ? d.courses : [];
+            const sel = document.getElementById('qCourse');
+            sel.innerHTML = '<option value="">Select Course</option>' + coursesList.map(c => `<option value="${c._id}">${c.title}</option>`).join('');
+        }
+
+        function renderStats() {
+            document.getElementById('quizTotal').textContent = quizzes.length;
+            document.getElementById('quizUpcoming').textContent = quizzes.filter(q => q.status === 'upcoming').length;
+            document.getElementById('quizCompleted').textContent = quizzes.filter(q => q.status === 'completed').length;
+            document.getElementById('quizRecordCount').textContent = `${quizzes.length} Records`;
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('quizTableBody');
+            if (!quizzes.length) { tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No quizzes found</td></tr>'; return; }
+            tbody.innerHTML = quizzes.map(q => {
+                const start = q.startTime ? new Date(q.startTime).toLocaleString() : 'TBD';
+                const end = q.endTime ? new Date(q.endTime).toLocaleString() : 'TBD';
+                const courseName = q.course?.title || 'N/A';
+                const statusBadge = q.status === 'completed' ? 'bg-secondary' : q.status === 'active' ? 'bg-success' : 'bg-primary';
+                return `<tr>
+                    <td>${q.title}</td><td>${courseName}</td>
+                    <td><small>${start}<br>to ${end}</small></td>
+                    <td>${q.durationMinutes} min</td>
+                    <td>${q.totalQuestions}</td>
+                    <td><button class="btn btn-outline-info btn-sm" onclick="viewResults('${q._id}')"><i class="bi bi-bar-chart"></i></button></td>
+                    <td>
+                        <button class="btn btn-warning btn-sm me-1" onclick="editQuiz('${q._id}')">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteQuiz('${q._id}')">Delete</button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        async function loadQuizzes() {
+            try { const d = await fetchFromApi('/tests'); quizzes = Array.isArray(d.tests) ? d.tests : []; renderStats(); renderTable(); }
+            catch (e) { console.error(e); }
+        }
+
+        function addQuestion(q = null) {
+            const idx = questionCount++;
+            const div = document.createElement('div');
+            div.className = 'card mb-3 p-3';
+            div.id = `q-${idx}`;
+            div.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong>Question ${idx + 1}</strong>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeQuestion(${idx})"><i class="bi bi-trash"></i></button>
+                </div>
+                <div class="mb-2"><input type="text" class="form-control" id="qText-${idx}" placeholder="Enter question text" value="${q ? q.question : ''}"></div>
+                <div class="row mb-2 g-2">
+                    <div class="col-md-6"><input type="text" class="form-control" id="qOpt-${idx}-0" placeholder="Option A" value="${q ? q.options[0] || '' : ''}"></div>
+                    <div class="col-md-6"><input type="text" class="form-control" id="qOpt-${idx}-1" placeholder="Option B" value="${q ? q.options[1] || '' : ''}"></div>
+                    <div class="col-md-6"><input type="text" class="form-control" id="qOpt-${idx}-2" placeholder="Option C" value="${q ? q.options[2] || '' : ''}"></div>
+                    <div class="col-md-6"><input type="text" class="form-control" id="qOpt-${idx}-3" placeholder="Option D" value="${q ? q.options[3] || '' : ''}"></div>
+                </div>
+                <div><label class="form-label">Correct Answer</label>
+                    <select class="form-select" id="qCorrect-${idx}" style="width:auto;display:inline-block;">
+                        <option value="0" ${q && q.correctAnswer === 0 ? 'selected' : ''}>A</option>
+                        <option value="1" ${q && q.correctAnswer === 1 ? 'selected' : ''}>B</option>
+                        <option value="2" ${q && q.correctAnswer === 2 ? 'selected' : ''}>C</option>
+                        <option value="3" ${q && q.correctAnswer === 3 ? 'selected' : ''}>D</option>
+                    </select>
+                </div>
+            `;
+            document.getElementById('questionsBuilder').appendChild(div);
+        }
+
+        function removeQuestion(idx) { document.getElementById(`q-${idx}`)?.remove(); }
+
+        function collectQuestions() {
+            const questions = [];
+            document.getElementById('questionsBuilder').querySelectorAll('[id^="q-"]').forEach(div => {
+                const idx = div.id.replace('q-', '');
+                const q = document.getElementById(`qText-${idx}`)?.value;
+                if (!q) return;
+                const options = [0, 1, 2, 3].map(i => document.getElementById(`qOpt-${idx}-${i}`)?.value || '').filter(Boolean);
+                const correctAnswer = Number(document.getElementById(`qCorrect-${idx}`)?.value || 0);
+                questions.push({ question: q, options, correctAnswer });
+            });
+            return questions;
+        }
+
+        function resetForm() {
+            document.getElementById('quizModalTitle').textContent = 'Schedule Quiz';
+            document.getElementById('quizId').value = '';
+            document.getElementById('qTitle').value = '';
+            document.getElementById('qCourse').value = '';
+            document.getElementById('qStartTime').value = '';
+            document.getElementById('qEndTime').value = '';
+            document.getElementById('qDuration').value = '30';
+            document.getElementById('qStatus').value = 'upcoming';
+            document.getElementById('questionsBuilder').innerHTML = '';
+            questionCount = 0;
+            addQuestion();
+        }
+
+        function editQuiz(id) {
+            const q = quizzes.find(x => x._id === id);
+            if (!q) return;
+            document.getElementById('quizModalTitle').textContent = 'Edit Quiz';
+            document.getElementById('quizId').value = id;
+            document.getElementById('qTitle').value = q.title;
+            document.getElementById('qCourse').value = q.course?._id || q.course;
+            document.getElementById('qStartTime').value = q.startTime ? q.startTime.slice(0, 16) : '';
+            document.getElementById('qEndTime').value = q.endTime ? q.endTime.slice(0, 16) : '';
+            document.getElementById('qDuration').value = q.durationMinutes;
+            document.getElementById('qStatus').value = q.status;
+            document.getElementById('questionsBuilder').innerHTML = '';
+            questionCount = 0;
+            (q.questions || []).forEach(qst => addQuestion(qst));
+            if (!q.questions?.length) addQuestion();
+            new bootstrap.Modal(document.getElementById('quizModal')).show();
+        }
+
+        async function saveQuiz() {
+            const id = document.getElementById('quizId').value;
+            const questions = collectQuestions();
+            const data = {
+                title: document.getElementById('qTitle').value,
+                course: document.getElementById('qCourse').value,
+                startTime: document.getElementById('qStartTime').value,
+                endTime: document.getElementById('qEndTime').value,
+                durationMinutes: Number(document.getElementById('qDuration').value) || 30,
+                status: document.getElementById('qStatus').value,
+                totalQuestions: questions.length,
+                questions,
+            };
             try {
-                const res = await fetch(`${base}/tests`);
-                if (res.ok) {
-                    apiBase = base;
-                    return apiBase;
-                }
-            } catch (_) {
-                // Try next candidate.
-            }
-        }
-        throw new Error('Unable to connect to backend API (ports 5000-5005).');
-    }
-
-    async function fetchFromApi(path, options) {
-        const base = await getApiBase();
-        const res = await fetch(`${base}${path}`, options);
-        if (!res.ok) {
-            const errorText = await res.text();
-            throw new Error(errorText || `Request failed with status ${res.status}`);
-        }
-        return await res.json();
-    }
-
-    function renderStats() {
-        document.getElementById('quizTotal').textContent = quizzes.length;
-        document.getElementById('quizUpcoming').textContent = quizzes.filter((q) => q.status === 'upcoming').length;
-        document.getElementById('quizCompleted').textContent = quizzes.filter((q) => q.status === 'completed').length;
-        document.getElementById('quizRecordCount').textContent = `${quizzes.length} Records`;
-    }
-
-    function renderTable() {
-        const tbody = document.getElementById('quizTableBody');
-
-        if (!quizzes.length) {
-            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No quizzes found</td></tr>';
-            return;
+                if (id) await fetchFromApi(`/tests/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                else await fetchFromApi('/tests', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                bootstrap.Modal.getInstance(document.getElementById('quizModal')).hide();
+                await loadQuizzes();
+            } catch (e) { alert(`Failed: ${e.message}`); }
         }
 
-        tbody.innerHTML = quizzes
-            .map((quiz) => {
-                const date = quiz.scheduledDate ? new Date(quiz.scheduledDate).toLocaleDateString() : 'TBD';
-                return `
-                    <tr>
-                        <td>${quiz.title}</td>
-                        <td>${quiz.course}</td>
-                        <td>${date}</td>
-                        <td>${quiz.durationMinutes} mins</td>
-                        <td><span class="badge ${quiz.status === 'completed' ? 'bg-secondary' : 'bg-success'}">${quiz.status}</span></td>
-                        <td>
-                            <button class="btn btn-warning btn-sm me-1" onclick="editQuiz('${quiz._id}')">Edit</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteQuiz('${quiz._id}')">Delete</button>
-                        </td>
-                    </tr>
-                `;
-            })
-            .join('');
-    }
-
-    async function loadQuizzes() {
-        try {
-            const data = await fetchFromApi('/tests');
-            quizzes = Array.isArray(data.tests) ? data.tests : [];
-            renderStats();
-            renderTable();
-        } catch (error) {
-            console.error('Failed to load quizzes:', error.message);
-            document.getElementById('quizTableBody').innerHTML =
-                `<tr><td colspan="7" class="text-danger text-center">${error.message}</td></tr>`;
+        async function deleteQuiz(id) {
+            if (!confirm('Delete this quiz?')) return;
+            try { await fetchFromApi(`/tests/${id}`, { method: 'DELETE' }); await loadQuizzes(); }
+            catch (e) { alert(`Failed: ${e.message}`); }
         }
-    }
 
-    async function createQuiz() {
-        const title = prompt('Quiz title:');
-        if (!title) return;
-        const course = prompt('Course name:');
-        if (!course) return;
-        const totalQuestions = Number(prompt('Total questions:', '20')) || 20;
-        const durationMinutes = Number(prompt('Duration (minutes):', '30')) || 30;
-        const status = prompt('Status (upcoming/completed):', 'upcoming');
-        if (!status) return;
-        const scheduledDate = status === 'upcoming' ? prompt('Scheduled date (YYYY-MM-DD):', '2026-03-25') : null;
-
-        const payload = { title, course, totalQuestions, durationMinutes, status };
-        if (scheduledDate) payload.scheduledDate = scheduledDate;
-
-        try {
-            await fetchFromApi('/tests', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-            await loadQuizzes();
-        } catch (error) {
-            alert(`Failed to create quiz: ${error.message}`);
+        async function viewResults(quizId) {
+            const body = document.getElementById('resultsBody');
+            body.innerHTML = '<p class="text-muted">Loading results...</p>';
+            new bootstrap.Modal(document.getElementById('resultsModal')).show();
+            try {
+                const d = await fetchFromApi(`/tests/${quizId}/results`);
+                const attempts = d.attempts || [];
+                if (!attempts.length) { body.innerHTML = '<p class="text-muted text-center">No attempts yet.</p>'; return; }
+                body.innerHTML = '<table class="table table-sm"><thead><tr><th>Student</th><th>Score</th><th>Tab Switches</th><th>Completed</th></tr></thead><tbody>' +
+                    attempts.map(a => `<tr><td>${a.student?.name || 'Student'}</td><td>${a.score}/${a.totalMarks} (${a.totalMarks > 0 ? Math.round((a.score / a.totalMarks) * 100) : 0}%)</td><td>${a.tabSwitchCount}</td><td>${a.completedAt ? new Date(a.completedAt).toLocaleString() : 'In Progress'}</td></tr>`).join('') +
+                    '</tbody></table>';
+            } catch (e) { body.innerHTML = `<p class="text-danger">${e.message}</p>`; }
         }
-    }
 
-    async function editQuiz(id) {
-        const quiz = quizzes.find((q) => q._id === id);
-        if (!quiz) return;
-
-        const title = prompt('Quiz title:', quiz.title);
-        if (!title) return;
-        const course = prompt('Course name:', quiz.course);
-        if (!course) return;
-        const totalQuestions = Number(prompt('Total questions:', String(quiz.totalQuestions))) || quiz.totalQuestions;
-        const durationMinutes = Number(prompt('Duration (minutes):', String(quiz.durationMinutes))) || quiz.durationMinutes;
-        const status = prompt('Status (upcoming/completed):', quiz.status);
-        if (!status) return;
-        const defaultDate = quiz.scheduledDate ? quiz.scheduledDate.slice(0, 10) : '2026-03-25';
-        const scheduledDate = status === 'upcoming' ? prompt('Scheduled date (YYYY-MM-DD):', defaultDate) : null;
-
-        const payload = { title, course, totalQuestions, durationMinutes, status };
-        if (scheduledDate) payload.scheduledDate = scheduledDate;
-
-        try {
-            await fetchFromApi(`/tests/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-            await loadQuizzes();
-        } catch (error) {
-            alert(`Failed to update quiz: ${error.message}`);
-        }
-    }
-
-    async function deleteQuiz(id) {
-        if (!confirm('Delete this quiz?')) return;
-        try {
-            await fetchFromApi(`/tests/${id}`, { method: 'DELETE' });
-            await loadQuizzes();
-        } catch (error) {
-            alert(`Failed to delete quiz: ${error.message}`);
-        }
-    }
-
-    document.getElementById('addQuizBtn').addEventListener('click', createQuiz);
-    document.addEventListener('DOMContentLoaded', loadQuizzes);
-</script>
-
+        document.addEventListener('DOMContentLoaded', async () => { await loadCourses(); await loadQuizzes(); });
+    </script>
 </body>
 
 </html>

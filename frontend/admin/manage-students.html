@@ -1,238 +1,178 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Students</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/theme.css">
     <link rel="stylesheet" href="../css/admin.css">
+    <style>
+        .table-card {
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .table-card-header {
+            padding: var(--sp-4) var(--sp-5);
+            border-bottom: 1px solid var(--c-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-card-header h5 {
+            font-size: var(--fs-lg);
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .record-count {
+            font-size: var(--fs-sm);
+            color: var(--c-text-muted);
+        }
+    </style>
 </head>
 
 <body>
-
-    <div class="d-flex">
-
-        <!-- SIDEBAR -->
-        <div class="sidebar">
-            <div class="sidebar-brand">
-                <h4>Admin Panel</h4>
-                <div class="brand-sub">Learning Portal</div>
+    <div class="admin-shell">
+        <aside class="admin-sidebar">
+            <div class="brand">
+                <h4><i class="bi bi-shield-lock-fill"></i> Admin Panel</h4><small>Learning Portal</small>
             </div>
-
-            <div class="sidebar-nav">
-                <a href="admin-dashboard.html">
-                    <span class="icon"><i class="bi bi-speedometer2"></i></span>
-                    <span>Dashboard</span>
-                </a>
-                <a href="manage-students.html" class="active">
-                    <span class="icon"><i class="bi bi-people"></i></span>
-                    <span>Students</span>
-                </a>
-                <a href="manage-courses.html">
-                    <span class="icon"><i class="bi bi-journal-bookmark"></i></span>
-                    <span>Courses</span>
-                </a>
-                <a href="manage-assignments.html">
-                    <span class="icon"><i class="bi bi-clipboard-check"></i></span>
-                    <span>Assignments</span>
-                </a>
-                <a href="quiz-scheduler.html">
-                    <span class="icon"><i class="bi bi-ui-checks-grid"></i></span>
-                    <span>Quiz Scheduler</span>
-                </a>
-
+            <nav>
+                <a href="admin-dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                <a href="manage-students.html" class="active"><i class="bi bi-people"></i> Students</a>
+                <a href="manage-courses.html"><i class="bi bi-journal-bookmark"></i> Courses</a>
+                <a href="manage-assignments.html"><i class="bi bi-clipboard-check"></i> Assignments</a>
+                <a href="quiz-scheduler.html"><i class="bi bi-ui-checks-grid"></i> Quiz Scheduler</a>
                 <div class="nav-divider"></div>
+                <a href="../dashboard.html"><i class="bi bi-mortarboard"></i> Student Portal</a>
+                <a href="../index.html"><i class="bi bi-box-arrow-right"></i> Logout</a>
+            </nav>
+        </aside>
 
-                <a href="../dashboard.html">
-                    <span class="icon"><i class="bi bi-mortarboard"></i></span>
-                    <span>Student Portal</span>
-                </a>
-                <a href="../index.html" class="logout-link">
-                    <span class="icon"><i class="bi bi-box-arrow-right"></i></span>
-                    <span>Logout</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
-
-            <div class="top-bar">
-                <h1>Student Management</h1>
-                <span class="admin-badge">ADMIN</span>
+        <main class="admin-main page-fade">
+            <div class="admin-topbar">
+                <h1>Student Management</h1><span class="admin-badge">ADMIN</span>
             </div>
 
-            <div class="page-container">
-
-                <div class="page-header">
-                    <h2>Student Management</h2>
-                    <p>View, search, and manage all registered students</p>
-                </div>
-
-                <!-- Stats Row -->
-                <div class="row g-4 mb-4">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="stat-card">
-                            <div class="stat-icon purple"><i class="bi bi-people"></i></div>
-                            <div class="stat-info">
-                                <h3 id="studentsTotal">0</h3>
-                                <p>Total Students</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="stat-card">
-                            <div class="stat-icon green"><i class="bi bi-person-check"></i></div>
-                            <div class="stat-info">
-                                <h3 id="studentsActive">0</h3>
-                                <p>Active Students</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="stat-card">
-                            <div class="stat-icon orange">🆕</div>
-                            <div class="stat-info">
-                                <h3 id="studentsNew">0</h3>
-                                <p>New This Month</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="table-wrapper">
-                    <div class="table-header">
-                        <h5>All Students</h5>
-                        <span id="studentsRecordCount" class="record-count">0 Records</span>
-                    </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Branch</th>
-                                <th>Semester</th>
-                                <th>Role</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="studentsTableBody">
-                        </tbody>
-                    </table>
-                </div>
-
+            <div class="admin-section-header">
+                <h2>Student Management</h2>
+                <p>View, search, and manage all registered students</p>
             </div>
 
-        </div>
+            <div class="admin-stats stagger" style="grid-template-columns:repeat(3,1fr);">
+                <div class="stat-card-modern slide-up">
+                    <div class="stat-icon-wrap indigo"><i class="bi bi-people"></i></div>
+                    <div>
+                        <div class="stat-value" id="studentsTotal">0</div>
+                        <div class="stat-label">Total Students</div>
+                    </div>
+                </div>
+                <div class="stat-card-modern slide-up">
+                    <div class="stat-icon-wrap emerald"><i class="bi bi-person-check"></i></div>
+                    <div>
+                        <div class="stat-value" id="studentsActive">0</div>
+                        <div class="stat-label">Active Students</div>
+                    </div>
+                </div>
+                <div class="stat-card-modern slide-up">
+                    <div class="stat-icon-wrap amber"><i class="bi bi-person-plus"></i></div>
+                    <div>
+                        <div class="stat-value" id="studentsNew">0</div>
+                        <div class="stat-label">New This Month</div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="table-card slide-up" style="animation-delay:.2s">
+                <div class="table-card-header">
+                    <h5>All Students</h5>
+                    <span id="studentsRecordCount" class="record-count">0 Records</span>
+                </div>
+                <table class="table-modern">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Branch</th>
+                            <th>Semester</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsTableBody"></tbody>
+                </table>
+            </div>
+        </main>
     </div>
 
-</body>
+    <script>
+        const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
+            (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
+        );
+        let apiBase = null, users = [];
 
-<script>
-    const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
-        (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
-    );
-
-    let apiBase = null;
-    let users = [];
-
-    async function getApiBase() {
-        if (apiBase) return apiBase;
-        for (const base of API_CANDIDATES) {
-            try {
-                const res = await fetch(`${base}/users`);
-                if (res.ok) {
-                    apiBase = base;
-                    return apiBase;
-                }
-            } catch (_) {
-                // Try next candidate.
+        async function getApiBase() {
+            if (apiBase) return apiBase;
+            for (const base of API_CANDIDATES) {
+                try { const res = await fetch(`${base}/users`); if (res.ok) { apiBase = base; return apiBase; } } catch (_) { }
             }
-        }
-        throw new Error('Unable to connect to backend API (ports 5000-5005).');
-    }
-
-    async function fetchFromApi(path, options) {
-        const base = await getApiBase();
-        const res = await fetch(`${base}${path}`, options);
-        if (!res.ok) {
-            const errorText = await res.text();
-            throw new Error(errorText || `Request failed with status ${res.status}`);
-        }
-        return await res.json();
-    }
-
-    function renderStats() {
-        document.getElementById('studentsTotal').textContent = users.length;
-
-        const activeUsers = users.filter((u) => u.role !== 'admin').length;
-        document.getElementById('studentsActive').textContent = activeUsers;
-
-        const now = new Date();
-        const newThisMonth = users.filter((u) => {
-            const created = u.createdAt ? new Date(u.createdAt) : null;
-            return (
-                created &&
-                created.getMonth() === now.getMonth() &&
-                created.getFullYear() === now.getFullYear()
-            );
-        }).length;
-
-        document.getElementById('studentsNew').textContent = newThisMonth;
-        document.getElementById('studentsRecordCount').textContent = `${users.length} Records`;
-    }
-
-    function renderTable() {
-        const tbody = document.getElementById('studentsTableBody');
-
-        if (!users.length) {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No students found</td></tr>';
-            return;
+            throw new Error('Unable to connect to backend API.');
         }
 
-        tbody.innerHTML = users
-            .map(
-                (user) => `
-                    <tr>
-                        <td>${user.name || '-'}</td>
-                        <td>${user.email || '-'}</td>
-                        <td>${user.branch || '-'}</td>
-                        <td>${user.semester || '-'}</td>
-                        <td><span class="badge bg-info text-dark">${user.role || 'student'}</span></td>
-                        <td>
-                            <button class="btn btn-danger btn-sm" onclick="deleteUser('${user._id}')">Delete</button>
-                        </td>
-                    </tr>
-                `
-            )
-            .join('');
-    }
-
-    async function loadUsers() {
-        try {
-            const data = await fetchFromApi('/users');
-            users = Array.isArray(data.users) ? data.users : [];
-            renderStats();
-            renderTable();
-        } catch (error) {
-            console.error('Failed to load users:', error.message);
-            document.getElementById('studentsTableBody').innerHTML =
-                `<tr><td colspan="6" class="text-danger text-center">${error.message}</td></tr>`;
+        async function fetchFromApi(path, options) {
+            const base = await getApiBase();
+            const res = await fetch(`${base}${path}`, options);
+            if (!res.ok) { const e = await res.text(); throw new Error(e || `Request failed ${res.status}`); }
+            return await res.json();
         }
-    }
 
-    async function deleteUser(id) {
-        if (!confirm('Delete this user?')) return;
-        try {
-            await fetchFromApi(`/users/${id}`, { method: 'DELETE' });
-            await loadUsers();
-        } catch (error) {
-            alert(`Failed to delete user: ${error.message}`);
+        function renderStats() {
+            document.getElementById('studentsTotal').textContent = users.length;
+            document.getElementById('studentsActive').textContent = users.filter((u) => u.role !== 'admin').length;
+            const now = new Date();
+            document.getElementById('studentsNew').textContent = users.filter((u) => {
+                const c = u.createdAt ? new Date(u.createdAt) : null;
+                return c && c.getMonth() === now.getMonth() && c.getFullYear() === now.getFullYear();
+            }).length;
+            document.getElementById('studentsRecordCount').textContent = `${users.length} Records`;
         }
-    }
 
-    document.addEventListener('DOMContentLoaded', loadUsers);
-</script>
+        function renderTable() {
+            const tbody = document.getElementById('studentsTableBody');
+            if (!users.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#94A3B8;padding:40px;">No students found</td></tr>'; return; }
+            tbody.innerHTML = users.map((u) => `
+                <tr>
+                    <td><strong>${u.name || '-'}</strong></td>
+                    <td>${u.email || '-'}</td>
+                    <td>${u.branch || '-'}</td>
+                    <td>${u.semester || '-'}</td>
+                    <td><span class="badge badge-${u.role === 'admin' ? 'danger' : 'primary'}">${u.role || 'student'}</span></td>
+                    <td><button class="btn btn-sm" style="background:#FEE2E2;color:#EF4444;border:none;font-weight:600;" onclick="deleteUser('${u._id}')"><i class="bi bi-trash"></i> Delete</button></td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadUsers() {
+            try { const d = await fetchFromApi('/users'); users = Array.isArray(d.users) ? d.users : []; renderStats(); renderTable(); }
+            catch (e) { console.error(e); document.getElementById('studentsTableBody').innerHTML = `<tr><td colspan="6" style="color:#EF4444;text-align:center;">${e.message}</td></tr>`; }
+        }
+
+        async function deleteUser(id) {
+            if (!confirm('Delete this user?')) return;
+            try { await fetchFromApi(`/users/${id}`, { method: 'DELETE' }); await loadUsers(); }
+            catch (e) { alert(`Failed: ${e.message}`); }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadUsers);
+    </script>
+</body>
 
 </html>

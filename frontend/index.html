@@ -1,125 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRISMATECH | Student Home</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/theme.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <style>
-        :root {
-            --navy-900: #0d1b36;
-            --navy-800: #13264a;
-            --surface: #ffffff;
-            --bg: #f3f6fb;
-            --text: #1f2b46;
-            --muted: #6f7f9f;
-            --line: #e6ecf5;
-            --blue: #2f6bff;
-            --blue-600: #1f57df;
-            --mint: #a8f0d4;
-            --violet: #d7cbff;
-            --amber: #ffe2b8;
-            --shadow: 0 12px 30px rgba(17, 40, 89, 0.08);
-            --radius: 14px;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-        }
-
         .shell {
             min-height: 100vh;
             display: grid;
-            grid-template-columns: 250px 1fr;
-        }
-
-        .sidebar {
-            background: linear-gradient(180deg, var(--navy-900) 0%, var(--navy-800) 100%);
-            color: #dce6ff;
-            padding: 22px 14px;
-            position: sticky;
-            top: 0;
-            height: 100vh;
-        }
-
-        .brand {
-            padding: 10px 12px 22px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-            margin-bottom: 14px;
-        }
-
-        .brand h1 {
-            font-size: 1.05rem;
-            color: #fff;
-            letter-spacing: 0.5px;
-        }
-
-        .brand p {
-            color: #9fb1d8;
-            font-size: 0.78rem;
-            margin-top: 6px;
-        }
-
-        .nav a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #cad7f7;
-            text-decoration: none;
-            padding: 11px 12px;
-            border-radius: 10px;
-            margin-bottom: 4px;
-            font-weight: 500;
-            font-size: 0.92rem;
-            transition: 0.2s ease;
-        }
-
-        .nav a:hover,
-        .nav a.active {
-            background: rgba(255, 255, 255, 0.14);
-            color: #fff;
+            grid-template-columns: 260px 1fr;
         }
 
         .main {
-            padding: 26px;
+            padding: var(--sp-6);
+            background: var(--c-bg);
         }
 
+        /* Topbar */
         .topbar {
-            background: var(--surface);
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            padding: 16px 18px;
-            box-shadow: var(--shadow);
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-xl);
+            padding: var(--sp-5) var(--sp-6);
+            box-shadow: var(--shadow-sm);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 18px;
+            margin-bottom: var(--sp-6);
         }
 
-        .welcome h2 { font-size: 1.35rem; }
-        .welcome p { color: var(--muted); margin-top: 4px; font-size: 0.92rem; }
+        .welcome h2 {
+            font-size: var(--fs-xl);
+            font-weight: 700;
+        }
 
-        .actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .welcome p {
+            color: var(--c-text-muted);
+            margin-top: 4px;
+            font-size: var(--fs-base);
         }
 
         .search {
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: #f8faff;
-            border: 1px solid var(--line);
-            padding: 9px 11px;
-            border-radius: 10px;
-            width: 230px;
-            color: var(--muted);
+            gap: var(--sp-2);
+            background: var(--c-bg);
+            border: 1px solid var(--c-border);
+            padding: 10px 14px;
+            border-radius: var(--r-md);
+            width: 260px;
+            transition: all var(--t-fast);
+        }
+
+        .search:focus-within {
+            border-color: var(--c-primary);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .search i {
+            color: var(--c-text-muted);
         }
 
         .search input {
@@ -127,163 +69,255 @@
             outline: 0;
             width: 100%;
             background: transparent;
-            font-family: inherit;
+            font-family: var(--font);
+            font-size: var(--fs-base);
         }
 
+        /* Stats grid */
         .grid {
             display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 12px;
-            margin-bottom: 18px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--sp-4);
+            margin-bottom: var(--sp-6);
         }
 
-        .stat {
-            background: var(--surface);
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            padding: 14px;
-            box-shadow: var(--shadow);
-        }
-
-        .stat .label {
-            font-size: 0.8rem;
-            color: var(--muted);
-        }
-
-        .stat .value {
-            margin-top: 8px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--blue);
-        }
-
+        /* Content layout */
         .content {
             display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 14px;
+            grid-template-columns: 1.6fr 1fr;
+            gap: var(--sp-5);
         }
 
         .panel {
-            background: var(--surface);
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 16px;
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-lg);
+            box-shadow: var(--shadow-sm);
+            padding: var(--sp-5);
+            animation: slideUp .5s var(--ease) both;
         }
 
         .panel h3 {
-            font-size: 1.02rem;
-            margin-bottom: 12px;
+            font-size: var(--fs-lg);
+            font-weight: 700;
+            margin-bottom: var(--sp-4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel h3 i {
+            color: var(--c-primary);
         }
 
         .courses {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--sp-3);
+            margin-bottom: var(--sp-4);
         }
 
         .course {
-            border-radius: 12px;
-            padding: 12px;
-            color: #122;
+            border-radius: var(--r-md);
+            padding: var(--sp-4);
+            transition: all .25s var(--ease);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
-        .course:nth-child(1) { background: var(--mint); }
-        .course:nth-child(2) { background: var(--amber); }
-        .course:nth-child(3) { background: var(--violet); }
+        .course:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .course:nth-child(1) {
+            background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
+        }
+
+        .course:nth-child(2) {
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+        }
+
+        .course:nth-child(3) {
+            background: linear-gradient(135deg, #EDE9FE, #DDD6FE);
+        }
 
         .course h4 {
-            font-size: 0.92rem;
+            font-size: var(--fs-base);
+            font-weight: 600;
             margin-bottom: 6px;
+            color: var(--c-text);
         }
 
         .course p {
-            color: #33415c;
-            font-size: 0.78rem;
+            color: var(--c-text-secondary);
+            font-size: var(--fs-sm);
             margin-bottom: 10px;
         }
 
         .mini {
             display: flex;
             justify-content: space-between;
-            font-size: 0.76rem;
-            color: #25314d;
+            font-size: var(--fs-xs);
+            color: var(--c-text-secondary);
+            font-weight: 600;
         }
 
+        /* CTA Banner */
+        .cta {
+            background: var(--c-primary-gradient);
+            background-size: 200% 200%;
+            animation: gradientShift 6s ease infinite;
+            border-radius: var(--r-lg);
+            padding: var(--sp-5);
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, .08);
+            border-radius: 50%;
+            top: -30px;
+            right: -20px;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        .cta h4 {
+            font-size: var(--fs-lg);
+            font-weight: 700;
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta p {
+            opacity: 0.9;
+            font-size: var(--fs-sm);
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta a {
+            display: inline-block;
+            margin-top: var(--sp-3);
+            background: #fff;
+            color: var(--c-primary);
+            padding: 8px 16px;
+            border-radius: var(--r-sm);
+            font-weight: 600;
+            font-size: var(--fs-sm);
+            transition: all var(--t-fast);
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta a:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Timeline list */
         .list {
             display: flex;
             flex-direction: column;
-            gap: 9px;
+            gap: var(--sp-3);
         }
 
         .list-item {
-            border: 1px solid var(--line);
-            border-radius: 10px;
-            padding: 11px;
+            border: 1px solid var(--c-border-light);
+            border-radius: var(--r-md);
+            padding: var(--sp-3) var(--sp-4);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all .2s var(--ease);
         }
 
-        .list-item small { color: var(--muted); }
+        .list-item:hover {
+            background: var(--c-primary-light);
+            transform: translateX(4px);
+        }
+
+        .list-item small {
+            color: var(--c-text-muted);
+        }
 
         .tag {
-            padding: 4px 8px;
-            border-radius: 999px;
-            font-size: 0.74rem;
+            padding: 4px 10px;
+            border-radius: var(--r-full);
+            font-size: var(--fs-xs);
             font-weight: 600;
         }
 
-        .tag.blue { background: #dce8ff; color: #2f6bff; }
-        .tag.green { background: #daf6ea; color: #16895f; }
-        .tag.orange { background: #ffeccf; color: #b56600; }
-
-        .cta {
-            margin-top: 14px;
-            background: linear-gradient(135deg, #2f6bff 0%, #35a2ff 100%);
-            border-radius: 12px;
-            padding: 18px;
-            color: #fff;
+        .tag.blue {
+            background: var(--c-info-light);
+            color: #1E40AF;
         }
 
-        .cta h4 { margin-bottom: 7px; }
-        .cta p { opacity: 0.95; font-size: 0.85rem; }
+        .tag.green {
+            background: var(--c-success-light);
+            color: #065F46;
+        }
 
-        .cta a {
-            margin-top: 12px;
-            display: inline-block;
-            text-decoration: none;
-            color: var(--blue-600);
-            background: #fff;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
+        .tag.orange {
+            background: var(--c-warning-light);
+            color: #92400E;
         }
 
         @media (max-width: 1080px) {
-            .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .content { grid-template-columns: 1fr; }
-            .courses { grid-template-columns: 1fr; }
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .courses {
+                grid-template-columns: 1fr;
+            }
         }
 
-        @media (max-width: 820px) {
-            .shell { grid-template-columns: 1fr; }
-            .sidebar { position: static; height: auto; }
-            .main { padding: 16px; }
-            .topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
-            .search { width: 100%; }
+        @media (max-width: 768px) {
+            .shell {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar-modern {
+                display: none;
+            }
+
+            .main {
+                padding: var(--sp-4);
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--sp-3);
+            }
+
+            .search {
+                width: 100%;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="shell">
-        <aside class="sidebar">
+        <aside class="sidebar-modern">
             <div class="brand">
-                <h1><i class="bi bi-mortarboard-fill"></i> CRISMATECH</h1>
-                <p>Student Learning Portal</p>
+                <h4><i class="bi bi-mortarboard-fill"></i> CRISMATECH</h4>
+                <small>Student Learning Portal</small>
             </div>
-            <nav class="nav">
+            <nav>
                 <a class="active" href="index.html"><i class="bi bi-house-door"></i> Home</a>
                 <a href="dashboard.html"><i class="bi bi-grid"></i> Dashboard</a>
                 <a href="courses/courses.html"><i class="bi bi-journal-bookmark"></i> Courses</a>
@@ -294,33 +328,56 @@
             </nav>
         </aside>
 
-        <main class="main">
+        <main class="main page-fade">
             <div class="topbar">
                 <div class="welcome">
                     <h2>Welcome, Learner</h2>
                     <p>Your semester progress is looking strong. Keep the pace.</p>
                 </div>
-                <div class="actions">
+                <div style="display:flex;align-items:center;gap:var(--sp-3)">
                     <label class="search">
                         <i class="bi bi-search"></i>
                         <input type="text" placeholder="Search courses...">
                     </label>
-                    <i class="bi bi-bell" style="font-size:1.15rem;color:#7383a5"></i>
+                    <i class="bi bi-bell" style="font-size:1.2rem;color:var(--c-text-muted);cursor:pointer"></i>
                 </div>
             </div>
 
-            <section class="grid">
-                <div class="stat"><div class="label">Enrolled Courses</div><div id="homeCoursesCount" class="value">0</div></div>
-                <div class="stat"><div class="label">Assignments Due</div><div id="homeAssignmentsCount" class="value">0</div></div>
-                <div class="stat"><div class="label">Completed Tests</div><div id="homeTestsCount" class="value">0</div></div>
-                <div class="stat"><div class="label">Certificates</div><div id="homeCertificatesCount" class="value">0</div></div>
+            <section class="grid stagger">
+                <div class="stat-card-modern slide-up">
+                    <div class="stat-icon-wrap indigo"><i class="bi bi-journal-bookmark"></i></div>
+                    <div>
+                        <div class="stat-value" id="homeCoursesCount">0</div>
+                        <div class="stat-label">Enrolled Courses</div>
+                    </div>
+                </div>
+                <div class="stat-card-modern slide-up">
+                    <div class="stat-icon-wrap amber"><i class="bi bi-file-earmark-check"></i></div>
+                    <div>
+                        <div class="stat-value" id="homeAssignmentsCount">0</div>
+                        <div class="stat-label">Assignments Due</div>
+                    </div>
+                </div>
+                <div class="stat-card-modern slide-up">
+                    <div class="stat-icon-wrap emerald"><i class="bi bi-ui-checks-grid"></i></div>
+                    <div>
+                        <div class="stat-value" id="homeTestsCount">0</div>
+                        <div class="stat-label">Completed Tests</div>
+                    </div>
+                </div>
+                <div class="stat-card-modern slide-up">
+                    <div class="stat-icon-wrap cyan"><i class="bi bi-award"></i></div>
+                    <div>
+                        <div class="stat-value" id="homeCertificatesCount">0</div>
+                        <div class="stat-label">Certificates</div>
+                    </div>
+                </div>
             </section>
 
             <section class="content">
                 <div class="panel">
-                    <h3>Continue Learning</h3>
-                    <div id="homeCoursesList" class="courses">
-                    </div>
+                    <h3><i class="bi bi-play-circle"></i> Continue Learning</h3>
+                    <div id="homeCoursesList" class="courses"></div>
                     <div class="cta">
                         <h4>New Path Available: AI Foundations</h4>
                         <p>Start a curated learning path built for placements and practical projects.</p>
@@ -328,10 +385,9 @@
                     </div>
                 </div>
 
-                <div class="panel">
-                    <h3>Today & This Week</h3>
-                    <div id="homeTimeline" class="list">
-                    </div>
+                <div class="panel" style="animation-delay:.1s">
+                    <h3><i class="bi bi-clock-history"></i> Today & This Week</h3>
+                    <div id="homeTimeline" class="list"></div>
                 </div>
             </section>
         </main>
@@ -349,13 +405,8 @@
             for (const base of API_CANDIDATES) {
                 try {
                     const res = await fetch(`${base}/courses`);
-                    if (res.ok) {
-                        apiBase = base;
-                        return apiBase;
-                    }
-                } catch (_) {
-                    // Try next candidate.
-                }
+                    if (res.ok) { apiBase = base; return apiBase; }
+                } catch (_) { }
             }
             throw new Error('Unable to connect to backend API (ports 5000-5005).');
         }
@@ -379,67 +430,47 @@
 
         function renderHomeCourses(courses) {
             const container = document.getElementById('homeCoursesList');
-
             if (!courses.length) {
                 container.innerHTML = '<article class="course"><h4>No Courses Yet</h4><p>Courses will appear here once available.</p><div class="mini"><span>0 lessons</span><span>0%</span></div></article>';
                 return;
             }
-
-            container.innerHTML = courses
-                .slice(0, 3)
-                .map((course) => {
-                    const lessons = Number(course.lessons) || 0;
-                    const progress = Math.min(100, Math.max(10, lessons * 4));
-                    return `
-                        <article class="course">
-                            <h4>${course.title}</h4>
-                            <p>${course.category || 'General'} • ${course.instructor || 'Instructor'}</p>
-                            <div class="mini"><span>${lessons} lessons</span><span>${progress}%</span></div>
-                        </article>
-                    `;
-                })
-                .join('');
+            container.innerHTML = courses.slice(0, 3).map((course) => {
+                const lessons = Number(course.lessons) || 0;
+                const progress = Math.min(100, Math.max(10, lessons * 4));
+                return `
+                    <article class="course">
+                        <h4>${course.title}</h4>
+                        <p>${course.category || 'General'} • ${course.instructor || 'Instructor'}</p>
+                        <div class="mini"><span>${lessons} lessons</span><span>${progress}%</span></div>
+                    </article>
+                `;
+            }).join('');
         }
 
         function renderHomeTimeline(assignments, tests, certificates) {
             const container = document.getElementById('homeTimeline');
             const entries = [];
-
             assignments.slice(0, 1).forEach((assignment) => {
                 const due = assignment.dueDate ? new Date(assignment.dueDate).toLocaleDateString() : 'No due date';
                 entries.push({ title: assignment.title, subtitle: `Due ${due}`, tagClass: 'orange', tagText: 'Due' });
             });
-
             tests.slice(0, 1).forEach((test) => {
                 const when = test.scheduledDate ? new Date(test.scheduledDate).toLocaleDateString() : 'To be announced';
                 entries.push({ title: test.title, subtitle: `${when}`, tagClass: 'blue', tagText: 'Scheduled' });
             });
-
-            certificates
-                .filter((certificate) => certificate.status === 'earned')
-                .slice(0, 1)
-                .forEach((certificate) => {
-                    entries.push({ title: certificate.title, subtitle: 'Certificate earned', tagClass: 'green', tagText: 'Ready' });
-                });
-
+            certificates.filter((cert) => cert.status === 'earned').slice(0, 1).forEach((cert) => {
+                entries.push({ title: cert.title, subtitle: 'Certificate earned', tagClass: 'green', tagText: 'Ready' });
+            });
             if (!entries.length) {
                 container.innerHTML = '<div class="list-item"><div><strong>No updates yet</strong><br><small>Upcoming tasks and milestones will appear here.</small></div><span class="tag blue">Info</span></div>';
                 return;
             }
-
-            container.innerHTML = entries
-                .map(
-                    (entry) => `
-                        <div class="list-item">
-                            <div>
-                                <strong>${entry.title}</strong><br>
-                                <small>${entry.subtitle}</small>
-                            </div>
-                            <span class="tag ${entry.tagClass}">${entry.tagText}</span>
-                        </div>
-                    `
-                )
-                .join('');
+            container.innerHTML = entries.map((entry) => `
+                <div class="list-item">
+                    <div><strong>${entry.title}</strong><br><small>${entry.subtitle}</small></div>
+                    <span class="tag ${entry.tagClass}">${entry.tagText}</span>
+                </div>
+            `).join('');
         }
 
         async function initHomeData() {
@@ -450,21 +481,18 @@
                     fetchFromApi('/tests'),
                     fetchFromApi('/certificates'),
                 ]);
-
                 const courses = Array.isArray(coursesRes.courses) ? coursesRes.courses : [];
                 const assignments = Array.isArray(assignmentsRes.assignments) ? assignmentsRes.assignments : [];
                 const tests = Array.isArray(testsRes.tests) ? testsRes.tests : [];
                 const certificates = Array.isArray(certificatesRes.certificates) ? certificatesRes.certificates : [];
-
                 updateHomeStats(courses, assignments, tests, certificates);
                 renderHomeCourses(courses);
                 renderHomeTimeline(assignments, tests, certificates);
-            } catch (error) {
-                console.error('Home data load failed:', error.message);
-            }
+            } catch (error) { console.error('Home data load failed:', error.message); }
         }
 
         document.addEventListener('DOMContentLoaded', initHomeData);
     </script>
 </body>
+
 </html>

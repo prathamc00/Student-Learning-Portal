@@ -1,77 +1,78 @@
 const Attendance = require('../models/attendanceModel');
 
-const getAttendanceRecords = async (req, res) => {
+// @desc    Track a student activity (auto-attendance)
+// @route   POST /api/attendance
+// @access  Private
+const trackActivity = async (req, res) => {
     try {
-        const records = await Attendance.find({}).sort({ date: -1, createdAt: -1 });
-        res.status(200).json({ success: true, count: records.length, records });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch attendance records', error: error.message });
-    }
-};
+        const { courseId, activityType, details } = req.body;
 
-const getAttendanceById = async (req, res) => {
-    try {
-        const record = await Attendance.findById(req.params.id);
-        if (!record) {
-            return res.status(404).json({ success: false, message: 'Attendance record not found' });
+        if (!activityType) {
+            return res.status(400).json({ success: false, message: 'Activity type is required' });
         }
-        res.status(200).json({ success: true, record });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch attendance record', error: error.message });
-    }
-};
 
-const createAttendance = async (req, res) => {
-    try {
-        const record = await Attendance.create(req.body);
-        res.status(201).json({ success: true, message: 'Attendance record created', record });
-    } catch (error) {
-        if (error.name === 'ValidationError') {
-            const messages = Object.values(error.errors).map((e) => e.message);
-            return res.status(400).json({ success: false, message: messages.join(', ') });
-        }
-        res.status(500).json({ success: false, message: 'Failed to create attendance record', error: error.message });
-    }
-};
-
-const updateAttendance = async (req, res) => {
-    try {
-        const record = await Attendance.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true,
+        const record = await Attendance.create({
+            student: req.user._id,
+            course: courseId || null,
+            activityType,
+            details: details || '',
         });
 
-        if (!record) {
-            return res.status(404).json({ success: false, message: 'Attendance record not found' });
-        }
-
-        res.status(200).json({ success: true, message: 'Attendance record updated', record });
+        res.status(201).json({ success: true, message: 'Activity tracked', record });
     } catch (error) {
         if (error.name === 'ValidationError') {
             const messages = Object.values(error.errors).map((e) => e.message);
             return res.status(400).json({ success: false, message: messages.join(', ') });
         }
-        res.status(500).json({ success: false, message: 'Failed to update attendance record', error: error.message });
+        res.status(500).json({ success: false, message: 'Failed to track activity', error: error.message });
     }
 };
 
-const deleteAttendance = async (req, res) => {
+// @desc    Get logged-in student's attendance
+// @route   GET /api/attendance/my
+// @access  Private
+const getMyAttendance = async (req, res) => {
     try {
-        const record = await Attendance.findByIdAndDelete(req.params.id);
-        if (!record) {
-            return res.status(404).json({ success: false, message: 'Attendance record not found' });
-        }
+        const records = await Attendance.find({ student: req.user._id })
+            .populate('course', 'title')
+            .sort({ createdAt: -1 });
 
-        res.status(200).json({ success: true, message: 'Attendance record deleted' });
+        res.status(200).json({ success: true, count: records.length, records });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to delete attendance record', error: error.message });
+        res.status(500).json({ success: false, message: 'Failed to fetch attendance', error: error.message });
     }
 };
 
-module.exports = {
-    getAttendanceRecords,
-    getAttendanceById,
-    createAttendance,
-    updateAttendance,
-    deleteAttendance,
+// @desc    Get attendance records for a course (admin)
+// @route   GET /api/attendance/course/:courseId
+// @access  Private (admin)
+const getCourseAttendance = async (req, res) => {
+    try {
+        const records = await Attendance.find({ course: req.params.courseId })
+            .populate('student', 'name email')
+            .populate('course', 'title')
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({ success: true, count: records.length, records });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to fetch course attendance', error: error.message });
+    }
 };
+
+// @desc    Get all attendance records (admin)
+// @route   GET /api/attendance
+// @access  Private (admin)
+const getAllAttendance = async (req, res) => {
+    try {
+        const records = await Attendance.find({})
+            .populate('student', 'name email')
+            .populate('course', 'title')
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({ success: true, count: records.length, records });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to fetch attendance', error: error.message });
+    }
+};
+
+module.exports = { trackActivity, getMyAttendance, getCourseAttendance, getAllAttendance };

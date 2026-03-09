@@ -1,85 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Assignments</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/theme.css">
     <link rel="stylesheet" href="../css/admin.css">
 </head>
 
 <body>
-
-    <div class="d-flex">
-
-        <!-- SIDEBAR -->
-        <div class="sidebar">
-            <div class="sidebar-brand">
-                <h4>Admin Panel</h4>
-                <div class="brand-sub">Learning Portal</div>
+    <div class="admin-shell">
+        <aside class="admin-sidebar">
+            <div class="brand">
+                <h4><i class="bi bi-shield-lock-fill"></i> Admin Panel</h4><small>Learning Portal</small>
             </div>
-
-            <div class="sidebar-nav">
-                <a href="admin-dashboard.html">
-                    <span class="icon"><i class="bi bi-speedometer2"></i></span>
-                    <span>Dashboard</span>
-                </a>
-                <a href="manage-students.html">
-                    <span class="icon"><i class="bi bi-people"></i></span>
-                    <span>Students</span>
-                </a>
-                <a href="manage-courses.html">
-                    <span class="icon"><i class="bi bi-journal-bookmark"></i></span>
-                    <span>Courses</span>
-                </a>
-                <a href="manage-assignments.html" class="active">
-                    <span class="icon"><i class="bi bi-clipboard-check"></i></span>
-                    <span>Assignments</span>
-                </a>
-                <a href="quiz-scheduler.html">
-                    <span class="icon"><i class="bi bi-ui-checks-grid"></i></span>
-                    <span>Quiz Scheduler</span>
-                </a>
-
+            <nav>
+                <a href="admin-dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                <a href="manage-students.html"><i class="bi bi-people"></i> Students</a>
+                <a href="manage-courses.html"><i class="bi bi-journal-bookmark"></i> Courses</a>
+                <a href="manage-assignments.html" class="active"><i class="bi bi-clipboard-check"></i> Assignments</a>
+                <a href="quiz-scheduler.html"><i class="bi bi-ui-checks-grid"></i> Quiz Scheduler</a>
                 <div class="nav-divider"></div>
-
-                <a href="../dashboard.html">
-                    <span class="icon"><i class="bi bi-mortarboard"></i></span>
-                    <span>Student Portal</span>
-                </a>
-                <a href="../index.html" class="logout-link">
-                    <span class="icon"><i class="bi bi-box-arrow-right"></i></span>
-                    <span>Logout</span>
-                </a>
+                <a href="../dashboard.html"><i class="bi bi-mortarboard"></i> Student Portal</a>
+                <a href="../index.html"><i class="bi bi-box-arrow-right"></i> Logout</a>
+            </nav>
+        </aside>
+        <main class="admin-main page-fade">
+            <div class="admin-topbar">
+                <h1>Assignment Management</h1><span class="admin-badge">ADMIN</span>
             </div>
-        </div>
-
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
-
-            <div class="top-bar">
-                <h1>Assignment Management</h1>
-                <span class="admin-badge">ADMIN</span>
-            </div>
-
             <div class="page-container">
-
                 <div class="page-header d-flex justify-content-between align-items-start">
                     <div>
                         <h2>Assignment Management</h2>
                         <p>Create, review, and manage student assignments</p>
                     </div>
-                    <button id="addAssignmentBtn" class="btn btn-primary">+ Create Assignment</button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignmentModal"
+                        onclick="resetForm()">+ Create Assignment</button>
                 </div>
-
-                <!-- Stats Row -->
                 <div class="row g-4 mb-4">
                     <div class="col-lg-4 col-md-6">
                         <div class="stat-card">
                             <div class="stat-icon purple"><i class="bi bi-clipboard-check"></i></div>
                             <div class="stat-info">
                                 <h3 id="assignmentTotal">0</h3>
-                                <p>Total Assignments</p>
+                                <p>Total</p>
                             </div>
                         </div>
                     </div>
@@ -87,8 +55,8 @@
                         <div class="stat-card">
                             <div class="stat-icon green"><i class="bi bi-check2-circle"></i></div>
                             <div class="stat-info">
-                                <h3 id="assignmentSubmitted">0</h3>
-                                <p>Submitted</p>
+                                <h3 id="submissionCount">0</h3>
+                                <p>Submissions</p>
                             </div>
                         </div>
                     </div>
@@ -96,192 +64,238 @@
                         <div class="stat-card">
                             <div class="stat-icon orange">⏳</div>
                             <div class="stat-info">
-                                <h3 id="assignmentPending">0</h3>
-                                <p>Pending</p>
+                                <h3 id="courseCount">0</h3>
+                                <p>Courses</p>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="table-wrapper">
                     <div class="table-header">
-                        <h5>All Assignments</h5>
-                        <span id="assignmentRecordCount" class="record-count">0 Records</span>
+                        <h5>All Assignments</h5><span id="assignmentRecordCount" class="record-count">0 Records</span>
                     </div>
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Assignment Title</th>
+                                <th>Title</th>
                                 <th>Course</th>
+                                <th>Type</th>
                                 <th>Due Date</th>
-                                <th>Status</th>
                                 <th>Max Marks</th>
+                                <th>Submissions</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody id="assignmentsTableBody">
-                        </tbody>
+                        <tbody id="assignmentsTableBody"></tbody>
                     </table>
                 </div>
-
             </div>
-
-        </div>
-
+    </div>
     </div>
 
-</body>
+    <!-- Assignment Modal -->
+    <div class="modal fade" id="assignmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignmentModalTitle">Create Assignment</h5><button type="button"
+                        class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="assignmentId">
+                    <div class="row mb-3">
+                        <div class="col-md-6"><label class="form-label">Title *</label><input type="text"
+                                class="form-control" id="aTitle" required></div>
+                        <div class="col-md-6"><label class="form-label">Course *</label><select class="form-select"
+                                id="aCourse" required></select></div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4"><label class="form-label">Type *</label>
+                            <select class="form-select" id="aType">
+                                <option value="case_study">Case Study (Text)</option>
+                                <option value="file_upload">File Upload (PDF/DOC)</option>
+                                <option value="code">Code Submission</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4"><label class="form-label">Due Date *</label><input type="date"
+                                class="form-control" id="aDueDate" required></div>
+                        <div class="col-md-4"><label class="form-label">Max Marks</label><input type="number"
+                                class="form-control" id="aMaxMarks" value="100" min="1"></div>
+                    </div>
+                    <div class="mb-3"><label class="form-label">Instructions</label><textarea class="form-control"
+                            id="aInstructions" rows="3"
+                            placeholder="Provide detailed instructions for students..."></textarea></div>
+                    <div class="mb-3"><label class="form-label">Module (Optional)</label><input type="text"
+                            class="form-control" id="aModule" placeholder="e.g., Module 1 - Introduction"></div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary"
+                        onclick="saveAssignment()">Save</button></div>
+            </div>
+        </div>
+    </div>
 
-<script>
-    const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
-        (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
-    );
+    <!-- Submissions Modal -->
+    <div class="modal fade" id="submissionsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Student Submissions</h5><button type="button" class="btn-close"
+                        data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="submissionsBody">Loading...</div>
+            </div>
+        </div>
+    </div>
 
-    let apiBase = null;
-    let assignments = [];
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(p => `http://${window.location.hostname || 'localhost'}:${p}/api`);
+        let apiBase = null, assignments = [], coursesList = [];
 
-    async function getApiBase() {
-        if (apiBase) return apiBase;
-        for (const base of API_CANDIDATES) {
+        async function getApiBase() {
+            if (apiBase) return apiBase;
+            for (const b of API_CANDIDATES) { try { const r = await fetch(`${b}/courses`); if (r.ok) { apiBase = b; return b; } } catch (_) { } }
+            throw new Error('Unable to connect to backend API.');
+        }
+        function getToken() { return localStorage.getItem('token'); }
+
+        async function fetchFromApi(path, options = {}) {
+            const base = await getApiBase(); const token = getToken();
+            if (token) options.headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
+            const res = await fetch(`${base}${path}`, options);
+            if (!res.ok) throw new Error(await res.text());
+            return await res.json();
+        }
+
+        async function loadCourses() {
+            const d = await fetchFromApi('/courses');
+            coursesList = Array.isArray(d.courses) ? d.courses : [];
+            const sel = document.getElementById('aCourse');
+            sel.innerHTML = '<option value="">Select Course</option>' + coursesList.map(c => `<option value="${c._id}">${c.title}</option>`).join('');
+        }
+
+        async function loadAssignments() {
             try {
-                const res = await fetch(`${base}/assignments`);
-                if (res.ok) {
-                    apiBase = base;
-                    return apiBase;
-                }
-            } catch (_) {
-                // Try next candidate.
-            }
-        }
-        throw new Error('Unable to connect to backend API (ports 5000-5005).');
-    }
-
-    async function fetchFromApi(path, options) {
-        const base = await getApiBase();
-        const res = await fetch(`${base}${path}`, options);
-        if (!res.ok) {
-            const errorText = await res.text();
-            throw new Error(errorText || `Request failed with status ${res.status}`);
-        }
-        return await res.json();
-    }
-
-    function badgeClass(status) {
-        if (status === 'submitted') return 'bg-success';
-        if (status === 'overdue') return 'bg-danger';
-        return 'bg-warning text-dark';
-    }
-
-    function renderStats() {
-        document.getElementById('assignmentTotal').textContent = assignments.length;
-        document.getElementById('assignmentSubmitted').textContent = assignments.filter((a) => a.status === 'submitted').length;
-        document.getElementById('assignmentPending').textContent = assignments.filter((a) => a.status === 'pending').length;
-        document.getElementById('assignmentRecordCount').textContent = `${assignments.length} Records`;
-    }
-
-    function renderTable() {
-        const tbody = document.getElementById('assignmentsTableBody');
-
-        if (!assignments.length) {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No assignments found</td></tr>';
-            return;
+                const d = await fetchFromApi('/assignments');
+                assignments = Array.isArray(d.assignments) ? d.assignments : [];
+                document.getElementById('assignmentTotal').textContent = assignments.length;
+                document.getElementById('courseCount').textContent = new Set(assignments.map(a => a.course?._id || a.course)).size;
+                document.getElementById('assignmentRecordCount').textContent = `${assignments.length} Records`;
+                renderTable();
+            } catch (e) { console.error(e); }
         }
 
-        tbody.innerHTML = assignments
-            .map((assignment) => {
-                const dueDate = assignment.dueDate ? new Date(assignment.dueDate).toLocaleDateString() : 'N/A';
-                return `
-                    <tr>
-                        <td>${assignment.title}</td>
-                        <td>${assignment.course}</td>
-                        <td>${dueDate}</td>
-                        <td><span class="badge ${badgeClass(assignment.status)}">${assignment.status}</span></td>
-                        <td>${assignment.maxMarks ?? 100}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm me-1" onclick="editAssignment('${assignment._id}')">Edit</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteAssignment('${assignment._id}')">Delete</button>
-                        </td>
-                    </tr>
-                `;
-            })
-            .join('');
-    }
-
-    async function loadAssignments() {
-        try {
-            const data = await fetchFromApi('/assignments');
-            assignments = Array.isArray(data.assignments) ? data.assignments : [];
-            renderStats();
-            renderTable();
-        } catch (error) {
-            console.error('Failed to load assignments:', error.message);
-            document.getElementById('assignmentsTableBody').innerHTML =
-                `<tr><td colspan="6" class="text-danger text-center">${error.message}</td></tr>`;
+        function badgeClass(type) {
+            if (type === 'case_study') return 'bg-info text-dark';
+            if (type === 'file_upload') return 'bg-primary';
+            return 'bg-warning text-dark';
         }
-    }
 
-    async function createAssignment() {
-        const title = prompt('Assignment title:');
-        if (!title) return;
-        const course = prompt('Course name:');
-        if (!course) return;
-        const dueDate = prompt('Due date (YYYY-MM-DD):', '2026-03-25');
-        if (!dueDate) return;
-        const status = prompt('Status (pending/submitted/overdue):', 'pending');
-        if (!status) return;
-        const maxMarks = Number(prompt('Max marks:', '100')) || 100;
-
-        try {
-            await fetchFromApi('/assignments', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, course, dueDate, status, maxMarks }),
-            });
-            await loadAssignments();
-        } catch (error) {
-            alert(`Failed to create assignment: ${error.message}`);
+        function renderTable() {
+            const tbody = document.getElementById('assignmentsTableBody');
+            if (!assignments.length) { tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No assignments found</td></tr>'; return; }
+            tbody.innerHTML = assignments.map(a => {
+                const due = a.dueDate ? new Date(a.dueDate).toLocaleDateString() : 'N/A';
+                const courseName = a.course?.title || 'N/A';
+                return `<tr>
+                    <td>${a.title}</td><td>${courseName}</td>
+                    <td><span class="badge ${badgeClass(a.type)}">${(a.type || '').replace('_', ' ')}</span></td>
+                    <td>${due}</td><td>${a.maxMarks || 100}</td>
+                    <td><button class="btn btn-outline-primary btn-sm" onclick="viewSubmissions('${a._id}')"><i class="bi bi-eye"></i> View</button></td>
+                    <td>
+                        <button class="btn btn-warning btn-sm me-1" onclick="editAssignment('${a._id}')">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteAssignment('${a._id}')">Delete</button>
+                    </td>
+                </tr>`;
+            }).join('');
         }
-    }
 
-    async function editAssignment(id) {
-        const assignment = assignments.find((a) => a._id === id);
-        if (!assignment) return;
-
-        const title = prompt('Assignment title:', assignment.title);
-        if (!title) return;
-        const course = prompt('Course name:', assignment.course);
-        if (!course) return;
-        const dueDateDefault = assignment.dueDate ? assignment.dueDate.slice(0, 10) : '2026-03-25';
-        const dueDate = prompt('Due date (YYYY-MM-DD):', dueDateDefault);
-        if (!dueDate) return;
-        const status = prompt('Status (pending/submitted/overdue):', assignment.status);
-        if (!status) return;
-        const maxMarks = Number(prompt('Max marks:', String(assignment.maxMarks ?? 100))) || (assignment.maxMarks ?? 100);
-
-        try {
-            await fetchFromApi(`/assignments/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, course, dueDate, status, maxMarks }),
-            });
-            await loadAssignments();
-        } catch (error) {
-            alert(`Failed to update assignment: ${error.message}`);
+        function resetForm() {
+            document.getElementById('assignmentModalTitle').textContent = 'Create Assignment';
+            document.getElementById('assignmentId').value = '';
+            document.getElementById('aTitle').value = '';
+            document.getElementById('aCourse').value = '';
+            document.getElementById('aType').value = 'case_study';
+            document.getElementById('aDueDate').value = '';
+            document.getElementById('aMaxMarks').value = '100';
+            document.getElementById('aInstructions').value = '';
+            document.getElementById('aModule').value = '';
         }
-    }
 
-    async function deleteAssignment(id) {
-        if (!confirm('Delete this assignment?')) return;
-        try {
-            await fetchFromApi(`/assignments/${id}`, { method: 'DELETE' });
-            await loadAssignments();
-        } catch (error) {
-            alert(`Failed to delete assignment: ${error.message}`);
+        function editAssignment(id) {
+            const a = assignments.find(x => x._id === id);
+            if (!a) return;
+            document.getElementById('assignmentModalTitle').textContent = 'Edit Assignment';
+            document.getElementById('assignmentId').value = id;
+            document.getElementById('aTitle').value = a.title;
+            document.getElementById('aCourse').value = a.course?._id || a.course;
+            document.getElementById('aType').value = a.type;
+            document.getElementById('aDueDate').value = a.dueDate ? a.dueDate.slice(0, 10) : '';
+            document.getElementById('aMaxMarks').value = a.maxMarks || 100;
+            document.getElementById('aInstructions').value = a.instructions || '';
+            document.getElementById('aModule').value = a.module || '';
+            new bootstrap.Modal(document.getElementById('assignmentModal')).show();
         }
-    }
 
-    document.getElementById('addAssignmentBtn').addEventListener('click', createAssignment);
-    document.addEventListener('DOMContentLoaded', loadAssignments);
-</script>
+        async function saveAssignment() {
+            const id = document.getElementById('assignmentId').value;
+            const data = {
+                title: document.getElementById('aTitle').value,
+                course: document.getElementById('aCourse').value,
+                type: document.getElementById('aType').value,
+                dueDate: document.getElementById('aDueDate').value,
+                maxMarks: Number(document.getElementById('aMaxMarks').value) || 100,
+                instructions: document.getElementById('aInstructions').value,
+                module: document.getElementById('aModule').value,
+            };
+            try {
+                if (id) await fetchFromApi(`/assignments/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                else await fetchFromApi('/assignments', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                bootstrap.Modal.getInstance(document.getElementById('assignmentModal')).hide();
+                await loadAssignments();
+            } catch (e) { alert(`Failed: ${e.message}`); }
+        }
+
+        async function deleteAssignment(id) {
+            if (!confirm('Delete this assignment?')) return;
+            try { await fetchFromApi(`/assignments/${id}`, { method: 'DELETE' }); await loadAssignments(); }
+            catch (e) { alert(`Failed: ${e.message}`); }
+        }
+
+        async function viewSubmissions(assignmentId) {
+            const body = document.getElementById('submissionsBody');
+            body.innerHTML = '<p class="text-muted">Loading submissions...</p>';
+            new bootstrap.Modal(document.getElementById('submissionsModal')).show();
+            try {
+                const d = await fetchFromApi(`/assignments/${assignmentId}/submissions`);
+                const subs = d.submissions || [];
+                document.getElementById('submissionCount').textContent = subs.length;
+                if (!subs.length) { body.innerHTML = '<p class="text-muted text-center">No submissions yet.</p>'; return; }
+                body.innerHTML = '<table class="table table-sm"><thead><tr><th>Student</th><th>Submitted At</th><th>Content</th><th>Grade</th><th>Action</th></tr></thead><tbody>' +
+                    subs.map(s => {
+                        const when = new Date(s.submittedAt).toLocaleString();
+                        const content = s.textContent ? s.textContent.substring(0, 60) + '...' : s.codeContent ? s.codeContent.substring(0, 60) + '...' : s.filePath ? `<a href="${s.filePath}" target="_blank">View File</a>` : 'N/A';
+                        return `<tr><td>${s.student?.name || 'Student'}</td><td>${when}</td><td>${content}</td><td>${s.grade !== null && s.grade !== undefined ? s.grade : 'Not graded'}</td><td><button class="btn btn-sm btn-outline-success" onclick="gradeSubmission('${s._id}')">Grade</button></td></tr>`;
+                    }).join('') + '</tbody></table>';
+            } catch (e) { body.innerHTML = `<p class="text-danger">${e.message}</p>`; }
+        }
+
+        async function gradeSubmission(submissionId) {
+            const grade = prompt('Enter grade:');
+            if (grade === null) return;
+            const feedback = prompt('Enter feedback (optional):') || '';
+            try {
+                await fetchFromApi(`/assignments/submissions/${submissionId}/grade`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ grade: Number(grade), feedback }),
+                });
+                alert('Graded successfully!');
+            } catch (e) { alert(`Failed: ${e.message}`); }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => { await loadCourses(); await loadAssignments(); });
+    </script>
+</body>
 
 </html>

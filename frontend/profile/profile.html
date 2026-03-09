@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - CRISMATECH</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/theme.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="../css/style.css">
     <style>
         .profile-banner {
-            background: linear-gradient(135deg, var(--primary-color), #0040a3);
+            background: var(--c-primary-gradient);
+            background-size: 200% 200%;
+            animation: gradientShift 6s ease infinite;
             height: 200px;
-            position: relative;
         }
 
         .profile-header {
             display: flex;
             align-items: flex-end;
-            gap: var(--spacing-lg);
-            margin-top: calc(-100px - var(--spacing-lg));
-            padding: 0 var(--spacing-xl);
-            margin-bottom: var(--spacing-2xl);
+            gap: 24px;
+            margin-top: -100px;
+            padding: 0 32px;
+            margin-bottom: 32px;
         }
 
         .profile-avatar {
             width: 140px;
             height: 140px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color), #0040a3);
+            background: linear-gradient(135deg, #0056D2, #0040a3);
             border: 5px solid white;
             display: flex;
             align-items: center;
@@ -35,46 +36,75 @@
             font-size: 56px;
             font-weight: 700;
             color: white;
-            box-shadow: var(--card-shadow-hover);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
         }
 
         .profile-info h1 {
             margin: 0;
-            color: var(--text-dark);
+            color: #1a202c;
             font-size: 28px;
             font-weight: 700;
         }
 
         .profile-info p {
-            margin: var(--spacing-xs) 0 0 0;
-            color: var(--text-light);
+            margin: 4px 0 0;
+            color: #64748b;
             font-size: 14px;
+        }
+
+        .stats-grid-profile {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 0 32px 32px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-item-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0056D2;
+        }
+
+        .stat-item-label {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 4px;
         }
 
         .profile-tabs {
             display: flex;
-            gap: var(--spacing-lg);
-            border-bottom: 2px solid var(--border-color);
-            margin-bottom: var(--spacing-2xl);
+            gap: 24px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 24px;
+            padding: 0 32px;
         }
 
         .profile-tabs button {
             background: none;
             border: none;
-            padding: var(--spacing-md) 0;
-            color: var(--text-light);
+            padding: 12px 0;
+            color: #64748b;
             font-weight: 600;
             cursor: pointer;
             position: relative;
-            transition: color var(--transition-duration) ease;
+            font-size: 14px;
+            transition: color 0.3s;
         }
 
         .profile-tabs button:hover {
-            color: var(--text-dark);
+            color: #1a202c;
         }
 
         .profile-tabs button.active {
-            color: var(--primary-color);
+            color: #0056D2;
         }
 
         .profile-tabs button.active::after {
@@ -84,77 +114,88 @@
             left: 0;
             right: 0;
             height: 2px;
-            background: var(--primary-color);
+            background: #0056D2;
         }
 
         .profile-section {
             display: none;
+            padding: 0 32px;
         }
 
         .profile-section.active {
             display: block;
         }
 
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 20px;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
         .form-group {
-            margin-bottom: var(--spacing-lg);
+            margin-bottom: 16px;
         }
 
         .form-group label {
             display: block;
             font-weight: 600;
             font-size: 14px;
-            margin-bottom: var(--spacing-sm);
-            color: var(--text-dark);
+            margin-bottom: 6px;
+            color: #1a202c;
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: var(--spacing-md);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
             font-size: 14px;
-            transition: border-color var(--transition-duration) ease;
+            transition: border-color 0.3s;
         }
 
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
-            border-color: var(--primary-color);
+            border-color: #0056D2;
             box-shadow: 0 0 0 3px rgba(0, 86, 210, 0.1);
         }
 
-        .form-group input:disabled,
-        .form-group select:disabled {
-            background-color: #f8f9fc;
+        .form-group input:disabled {
+            background: #f8f9fc;
             cursor: not-allowed;
         }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-lg);
+            gap: 16px;
         }
 
         .form-actions {
             display: flex;
-            gap: var(--spacing-md);
+            gap: 10px;
             justify-content: flex-end;
-            margin-top: var(--spacing-2xl);
+            margin-top: 20px;
         }
 
         .btn {
-            padding: var(--spacing-md) var(--spacing-lg);
-            border-radius: var(--border-radius);
+            padding: 10px 20px;
+            border-radius: 8px;
             border: none;
             font-weight: 600;
             cursor: pointer;
-            transition: all var(--transition-duration) ease;
             font-size: 14px;
+            transition: all 0.3s;
         }
 
         .btn-primary {
-            background: var(--primary-color);
+            background: #0056D2;
             color: white;
         }
 
@@ -163,40 +204,126 @@
         }
 
         .btn-secondary {
-            background: var(--bg-color);
-            color: var(--text-dark);
-            border: 1px solid var(--border-color);
+            background: #f1f5f9;
+            color: #1a202c;
+            border: 1px solid #e2e8f0;
         }
 
         .btn-secondary:hover {
-            background: #f0f0f0;
+            background: #e2e8f0;
         }
 
-        .stats-grid-profile {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-2xl);
-        }
-
-        .stat-item {
+        /* Aadhaar Upload */
+        .aadhaar-section {
+            border: 2px dashed #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
             text-align: center;
-            padding: var(--spacing-lg);
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--card-shadow);
+            margin-top: 20px;
+            transition: border-color 0.3s;
         }
 
-        .stat-item-number {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--primary-color);
+        .aadhaar-section:hover {
+            border-color: #0056D2;
         }
 
-        .stat-item-label {
+        .aadhaar-section i {
+            font-size: 36px;
+            color: #0056D2;
+        }
+
+        .aadhaar-section p {
+            color: #64748b;
             font-size: 13px;
-            color: var(--text-light);
-            margin-top: var(--spacing-xs);
+            margin-top: 8px;
+        }
+
+        .aadhaar-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .aadhaar-status.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .aadhaar-status.uploaded {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .aadhaar-status.verified {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        /* Course/Assignment/Quiz list items */
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .list-item-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a202c;
+            margin: 0;
+        }
+
+        .list-item-info p {
+            font-size: 12px;
+            color: #64748b;
+            margin: 2px 0 0;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-green {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-yellow {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-blue {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-red {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 12px;
         }
 
         @media (max-width: 768px) {
@@ -219,20 +346,14 @@
                 height: 100px;
                 font-size: 40px;
             }
-
-            .profile-info h1 {
-                font-size: 22px;
-            }
         }
     </style>
 </head>
+
 <body>
-    <!-- NAVBAR -->
     <nav class="navbar">
         <div class="navbar-container">
-            <div class="navbar-logo">
-                <span>CRISMATECH</span>
-            </div>
+            <div class="navbar-logo"><span>CRISMATECH</span></div>
             <ul class="navbar-menu">
                 <li><a href="../dashboard.html">Dashboard</a></li>
                 <li><a href="../courses/courses.html">Courses</a></li>
@@ -241,18 +362,15 @@
                 <li><a href="../certificate/certificate.html">Certificates</a></li>
             </ul>
             <div class="navbar-auth">
-                <a href="profile.html" style="color: var(--primary-color); font-weight: 700;">Profile</a>
-                <button class="btn-outline" onclick="logout()" style="padding: var(--spacing-sm) var(--spacing-lg);">Logout</button>
+                <a href="profile.html" style="color: #0056D2; font-weight: 700;">Profile</a>
+                <button class="btn-outline" onclick="logout()" style="padding: 6px 16px;">Logout</button>
             </div>
         </div>
     </nav>
 
-    <!-- PROFILE BANNER -->
     <div class="profile-banner"></div>
 
-    <!-- MAIN CONTENT -->
-    <div class="dashboard-container">
-        <!-- Profile Header -->
+    <div style="max-width: 1100px; margin: 0 auto;">
         <div class="profile-header">
             <div class="profile-avatar" id="avatarInitial">S</div>
             <div class="profile-info">
@@ -262,166 +380,124 @@
             </div>
         </div>
 
-        <!-- Stats Section -->
         <div class="stats-grid-profile">
             <div class="stat-item">
-                <div class="stat-item-number">5</div>
-                <div class="stat-item-label">Courses Enrolled</div>
+                <div class="stat-item-number" id="statCourses">0</div>
+                <div class="stat-item-label">Enrolled</div>
             </div>
             <div class="stat-item">
-                <div class="stat-item-number">2</div>
-                <div class="stat-item-label">Completed</div>
+                <div class="stat-item-number" id="statSubmitted">0</div>
+                <div class="stat-item-label">Submitted</div>
             </div>
             <div class="stat-item">
-                <div class="stat-item-number">87%</div>
-                <div class="stat-item-label">Avg. Progress</div>
+                <div class="stat-item-number" id="statQuizzes">0</div>
+                <div class="stat-item-label">Quizzes Taken</div>
             </div>
             <div class="stat-item">
-                <div class="stat-item-number">3</div>
-                <div class="stat-item-label">Certificates</div>
+                <div class="stat-item-number" id="statAttendance">0</div>
+                <div class="stat-item-label">Activities</div>
             </div>
         </div>
 
-        <!-- TABS -->
         <div class="profile-tabs">
-            <button class="active" onclick="switchTab(event, 'personal')">Personal Information</button>
-            <button onclick="switchTab(event, 'security')">Security</button>
-            <button onclick="switchTab(event, 'notifications')">Notifications</button>
+            <button class="active" onclick="switchTab(event, 'personal')">Personal Info</button>
+            <button onclick="switchTab(event, 'courses')">Enrolled Courses</button>
+            <button onclick="switchTab(event, 'assignments')">Assignments</button>
+            <button onclick="switchTab(event, 'quizzes')">Quiz Results</button>
         </div>
 
-        <!-- TAB: PERSONAL INFORMATION -->
+        <!-- Tab: Personal Info -->
         <div id="personal" class="profile-section active">
             <div class="card">
-                <div style="padding: var(--spacing-xl);">
-                    <h3 style="margin: 0 0 var(--spacing-xl) 0;">Personal Information</h3>
+                <div class="card-body">
+                    <h3 style="margin: 0 0 20px;">Personal Information</h3>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="inputName">Full Name</label>
-                            <input type="text" id="inputName" placeholder="Your full name" disabled>
+                        <div class="form-group"><label>Full Name</label><input type="text" id="inputName" disabled>
                         </div>
-                        <div class="form-group">
-                            <label for="inputEmail">Email Address</label>
-                            <input type="email" id="inputEmail" placeholder="Your email" disabled>
+                        <div class="form-group"><label>Email</label><input type="email" id="inputEmail" disabled></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Phone</label><input type="tel" id="inputPhone" disabled></div>
+                        <div class="form-group"><label>College</label><input type="text" id="inputCollege" disabled>
                         </div>
                     </div>
-
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="inputPhone">Phone Number</label>
-                            <input type="tel" id="inputPhone" placeholder="Your phone number" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputCollege">College / University</label>
-                            <input type="text" id="inputCollege" placeholder="Your college" disabled>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="inputBranch">Branch / Department</label>
-                            <input type="text" id="inputBranch" placeholder="Your branch" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputSemester">Semester</label>
+                        <div class="form-group"><label>Branch</label><input type="text" id="inputBranch" disabled></div>
+                        <div class="form-group"><label>Semester</label>
                             <select id="inputSemester" disabled>
-                                <option value="">Select Semester</option>
-                                <option value="1">Semester 1</option>
-                                <option value="2">Semester 2</option>
-                                <option value="3">Semester 3</option>
-                                <option value="4">Semester 4</option>
-                                <option value="5">Semester 5</option>
-                                <option value="6">Semester 6</option>
-                                <option value="7">Semester 7</option>
-                                <option value="8">Semester 8</option>
+                                <option value="">Select</option>
+                                <option value="1">Sem 1</option>
+                                <option value="2">Sem 2</option>
+                                <option value="3">Sem 3</option>
+                                <option value="4">Sem 4</option>
+                                <option value="5">Sem 5</option>
+                                <option value="6">Sem 6</option>
+                                <option value="7">Sem 7</option>
+                                <option value="8">Sem 8</option>
                             </select>
                         </div>
                     </div>
-
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="inputRole">Role</label>
-                            <input type="text" id="inputRole" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputJoined">Member Since</label>
-                            <input type="text" id="inputJoined" disabled>
+                        <div class="form-group"><label>Role</label><input type="text" id="inputRole" disabled></div>
+                        <div class="form-group"><label>Member Since</label><input type="text" id="inputJoined" disabled>
                         </div>
                     </div>
-
                     <div class="form-actions">
-                        <button class="btn btn-secondary" id="cancelBtn" style="display: none;" onclick="cancelEdit()">Cancel</button>
+                        <button class="btn btn-secondary" id="cancelBtn" style="display:none;"
+                            onclick="cancelEdit()">Cancel</button>
                         <button class="btn btn-primary" id="editBtn" onclick="toggleEdit()">Edit Profile</button>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- TAB: SECURITY -->
-        <div id="security" class="profile-section">
+            <!-- Aadhaar Upload -->
             <div class="card">
-                <div style="padding: var(--spacing-xl);">
-                    <h3 style="margin: 0 0 var(--spacing-xl) 0;">Change Password</h3>
-                    <div class="form-group">
-                        <label for="currentPassword">Current Password</label>
-                        <input type="password" id="currentPassword" placeholder="Enter your current password">
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="newPassword">New Password</label>
-                            <input type="password" id="newPassword" placeholder="At least 8 characters">
-                        </div>
-                        <div class="form-group">
-                            <label for="confirmPassword">Confirm Password</label>
-                            <input type="password" id="confirmPassword" placeholder="Repeat new password">
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                        <button class="btn btn-primary">Update Password</button>
+                <div class="card-body">
+                    <h3 style="margin: 0 0 12px;"><i class="bi bi-shield-check"></i> Aadhaar Verification</h3>
+                    <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">Upload your Aadhaar card for
+                        identity verification. Accepted formats: PDF, JPG, PNG (max 5MB).</p>
+                    <div class="aadhaar-section" id="aadhaarSection">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                        <p>Click or drag to upload your Aadhaar card</p>
+                        <input type="file" id="aadhaarFile" accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
+                        <button class="btn btn-primary" style="margin-top: 12px;"
+                            onclick="document.getElementById('aadhaarFile').click()">
+                            <i class="bi bi-upload"></i> Upload Aadhaar
+                        </button>
+                        <div id="aadhaarStatusBadge"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- TAB: NOTIFICATIONS -->
-        <div id="notifications" class="profile-section">
+        <!-- Tab: Enrolled Courses -->
+        <div id="courses" class="profile-section">
             <div class="card">
-                <div style="padding: var(--spacing-xl);">
-                    <h3 style="margin: 0 0 var(--spacing-xl) 0;">Notification Preferences</h3>
-                    
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-lg) 0; border-bottom: 1px solid var(--border-color);">
-                        <div>
-                            <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: var(--text-dark);">Email Notifications</h4>
-                            <p style="margin: var(--spacing-xs) 0 0 0; font-size: 13px; color: var(--text-light);">Receive updates via email</p>
-                        </div>
-                        <input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;">
+                <div class="card-body" id="enrolledCoursesList">
+                    <div class="empty-state"><i class="bi bi-journal-bookmark"></i>
+                        <p>No enrolled courses yet</p>
                     </div>
+                </div>
+            </div>
+        </div>
 
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-lg) 0; border-bottom: 1px solid var(--border-color);">
-                        <div>
-                            <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: var(--text-dark);">Assignment Reminders</h4>
-                            <p style="margin: var(--spacing-xs) 0 0 0; font-size: 13px; color: var(--text-light);">Get reminded before due dates</p>
-                        </div>
-                        <input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;">
+        <!-- Tab: Assignments -->
+        <div id="assignments" class="profile-section">
+            <div class="card">
+                <div class="card-body" id="assignmentsList">
+                    <div class="empty-state"><i class="bi bi-file-earmark-check"></i>
+                        <p>No assignment submissions yet</p>
                     </div>
+                </div>
+            </div>
+        </div>
 
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-lg) 0; border-bottom: 1px solid var(--border-color);">
-                        <div>
-                            <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: var(--text-dark);">Test Alerts</h4>
-                            <p style="margin: var(--spacing-xs) 0 0 0; font-size: 13px; color: var(--text-light);">Notified when a test is available</p>
-                        </div>
-                        <input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;">
-                    </div>
-
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-lg) 0;">
-                        <div>
-                            <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: var(--text-dark);">Course Updates</h4>
-                            <p style="margin: var(--spacing-xs) 0 0 0; font-size: 13px; color: var(--text-light);">New course announcements and updates</p>
-                        </div>
-                        <input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;">
-                    </div>
-
-                    <div class="form-actions" style="margin-top: var(--spacing-2xl);">
-                        <button class="btn btn-primary">Save Preferences</button>
+        <!-- Tab: Quiz Results -->
+        <div id="quizzes" class="profile-section">
+            <div class="card">
+                <div class="card-body" id="quizResultsList">
+                    <div class="empty-state"><i class="bi bi-ui-checks-grid"></i>
+                        <p>No quiz attempts yet</p>
                     </div>
                 </div>
             </div>
@@ -429,41 +505,46 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:5000/api';
+        const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
+            (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
+        );
+        let apiBase = null;
 
-        // Load user profile on page load
-        async function loadProfile() {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = '../login.html';
-                return;
+        async function getApiBase() {
+            if (apiBase) return apiBase;
+            for (const base of API_CANDIDATES) {
+                try { const r = await fetch(`${base}/courses`); if (r.ok) { apiBase = base; return base; } } catch (_) { }
             }
+            throw new Error('Unable to connect to backend API.');
+        }
 
+        function getToken() { return localStorage.getItem('token'); }
+
+        async function fetchAuth(path, options = {}) {
+            const base = await getApiBase();
+            const token = getToken();
+            options.headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
+            const res = await fetch(`${base}${path}`, options);
+            return await res.json();
+        }
+
+        async function loadProfile() {
+            const token = getToken();
+            if (!token) { window.location.href = '../login.html'; return; }
             try {
-                const res = await fetch(`${API_URL}/auth/me`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await res.json();
-
-                if (!data.success) {
-                    window.location.href = '../login.html';
-                    return;
-                }
-
+                const data = await fetchAuth('/auth/me');
+                if (!data.success) { window.location.href = '../login.html'; return; }
                 const u = data.user;
                 localStorage.setItem('user', JSON.stringify(u));
 
-                // Update avatar and header
                 const initials = u.name.split(' ').map(n => n[0]).join('').toUpperCase();
                 document.getElementById('avatarInitial').textContent = initials;
                 document.getElementById('profileName').textContent = u.name || '';
                 document.getElementById('profileEmail').textContent = u.email || '';
-
                 const joined = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '';
                 const role = u.role ? u.role.charAt(0).toUpperCase() + u.role.slice(1) : 'Student';
                 document.getElementById('profileMeta').textContent = `${role} · Enrolled since ${joined}`;
 
-                // Update form fields
                 document.getElementById('inputName').value = u.name || '';
                 document.getElementById('inputEmail').value = u.email || '';
                 document.getElementById('inputPhone').value = u.phone || '';
@@ -472,53 +553,127 @@
                 document.getElementById('inputSemester').value = u.semester || '';
                 document.getElementById('inputRole').value = role;
                 document.getElementById('inputJoined').value = joined;
-            } catch (err) {
-                console.error('Failed to load profile:', err);
-            }
+
+                // Aadhaar status
+                const badge = document.getElementById('aadhaarStatusBadge');
+                if (u.aadhaarVerified) {
+                    badge.innerHTML = '<div class="aadhaar-status verified"><i class="bi bi-check-circle"></i> Verified</div>';
+                } else if (u.aadhaarCardPath) {
+                    badge.innerHTML = '<div class="aadhaar-status uploaded"><i class="bi bi-clock"></i> Uploaded — Pending Verification</div>';
+                } else {
+                    badge.innerHTML = '<div class="aadhaar-status pending"><i class="bi bi-exclamation-circle"></i> Not Uploaded</div>';
+                }
+
+                // Stats
+                document.getElementById('statCourses').textContent = (u.enrolledCourses || []).length;
+
+                // Enrolled courses tab
+                if (u.enrolledCourses && u.enrolledCourses.length) {
+                    document.getElementById('enrolledCoursesList').innerHTML = u.enrolledCourses.map(c => `
+                        <div class="list-item">
+                            <div class="list-item-info"><h4>${c.title || 'Course'}</h4><p>${c.category || ''} · ${c.level || ''}</p></div>
+                            <span class="badge badge-blue">Enrolled</span>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) { console.error('Failed to load profile:', err); }
         }
+
+        async function loadSubmissions() {
+            try {
+                const data = await fetchAuth('/assignments/my-submissions');
+                if (data.success && data.submissions.length) {
+                    document.getElementById('statSubmitted').textContent = data.count;
+                    document.getElementById('assignmentsList').innerHTML = data.submissions.map(s => {
+                        const a = s.assignment || {};
+                        const due = a.dueDate ? new Date(a.dueDate).toLocaleDateString() : '';
+                        const graded = s.grade !== undefined && s.grade !== null;
+                        return `
+                            <div class="list-item">
+                                <div class="list-item-info">
+                                    <h4>${a.title || 'Assignment'}</h4>
+                                    <p>Type: ${(a.type || '').replace('_', ' ')} · Due: ${due}</p>
+                                </div>
+                                <span class="badge ${graded ? 'badge-green' : 'badge-yellow'}">${graded ? `${s.grade}/${a.maxMarks || 100}` : 'Submitted'}</span>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            } catch (_) { }
+        }
+
+        async function loadQuizAttempts() {
+            try {
+                const data = await fetchAuth('/tests/my-attempts');
+                if (data.success && data.attempts.length) {
+                    document.getElementById('statQuizzes').textContent = data.count;
+                    document.getElementById('quizResultsList').innerHTML = data.attempts.map(a => {
+                        const q = a.quiz || {};
+                        const pct = a.totalMarks > 0 ? Math.round((a.score / a.totalMarks) * 100) : 0;
+                        const color = pct >= 70 ? 'badge-green' : pct >= 40 ? 'badge-yellow' : 'badge-red';
+                        return `
+                            <div class="list-item">
+                                <div class="list-item-info">
+                                    <h4>${q.title || 'Quiz'}</h4>
+                                    <p>${q.course ? q.course.title : ''} · Tab switches: ${a.tabSwitchCount || 0}</p>
+                                </div>
+                                <span class="badge ${color}">${a.score}/${a.totalMarks} (${pct}%)</span>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            } catch (_) { }
+        }
+
+        async function loadAttendance() {
+            try {
+                const data = await fetchAuth('/attendance/my');
+                if (data.success) {
+                    document.getElementById('statAttendance').textContent = data.count;
+                }
+            } catch (_) { }
+        }
+
+        // Aadhaar upload
+        document.getElementById('aadhaarFile').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const formData = new FormData();
+            formData.append('aadhaarCard', file);
+            try {
+                const base = await getApiBase();
+                const res = await fetch(`${base}/auth/me/aadhaar`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${getToken()}` },
+                    body: formData,
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Aadhaar card uploaded successfully!');
+                    loadProfile();
+                } else {
+                    alert(data.message || 'Upload failed');
+                }
+            } catch (err) { alert('Upload error. Please try again.'); }
+        });
 
         let isEditing = false;
-
         function toggleEdit() {
             if (!isEditing) {
-                // Enter edit mode
                 isEditing = true;
-                document.getElementById('inputName').disabled = false;
-                document.getElementById('inputPhone').disabled = false;
-                document.getElementById('inputCollege').disabled = false;
-                document.getElementById('inputBranch').disabled = false;
-                document.getElementById('inputSemester').disabled = false;
+                ['inputName', 'inputPhone', 'inputCollege', 'inputBranch', 'inputSemester'].forEach(id => document.getElementById(id).disabled = false);
                 document.getElementById('editBtn').textContent = 'Save Changes';
                 document.getElementById('cancelBtn').style.display = 'inline-block';
-            } else {
-                // Save changes
-                saveProfile();
-            }
+            } else { saveProfile(); }
         }
-
         function cancelEdit() {
             isEditing = false;
-            document.getElementById('inputName').disabled = true;
-            document.getElementById('inputPhone').disabled = true;
-            document.getElementById('inputCollege').disabled = true;
-            document.getElementById('inputBranch').disabled = true;
-            document.getElementById('inputSemester').disabled = true;
+            ['inputName', 'inputPhone', 'inputCollege', 'inputBranch', 'inputSemester'].forEach(id => document.getElementById(id).disabled = true);
             document.getElementById('editBtn').textContent = 'Edit Profile';
             document.getElementById('cancelBtn').style.display = 'none';
-
-            // Reload original data
-            const u = JSON.parse(localStorage.getItem('user'));
-            if (u) {
-                document.getElementById('inputName').value = u.name || '';
-                document.getElementById('inputPhone').value = u.phone || '';
-                document.getElementById('inputCollege').value = u.college || '';
-                document.getElementById('inputBranch').value = u.branch || '';
-                document.getElementById('inputSemester').value = u.semester || '';
-            }
+            loadProfile();
         }
-
         async function saveProfile() {
-            const token = localStorage.getItem('token');
             const body = {
                 name: document.getElementById('inputName').value.trim(),
                 phone: document.getElementById('inputPhone').value.trim(),
@@ -526,60 +681,27 @@
                 branch: document.getElementById('inputBranch').value.trim(),
                 semester: document.getElementById('inputSemester').value || null,
             };
-
             try {
-                const res = await fetch(`${API_URL}/auth/me`, {
+                const data = await fetchAuth('/auth/me', {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body),
                 });
-                const data = await res.json();
-
                 if (data.success) {
-                    const u = data.user;
-                    localStorage.setItem('user', JSON.stringify(u));
-
-                    // Update header
-                    const initials = u.name.split(' ').map(n => n[0]).join('').toUpperCase();
-                    document.getElementById('avatarInitial').textContent = initials;
-                    document.getElementById('profileName').textContent = u.name || '';
-
-                    // Exit edit mode
                     isEditing = false;
-                    document.getElementById('inputName').disabled = true;
-                    document.getElementById('inputPhone').disabled = true;
-                    document.getElementById('inputCollege').disabled = true;
-                    document.getElementById('inputBranch').disabled = true;
-                    document.getElementById('inputSemester').disabled = true;
+                    ['inputName', 'inputPhone', 'inputCollege', 'inputBranch', 'inputSemester'].forEach(id => document.getElementById(id).disabled = true);
                     document.getElementById('editBtn').textContent = 'Edit Profile';
                     document.getElementById('cancelBtn').style.display = 'none';
-
-                    alert('Profile updated successfully!');
-                } else {
-                    alert(data.message || 'Failed to update profile');
-                }
-            } catch (err) {
-                alert('Server error. Please try again.');
-            }
+                    alert('Profile updated!');
+                    loadProfile();
+                } else { alert(data.message || 'Failed to update'); }
+            } catch (err) { alert('Server error.'); }
         }
 
         function switchTab(e, tabName) {
             e.preventDefault();
-            
-            // Hide all tabs
-            document.querySelectorAll('.profile-section').forEach(section => {
-                section.classList.remove('active');
-            });
-
-            // Remove active class from all buttons
-            document.querySelectorAll('.profile-tabs button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            // Show selected tab and mark button as active
+            document.querySelectorAll('.profile-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.profile-tabs button').forEach(b => b.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
             e.target.classList.add('active');
         }
@@ -592,8 +714,13 @@
             }
         }
 
-        // Load profile on page load
-        document.addEventListener('DOMContentLoaded', loadProfile);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProfile();
+            loadSubmissions();
+            loadQuizAttempts();
+            loadAttendance();
+        });
     </script>
 </body>
+
 </html>
