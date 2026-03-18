@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/userModel');
+const User = require('../modules/auth/auth.model');
 
 const getTokenFromRequest = (req) => {
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {

@@ -1,10 +1,10 @@
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
-const User = require('../models/userModel');
-const Course = require('../models/courseModel');
-const Assignment = require('../models/assignmentModel');
-const Test = require('../models/testModel');
-const Certificate = require('../models/certificateModel');
+const User = require('../modules/auth/auth.model');
+const Course = require('../modules/course/course.model');
+const Assignment = require('../modules/assignment/assignment.model');
+const Test = require('../modules/test/test.model');
+const Certificate = require('../modules/certificate/certificate.model');
 
 dotenv.config();
 

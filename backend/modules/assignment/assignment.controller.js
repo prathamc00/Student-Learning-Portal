@@ -1,6 +1,6 @@
-const Assignment = require('../models/assignmentModel');
-const Course = require('../models/courseModel');
-const Submission = require('../models/submissionModel');
+const Assignment = require('./assignment.model');
+const Course = require('../course/course.model');
+const Submission = require('./submission.model');
 
 const canManageAssignment = (assignment, user) => user.role === 'admin' || String(assignment.createdBy) === String(user._id);
 
@@ -38,9 +38,6 @@ const getManagedAssignments = async (req, res) => {
     }
 };
 
-// @desc    Get all assignments
-// @route   GET /api/assignments
-// @access  Public
 const getAssignments = async (req, res) => {
     try {
         const page = parseInt(req.query.page, 10) || 1;
@@ -54,9 +51,6 @@ const getAssignments = async (req, res) => {
     }
 };
 
-// @desc    Get assignment by ID
-// @route   GET /api/assignments/:id
-// @access  Public
 const getAssignmentById = async (req, res) => {
     try {
         const assignment = await Assignment.findById(req.params.id).populate('course', 'title');
@@ -69,9 +63,6 @@ const getAssignmentById = async (req, res) => {
     }
 };
 
-// @desc    Create assignment (admin)
-// @route   POST /api/assignments
-// @access  Private (admin)
 const createAssignment = async (req, res) => {
     try {
         const data = { ...req.body };
@@ -96,9 +87,6 @@ const createAssignment = async (req, res) => {
     }
 };
 
-// @desc    Update assignment (admin)
-// @route   PUT /api/assignments/:id
-// @access  Private (admin)
 const updateAssignment = async (req, res) => {
     try {
         const assignment = await Assignment.findById(req.params.id);
@@ -131,9 +119,6 @@ const updateAssignment = async (req, res) => {
     }
 };
 
-// @desc    Delete assignment (admin)
-// @route   DELETE /api/assignments/:id
-// @access  Private (admin)
 const deleteAssignment = async (req, res) => {
     try {
         const assignment = await Assignment.findById(req.params.id);
@@ -143,7 +128,6 @@ const deleteAssignment = async (req, res) => {
 
         ensureAssignmentAccess(assignment, req.user);
         await assignment.deleteOne();
-        // Also delete related submissions
         await Submission.deleteMany({ assignment: req.params.id });
         res.status(200).json({ success: true, message: 'Assignment deleted' });
     } catch (error) {
@@ -154,9 +138,6 @@ const deleteAssignment = async (req, res) => {
     }
 };
 
-// @desc    Submit an assignment (student)
-// @route   POST /api/assignments/:id/submit
-// @access  Private
 const submitAssignment = async (req, res) => {
     try {
         const assignment = await Assignment.findById(req.params.id);
@@ -164,7 +145,6 @@ const submitAssignment = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Assignment not found' });
         }
 
-        // Check if already submitted
         const existing = await Submission.findOne({ assignment: req.params.id, student: req.user._id });
         if (existing) {
             return res.status(409).json({ success: false, message: 'You have already submitted this assignment' });
@@ -191,9 +171,6 @@ const submitAssignment = async (req, res) => {
     }
 };
 
-// @desc    Get submissions for an assignment (admin)
-// @route   GET /api/assignments/:id/submissions
-// @access  Private (admin)
 const getSubmissions = async (req, res) => {
     try {
         const assignment = await Assignment.findById(req.params.id);
@@ -216,9 +193,6 @@ const getSubmissions = async (req, res) => {
     }
 };
 
-// @desc    Get my submissions (student)
-// @route   GET /api/assignments/my-submissions
-// @access  Private
 const getMySubmissions = async (req, res) => {
     try {
         const submissions = await Submission.find({ student: req.user._id })
@@ -231,9 +205,6 @@ const getMySubmissions = async (req, res) => {
     }
 };
 
-// @desc    Grade a submission (admin)
-// @route   PUT /api/assignments/submissions/:id/grade
-// @access  Private (admin)
 const gradeSubmission = async (req, res) => {
     try {
         const { grade, feedback } = req.body;

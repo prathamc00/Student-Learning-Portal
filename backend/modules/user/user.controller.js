@@ -1,4 +1,4 @@
-const User = require('../models/userModel');
+const User = require('../auth/auth.model');
 
 const getUsers = async (req, res) => {
     try {
@@ -52,4 +52,33 @@ const updateInstructorStatus = async (req, res) => {
     }
 };
 
-module.exports = { getUsers, deleteUser, updateInstructorStatus };
+const exportUsersCSV = async (req, res) => {
+    try {
+        const users = await User.find({}).select('-password').sort({ createdAt: -1 });
+
+        let csv = 'Name,Email,Role,College,Branch,Semester,Phone,Status,Joined Date\n';
+
+        users.forEach((u) => {
+            const name = `"${(u.name || '').replace(/"/g, '""')}"`;
+            const email = `"${(u.email || '').replace(/"/g, '""')}"`;
+            const role = `"${(u.role || '').replace(/"/g, '""')}"`;
+            const college = `"${(u.college || '').replace(/"/g, '""')}"`;
+            const branch = `"${(u.branch || '').replace(/"/g, '""')}"`;
+            const semester = `"${(u.semester || '').replace(/"/g, '""')}"`;
+            const phone = `"${(u.phone || '').replace(/"/g, '""')}"`;
+            const status = `"${(u.approvalStatus || '').replace(/"/g, '""')}"`;
+            const date = u.createdAt ? new Date(u.createdAt).toISOString().split('T')[0] : '';
+
+            csv += `${name},${email},${role},${college},${branch},${semester},${phone},${status},${date}\n`;
+        });
+
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename=users_export.csv');
+        res.status(200).send(csv);
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to export users', error: error.message });
+    }
+};
+
+module.exports = { getUsers, deleteUser, updateInstructorStatus, exportUsersCSV };
+

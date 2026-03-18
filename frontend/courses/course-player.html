@@ -253,8 +253,17 @@
                 </div>
             </div>
             <div class="course-info">
-                <h2 id="moduleTitle">Select a Module</h2>
-                <p id="moduleDesc">Click on a module from the sidebar to start learning.</p>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h2 id="moduleTitle">Select a Module</h2>
+                        <p id="moduleDesc">Click on a module from the sidebar to start learning.</p>
+                    </div>
+                    <div id="notesDownloadContainer" style="display: none;">
+                        <a id="downloadNotesBtn" href="#" target="_blank" style="background: rgba(13, 202, 240, 0.1); border: 1px solid #0dcaf0; color: #0dcaf0; padding: 6px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s;">
+                            <i class="bi bi-file-earmark-pdf"></i> Download PDF Notes
+                        </a>
+                    </div>
+                </div>
             </div>
             <div id="enrollSection" style="display:none;">
                 <div class="enroll-section">
@@ -352,6 +361,17 @@
 
             document.getElementById('moduleTitle').textContent = m.title;
             document.getElementById('moduleDesc').textContent = m.description || '';
+
+            const notesContainer = document.getElementById('notesDownloadContainer');
+            const notesBtn = document.getElementById('downloadNotesBtn');
+            if (m.notesUrl) {
+                notesContainer.style.display = 'block';
+                getApiBase().then(base => {
+                    notesBtn.href = m.notesUrl.startsWith('http') ? m.notesUrl : `${base.replace('/api', '')}/${m.notesUrl}`;
+                });
+            } else {
+                notesContainer.style.display = 'none';
+            }
 
             const container = document.getElementById('videoContainer');
             if (m.videoUrl) {

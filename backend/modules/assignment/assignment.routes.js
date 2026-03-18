@@ -13,12 +13,12 @@ const {
     getSubmissions,
     getMySubmissions,
     gradeSubmission,
-} = require('../controllers/assignmentController');
-const { protect, staffOnly } = require('../middleware/authMiddleware');
+} = require('./assignment.controller');
+const { protect, staffOnly } = require('../../middlewares/auth.middleware');
 
 // Assignment file upload config
 const assignmentStorage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, path.join(__dirname, '..', 'uploads', 'assignments')),
+    destination: (req, file, cb) => cb(null, path.join(__dirname, '..', '..', 'uploads', 'assignments')),
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
         cb(null, `submission_${req.user.id}_${Date.now()}${ext}`);

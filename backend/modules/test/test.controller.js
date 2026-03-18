@@ -1,6 +1,6 @@
-const Test = require('../models/testModel');
-const Course = require('../models/courseModel');
-const QuizAttempt = require('../models/quizAttemptModel');
+const Test = require('./test.model');
+const Course = require('../course/course.model');
+const QuizAttempt = require('./quizAttempt.model');
 
 const canManageTest = (test, user) => user.role === 'admin' || String(test.createdBy) === String(user._id);
 
@@ -34,13 +34,9 @@ const getManagedTests = async (req, res) => {
     }
 };
 
-// @desc    Get all tests
-// @route   GET /api/tests
-// @access  Public
 const getTests = async (req, res) => {
     try {
         const tests = await Test.find({}).populate('course', 'title').sort({ startTime: -1 });
-        // Strip correct answers for non-admin
         const isAdmin = req.user && req.user.role === 'admin';
         const sanitized = tests.map((t) => {
             const obj = t.toObject();
@@ -55,9 +51,6 @@ const getTests = async (req, res) => {
     }
 };
 
-// @desc    Get test by ID
-// @route   GET /api/tests/:id
-// @access  Public
 const getTestById = async (req, res) => {
     try {
         const test = await Test.findById(req.params.id).populate('course', 'title');
@@ -75,9 +68,6 @@ const getTestById = async (req, res) => {
     }
 };
 
-// @desc    Create test (admin)
-// @route   POST /api/tests
-// @access  Private (admin)
 const createTest = async (req, res) => {
     try {
         const data = { ...req.body };
@@ -102,9 +92,6 @@ const createTest = async (req, res) => {
     }
 };
 
-// @desc    Update test (admin)
-// @route   PUT /api/tests/:id
-// @access  Private (admin)
 const updateTest = async (req, res) => {
     try {
         const test = await Test.findById(req.params.id);
@@ -137,9 +124,6 @@ const updateTest = async (req, res) => {
     }
 };
 
-// @desc    Delete test (admin)
-// @route   DELETE /api/tests/:id
-// @access  Private (admin)
 const deleteTest = async (req, res) => {
     try {
         const test = await Test.findById(req.params.id);
@@ -159,9 +143,6 @@ const deleteTest = async (req, res) => {
     }
 };
 
-// @desc    Start quiz attempt (student)
-// @route   POST /api/tests/:id/start
-// @access  Private
 const startQuiz = async (req, res) => {
     try {
         const test = await Test.findById(req.params.id).populate('course', 'title');
@@ -177,20 +158,17 @@ const startQuiz = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Quiz has ended' });
         }
 
-        // Check if already attempted
         const existing = await QuizAttempt.findOne({ quiz: req.params.id, student: req.user._id });
         if (existing) {
             return res.status(409).json({ success: false, message: 'You have already attempted this quiz', attempt: existing });
         }
 
-        // Create attempt record
         const attempt = await QuizAttempt.create({
             quiz: req.params.id,
             student: req.user._id,
             startedAt: new Date(),
         });
 
-        // Send questions without correct answers
         const questions = test.questions.map((q, i) => ({
             index: i,
             question: q.question,
@@ -212,9 +190,6 @@ const startQuiz = async (req, res) => {
     }
 };
 
-// @desc    Submit quiz (student)
-// @route   POST /api/tests/:id/submit
-// @access  Private
 const submitQuiz = async (req, res) => {
     try {
         const { answers, tabSwitchCount } = req.body;
@@ -233,7 +208,6 @@ const submitQuiz = async (req, res) => {
             return res.status(409).json({ success: false, message: 'Quiz already submitted' });
         }
 
-        // Auto-grade
         let score = 0;
         const totalMarks = test.questions.length;
         if (Array.isArray(answers)) {
@@ -265,9 +239,6 @@ const submitQuiz = async (req, res) => {
     }
 };
 
-// @desc    Get my quiz attempts (student)
-// @route   GET /api/tests/my-attempts
-// @access  Private
 const getMyAttempts = async (req, res) => {
     try {
         const attempts = await QuizAttempt.find({ student: req.user._id })
@@ -284,9 +255,6 @@ const getMyAttempts = async (req, res) => {
     }
 };
 
-// @desc    Get all attempts for a quiz (admin)
-// @route   GET /api/tests/:id/results
-// @access  Private (admin)
 const getQuizResults = async (req, res) => {
     try {
         const test = await Test.findById(req.params.id);

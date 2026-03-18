@@ -1,8 +1,5 @@
-const Attendance = require('../models/attendanceModel');
+const Attendance = require('./attendance.model');
 
-// @desc    Track a student activity (auto-attendance)
-// @route   POST /api/attendance
-// @access  Private
 const trackActivity = async (req, res) => {
     try {
         const { courseId, activityType, details } = req.body;
@@ -28,9 +25,6 @@ const trackActivity = async (req, res) => {
     }
 };
 
-// @desc    Get logged-in student's attendance
-// @route   GET /api/attendance/my
-// @access  Private
 const getMyAttendance = async (req, res) => {
     try {
         const records = await Attendance.find({ student: req.user._id })
@@ -43,9 +37,6 @@ const getMyAttendance = async (req, res) => {
     }
 };
 
-// @desc    Get attendance records for a course (admin)
-// @route   GET /api/attendance/course/:courseId
-// @access  Private (admin)
 const getCourseAttendance = async (req, res) => {
     try {
         const records = await Attendance.find({ course: req.params.courseId })
@@ -59,9 +50,6 @@ const getCourseAttendance = async (req, res) => {
     }
 };
 
-// @desc    Get all attendance records (admin)
-// @route   GET /api/attendance
-// @access  Private (admin)
 const getAllAttendance = async (req, res) => {
     try {
         const records = await Attendance.find({})

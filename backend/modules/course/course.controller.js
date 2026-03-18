@@ -1,4 +1,4 @@
-const Course = require('../models/courseModel');
+const Course = require('./course.model');
 const path = require('path');
 
 const canManageCourse = (course, user) => user.role === 'admin' || String(course.createdBy) === String(user._id);
@@ -116,9 +116,6 @@ const deleteCourse = async (req, res) => {
     }
 };
 
-// @desc    Get all modules for a course
-// @route   GET /api/courses/:id/modules
-// @access  Public
 const getModules = async (req, res) => {
     try {
         const course = await Course.findById(req.params.id).select('title modules');
@@ -132,9 +129,6 @@ const getModules = async (req, res) => {
     }
 };
 
-// @desc    Add module (with optional video) to course
-// @route   POST /api/courses/:id/modules
-// @access  Private (admin)
 const addModule = async (req, res) => {
     try {
         const course = await Course.findById(req.params.id);
@@ -151,8 +145,12 @@ const addModule = async (req, res) => {
             order: req.body.order !== undefined ? Number(req.body.order) : course.modules.length,
         };
 
-        if (req.file) {
-            moduleData.videoUrl = 'uploads/videos/' + req.file.filename;
+        if (req.files && req.files.video && req.files.video[0]) {
+            moduleData.videoUrl = 'uploads/videos/' + req.files.video[0].filename;
+        }
+
+        if (req.files && req.files.notes && req.files.notes[0]) {
+            moduleData.notesUrl = 'uploads/notes/' + req.files.notes[0].filename;
         }
 
         course.modules.push(moduleData);
@@ -168,9 +166,6 @@ const addModule = async (req, res) => {
     }
 };
 
-// @desc    Update a module (edit details, optionally replace video)
-// @route   PUT /api/courses/:id/modules/:moduleId
-// @access  Private (admin)
 const updateModule = async (req, res) => {
     try {
         const course = await Course.findById(req.params.id);
@@ -190,8 +185,12 @@ const updateModule = async (req, res) => {
         if (req.body.duration !== undefined) mod.duration = req.body.duration;
         if (req.body.order !== undefined) mod.order = Number(req.body.order);
 
-        if (req.file) {
-            mod.videoUrl = 'uploads/videos/' + req.file.filename;
+        if (req.files && req.files.video && req.files.video[0]) {
+            mod.videoUrl = 'uploads/videos/' + req.files.video[0].filename;
+        }
+
+        if (req.files && req.files.notes && req.files.notes[0]) {
+            mod.notesUrl = 'uploads/notes/' + req.files.notes[0].filename;
         }
 
         await course.save();
@@ -204,9 +203,6 @@ const updateModule = async (req, res) => {
     }
 };
 
-// @desc    Delete module from course
-// @route   DELETE /api/courses/:id/modules/:moduleId
-// @access  Private (admin)
 const deleteModule = async (req, res) => {
     try {
         const course = await Course.findById(req.params.id);
@@ -217,7 +213,6 @@ const deleteModule = async (req, res) => {
         ensureCourseAccess(course, req.user);
 
         course.modules = course.modules.filter((m) => m._id.toString() !== req.params.moduleId);
-        // Re-number orders
         course.modules.forEach((m, i) => { m.order = i; });
         course.lessons = course.modules.length || 0;
         await course.save();
@@ -231,9 +226,6 @@ const deleteModule = async (req, res) => {
     }
 };
 
-// @desc    Reorder modules inside a course
-// @route   PUT /api/courses/:id/modules/reorder
-// @access  Private (admin)
 const reorderModules = async (req, res) => {
     try {
         const course = await Course.findById(req.params.id);
@@ -243,7 +235,7 @@ const reorderModules = async (req, res) => {
 
         ensureCourseAccess(course, req.user);
 
-        const { moduleOrder } = req.body; // array of moduleId strings in desired order
+        const { moduleOrder } = req.body;
         if (!Array.isArray(moduleOrder)) {
             return res.status(400).json({ success: false, message: 'moduleOrder must be an array of module IDs' });
         }

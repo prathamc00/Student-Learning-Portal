@@ -4,6 +4,7 @@ const moduleSchema = new mongoose.Schema({
     title: { type: String, required: true, trim: true },
     description: { type: String, trim: true },
     videoUrl: { type: String },
+    notesUrl: { type: String },
     duration: { type: String, default: '' }, // e.g. "12:30" or "1h 15m"
     order: { type: Number, default: 0 },
 });

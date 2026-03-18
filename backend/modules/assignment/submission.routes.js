@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { protect } = require('../middleware/authMiddleware');
-const Submission = require('../models/submissionModel');
+const { protect } = require('../../middlewares/auth.middleware');
+const Submission = require('./submission.model');
 
 // @desc    Get all submissions (for current user or admin)
 // @route   GET /api/submissions

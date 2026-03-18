@@ -14,12 +14,12 @@ const {
     forgotPassword,
     validateResetToken,
     resetPassword,
-} = require('../controllers/authController');
-const { protect } = require('../middleware/authMiddleware');
+} = require('./auth.controller');
+const { protect } = require('../../middlewares/auth.middleware');
 
 // Aadhaar upload config
 const aadhaarStorage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, path.join(__dirname, '..', 'uploads', 'aadhaar')),
+    destination: (req, file, cb) => cb(null, path.join(__dirname, '..', '..', 'uploads', 'aadhaar')),
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
         cb(null, `aadhaar_${req.user.id}_${Date.now()}${ext}`);

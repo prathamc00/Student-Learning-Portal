@@ -100,7 +100,10 @@
 
             <div class="table-card slide-up" style="animation-delay:.2s">
                 <div class="table-card-header">
-                    <h5>All Users</h5>
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <h5>All Users</h5>
+                        <button onclick="exportUserData()" class="btn btn-sm btn-outline-success" style="padding: 4px 12px; font-weight: 600;"><i class="bi bi-file-earmark-arrow-down"></i> Export CSV</button>
+                    </div>
                     <span id="usersRecordCount" class="record-count">0 Records</span>
                 </div>
                 <table class="table-modern">
@@ -232,6 +235,30 @@
             if (!confirm('Delete this user?')) return;
             try { await fetchFromApi(`/users/${id}`, { method: 'DELETE' }); await loadUsers(); }
             catch (e) { alert(`Failed: ${e.message}`); }
+        }
+
+        async function exportUserData() {
+            try {
+                const base = await getApiBase();
+                const res = await fetch(`${base}/users/export`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (!res.ok) {
+                    const errorMsg = await res.text();
+                    throw new Error(errorMsg || `Export failed: ${res.status}`);
+                }
+                const blob = await res.blob();
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = 'students_data.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(downloadUrl);
+            } catch (e) {
+                alert('Export failed: ' + e.message);
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {

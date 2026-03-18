@@ -352,8 +352,17 @@
                             <input type="file" class="form-control" id="lessonVideo" accept=".mp4,.mkv,.avi,.webm,.mov">
                         </div>
                     </div>
-                    <div id="currentVideoInfo" style="display:none;" class="alert alert-info py-2 mb-0">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label">PDF Notes (Optional)</label>
+                            <input type="file" class="form-control" id="lessonNotes" accept=".pdf">
+                        </div>
+                    </div>
+                    <div id="currentVideoInfo" style="display:none;" class="alert alert-info py-2 mb-0 mt-2">
                         <small><i class="bi bi-film"></i> Current video: <span id="currentVideoName"></span></small>
+                    </div>
+                    <div id="currentNotesInfo" style="display:none;" class="alert alert-secondary py-2 mb-0 mt-2">
+                        <small><i class="bi bi-file-earmark-pdf"></i> Current notes: <span id="currentNotesName"></span></small>
                     </div>
                     <div id="uploadProgressContainer" style="display:none; margin-top: 15px;">
                         <label class="form-label" style="font-size: 12px; font-weight: 600; color: var(--c-primary);" id="uploadStatusText">Uploading...</label>
@@ -654,6 +663,7 @@
                     <div class="lesson-meta">
                         ${m.duration ? `<span class="badge bg-light text-dark"><i class="bi bi-clock"></i> ${m.duration}</span>` : ''}
                         ${hasVideo ? '<span class="badge bg-success"><i class="bi bi-check-circle"></i> Video</span>' : '<span class="badge bg-warning text-dark">No Video</span>'}
+                        ${m.notesUrl ? '<span class="badge bg-info"><i class="bi bi-file-earmark-pdf"></i> Notes</span>' : ''}
                     </div>
                     <div class="lesson-actions">
                         <button class="btn btn-outline-primary btn-sm" onclick="editLesson('${m._id}', ${JSON.stringify(m).replace(/'/g, "\\'").replace(/"/g, '&quot;')})"><i class="bi bi-pencil"></i></button>
@@ -672,7 +682,9 @@
             document.getElementById('lessonDuration').value = '';
             document.getElementById('lessonOrder').value = '';
             document.getElementById('lessonVideo').value = '';
+            document.getElementById('lessonNotes').value = '';
             document.getElementById('currentVideoInfo').style.display = 'none';
+            document.getElementById('currentNotesInfo').style.display = 'none';
             document.getElementById('uploadProgressContainer').style.display = 'none';
             document.getElementById('saveLessonBtn').textContent = 'Add Lesson';
         }
@@ -696,6 +708,14 @@
                 document.getElementById('currentVideoInfo').style.display = 'none';
             }
 
+            if (m.notesUrl) {
+                document.getElementById('currentNotesInfo').style.display = 'block';
+                const fname = m.notesUrl.split('/').pop();
+                document.getElementById('currentNotesName').textContent = fname;
+            } else {
+                document.getElementById('currentNotesInfo').style.display = 'none';
+            }
+
             new bootstrap.Modal(document.getElementById('lessonModal')).show();
         }
 
@@ -717,6 +737,12 @@
             if (videoFile) {
                 formData.append('video', videoFile);
                 console.log('[Upload] Video selected:', videoFile.name, 'Size:', (videoFile.size / 1024 / 1024).toFixed(2), 'MB');
+            }
+
+            const notesFile = document.getElementById('lessonNotes').files[0];
+            if (notesFile) {
+                formData.append('notes', notesFile);
+                console.log('[Upload] Notes selected:', notesFile.name);
             }
 
             let base;

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { protect } = require('../middleware/authMiddleware');
-const QuizAttempt = require('../models/quizAttemptModel');
+const { protect } = require('../../middlewares/auth.middleware');
+const QuizAttempt = require('./quizAttempt.model');
 
 // @desc    Get all quiz attempts (for current user or admin)
 // @route   GET /api/quiz-attempts

@@ -8,6 +8,6 @@
     "*.webm",
     "*.mov"
   ],
-  "watch": ["*.js", "routes/", "controllers/", "models/", "middleware/", "config/"],
+  "watch": ["app.js", "server.js", "modules/", "middlewares/", "config/", "common/"],
   "ext": "js,json"
 }

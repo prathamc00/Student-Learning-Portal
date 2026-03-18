@@ -5,8 +5,8 @@ const {
     createCertificate,
     updateCertificate,
     deleteCertificate,
-} = require('../controllers/certificateController');
-const { protect, staffOnly } = require('../middleware/authMiddleware');
+} = require('./certificate.controller');
+const { protect, staffOnly } = require('../../middlewares/auth.middleware');
 
 const router = express.Router();
 

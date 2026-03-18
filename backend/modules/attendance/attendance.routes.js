@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { trackActivity, getMyAttendance, getCourseAttendance, getAllAttendance } = require('../controllers/attendanceController');
-const { protect, adminOnly } = require('../middleware/authMiddleware');
+const { trackActivity, getMyAttendance, getCourseAttendance, getAllAttendance } = require('./attendance.controller');
+const { protect, adminOnly } = require('../../middlewares/auth.middleware');
 
 router.post('/', protect, trackActivity);
 router.get('/my', protect, getMyAttendance);

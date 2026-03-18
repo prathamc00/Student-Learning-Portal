@@ -1,4 +1,4 @@
-const User = require('../models/userModel');
+const User = require('./auth.model');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const nodemailer = require('nodemailer');
@@ -49,9 +49,6 @@ const getResetPageBaseUrl = (req) => {
     return `${req.protocol}://${req.get('host')}/password/reset.html`;
 };
 
-// @desc    Register a new user
-// @route   POST /api/auth/register
-// @access  Public
 const register = async (req, res) => {
     try {
         const { name, email, password, college, branch, semester, phone, role } = req.body;
@@ -95,9 +92,6 @@ const register = async (req, res) => {
     }
 };
 
-// @desc    Login user
-// @route   POST /api/auth/login
-// @access  Public
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -139,9 +133,6 @@ const login = async (req, res) => {
     }
 };
 
-// @desc    Get current logged-in user profile
-// @route   GET /api/auth/me
-// @access  Private
 const getMe = async (req, res) => {
     try {
         const user = await User.findById(req.user.id).populate('enrolledCourses', 'title category level');
@@ -161,9 +152,6 @@ const getMe = async (req, res) => {
     }
 };
 
-// @desc    Update user profile
-// @route   PUT /api/auth/me
-// @access  Private
 const updateProfile = async (req, res) => {
     try {
         const allowedFields = ['name', 'phone', 'college', 'branch', 'semester'];
@@ -197,9 +185,6 @@ const updateProfile = async (req, res) => {
     }
 };
 
-// @desc    Upload Aadhaar card
-// @route   POST /api/auth/me/aadhaar
-// @access  Private
 const uploadAadhaar = async (req, res) => {
     try {
         if (!req.file) {
@@ -227,9 +212,6 @@ const uploadAadhaar = async (req, res) => {
     }
 };
 
-// @desc    Enroll in a course
-// @route   POST /api/auth/me/enroll/:courseId
-// @access  Private
 const enrollCourse = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
@@ -250,9 +232,6 @@ const enrollCourse = async (req, res) => {
     }
 };
 
-// @desc    Forgot password
-// @route   POST /api/auth/forgot-password
-// @access  Public
 const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -262,7 +241,6 @@ const forgotPassword = async (req, res) => {
 
         const user = await User.findOne({ email }).select('+password');
         if (!user) {
-            // Prevent user enumeration by masking existence
             return res.status(200).json({
                 success: true,
                 message: 'If this email is registered, you will receive a password reset link shortly.',
@@ -275,7 +253,6 @@ const forgotPassword = async (req, res) => {
         
         console.log(`[Password Reset] Reset link for ${email}: ${resetLink}`);
 
-        // Send reset email
         await transporter.sendMail({
             from: `"CRISMATECH Portal" <${process.env.SMTP_USER}>`,
             to: email,
@@ -313,9 +290,6 @@ const forgotPassword = async (req, res) => {
     }
 };
 
-// @desc    Validate reset token
-// @route   GET /api/auth/reset-password/validate
-// @access  Public
 const validateResetToken = async (req, res) => {
     try {
         const { token } = req.query;
@@ -347,9 +321,6 @@ const validateResetToken = async (req, res) => {
     }
 };
 
-// @desc    Reset password
-// @route   POST /api/auth/reset-password
-// @access  Public
 const resetPassword = async (req, res) => {
     try {
         const { token, newPassword } = req.body;
@@ -391,17 +362,11 @@ const resetPassword = async (req, res) => {
     }
 };
 
-// @desc    Register a new instructor (dedicated flow)
-// @route   POST /api/auth/instructor/register
-// @access  Public
 const registerInstructor = async (req, res) => {
     req.body.role = 'instructor';
     return register(req, res);
 };
 
-// @desc    Login instructor only (dedicated flow)
-// @route   POST /api/auth/instructor/login
-// @access  Public
 const loginInstructor = async (req, res) => {
     try {
         const { email, password } = req.body;

@@ -11,8 +11,8 @@ const {
     submitQuiz,
     getMyAttempts,
     getQuizResults,
-} = require('../controllers/testController');
-const { protect, optionalAuth, staffOnly } = require('../middleware/authMiddleware');
+} = require('./test.controller');
+const { protect, optionalAuth, staffOnly } = require('../../middlewares/auth.middleware');
 
 router.get('/', optionalAuth, getTests);
 router.get('/manage', protect, staffOnly, getManagedTests);

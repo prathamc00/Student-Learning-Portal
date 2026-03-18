@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
-const User = require('../models/userModel');
-const Otp = require('../models/otpModel');
+const User = require('../auth/auth.model');
+const Otp = require('./otp.model');
 
 // Educational email domain validation
 const EDUCATIONAL_DOMAINS = ['.edu', '.ac.in', '.edu.in', '.ac.uk', '.edu.au'];
@@ -26,9 +26,6 @@ function generateOtp() {
     return String(Math.floor(100000 + Math.random() * 900000));
 }
 
-// @desc    Send OTP via Email
-// @route   POST /api/otp/send-email
-// @access  Public
 const sendEmailOtp = async (req, res) => {
     try {
         const { email } = req.body;
@@ -42,7 +39,6 @@ const sendEmailOtp = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Invalid email address format' });
         }
 
-        // Validate educational email
         if (!isEducationalEmail(email)) {
             return res.status(400).json({
                 success: false,
@@ -50,20 +46,16 @@ const sendEmailOtp = async (req, res) => {
             });
         }
 
-        // Check if already registered
         const existingUser = await User.findOne({ email: email.toLowerCase() });
         if (existingUser) {
             return res.status(409).json({ success: false, message: 'Email is already registered' });
         }
 
-        // Clear old OTPs
         await Otp.deleteMany({ email: email.toLowerCase() });
 
-        // Generate and store OTP (5 minute expiry handled by TTL index)
         const code = generateOtp();
         await Otp.create({ email: email.toLowerCase(), code });
 
-        // Send email
         await transporter.sendMail({
             from: `"CRISMATECH Portal" <${process.env.SMTP_USER}>`,
             to: email,
@@ -87,9 +79,6 @@ const sendEmailOtp = async (req, res) => {
     }
 };
 
-// @desc    Verify Email OTP
-// @route   POST /api/otp/verify-email
-// @access  Public
 const verifyEmailOtp = async (req, res) => {
     try {
         const { email, code } = req.body;
@@ -103,7 +92,6 @@ const verifyEmailOtp = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Invalid or expired OTP code. Please request a new one.' });
         }
 
-        // OTP valid — remove from DB
         await Otp.deleteOne({ _id: validOtp._id });
 
         res.status(200).json({ success: true, message: 'Email verified successfully' });
