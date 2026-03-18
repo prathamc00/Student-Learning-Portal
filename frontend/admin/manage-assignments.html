@@ -188,48 +188,11 @@
         }
         function getToken() { return localStorage.getItem('token'); }
 
-        function handleAuthFailure(message) {
-            const authMessages = [
-                'User not found',
-                'Not authorized',
-                'token invalid',
-                'no token',
-            ];
-
-            if (authMessages.some((text) => String(message || '').toLowerCase().includes(text.toLowerCase()))) {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                alert('Your session has expired or your account no longer exists. Please log in again.');
-                window.location.href = '../login.html';
-                return true;
-            }
-
-            return false;
-        }
-
-        async function getErrorMessage(res) {
-            const raw = await res.text();
-            if (!raw) return `Request failed ${res.status}`;
-
-            try {
-                const parsed = JSON.parse(raw);
-                return parsed.message || raw;
-            } catch (_) {
-                return raw;
-            }
-        }
-
         async function fetchFromApi(path, options = {}) {
             const base = await getApiBase(); const token = getToken();
             if (token) options.headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
             const res = await fetch(`${base}${path}`, options);
-            if (!res.ok) {
-                const message = await getErrorMessage(res);
-                if (handleAuthFailure(message)) {
-                    throw new Error('Session expired');
-                }
-                throw new Error(message || `Request failed ${res.status}`);
-            }
+            if (!res.ok) throw new Error(await res.text());
             return await res.json();
         }
 

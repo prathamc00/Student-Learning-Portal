@@ -119,35 +119,6 @@
             line-height: 1.6;
         }
 
-        .form-group {
-            margin-bottom: var(--sp-5);
-        }
-
-        .form-label {
-            display: block;
-            font-size: var(--fs-sm);
-            font-weight: 600;
-            color: var(--c-text);
-            margin-bottom: var(--sp-2);
-        }
-
-        .input-wrap {
-            position: relative;
-        }
-
-        .input-wrap i {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--c-text-muted);
-            font-size: 16px;
-        }
-
-        .input-wrap .form-input {
-            padding-left: 44px;
-        }
-
         .alert-box {
             padding: var(--sp-3) var(--sp-4);
             border-radius: var(--r-md);
@@ -199,32 +170,6 @@
         .pw-strength-fill.strong {
             width: 100%;
             background: var(--c-success);
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 14px;
-            background: var(--c-primary-gradient);
-            color: #fff;
-            border: none;
-            border-radius: var(--r-md);
-            font-family: var(--font);
-            font-size: var(--fs-md);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--t-base);
-            box-shadow: 0 4px 14px var(--c-primary-glow);
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px var(--c-primary-glow);
-        }
-
-        .btn-submit:disabled {
-            opacity: .5;
-            cursor: not-allowed;
-            transform: none;
         }
 
         .reset-footer {
@@ -303,7 +248,7 @@
                 <form id="resetForm">
                     <div class="form-group">
                         <label class="form-label">New Password</label>
-                        <div class="input-wrap">
+                        <div class="input-icon-wrap">
                             <i class="bi bi-lock"></i>
                             <input type="password" class="form-input" id="newPassword"
                                 placeholder="Enter new password" required minlength="6">
@@ -315,14 +260,14 @@
 
                     <div class="form-group">
                         <label class="form-label">Confirm Password</label>
-                        <div class="input-wrap">
+                        <div class="input-icon-wrap">
                             <i class="bi bi-shield-lock"></i>
                             <input type="password" class="form-input" id="confirmPassword"
                                 placeholder="Confirm your password" required minlength="6">
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-submit" id="submitBtn">Reset Password</button>
+                    <button type="submit" class="btn btn-primary w-100 btn-lg" id="submitBtn">Reset Password</button>
                 </form>
 
                 <div class="reset-footer">
@@ -335,7 +280,7 @@
                 <div class="check-circle"><i class="bi bi-check-lg"></i></div>
                 <h2>Password Reset!</h2>
                 <p>Your password has been updated successfully. You can now sign in with your new password.</p>
-                <a href="../login.html" class="btn-submit"
+                <a href="../login.html" class="btn btn-primary w-100 btn-lg"
                     style="display:inline-block;text-align:center;text-decoration:none;">Sign In</a>
             </div>
         </div>

@@ -355,6 +355,12 @@
                     <div id="currentVideoInfo" style="display:none;" class="alert alert-info py-2 mb-0">
                         <small><i class="bi bi-film"></i> Current video: <span id="currentVideoName"></span></small>
                     </div>
+                    <div id="uploadProgressContainer" style="display:none; margin-top: 15px;">
+                        <label class="form-label" style="font-size: 12px; font-weight: 600; color: var(--c-primary);" id="uploadStatusText">Uploading...</label>
+                        <div class="progress" style="height: 8px;">
+                            <div id="uploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 0%;"></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer"><button type="button" class="btn btn-secondary"
                         data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary"
@@ -443,19 +449,75 @@
             }
         }
 
+        function handleAuthFailure(message) {
+            const authMessages = [
+                'User not found',
+                'Not authorized',
+                'token invalid',
+                'no token',
+            ];
+
+            if (authMessages.some((text) => String(message || '').toLowerCase().includes(text.toLowerCase()))) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                alert('Your session has expired or your account no longer exists. Please log in again.');
+                window.location.href = '../login.html';
+                return true;
+            }
+
+            return false;
+        }
+
+        async function getErrorMessage(res) {
+            const raw = await res.text();
+            if (!raw) return `Request failed ${res.status}`;
+
+            try {
+                const parsed = JSON.parse(raw);
+                return parsed.message || raw;
+            } catch (_) {
+                return raw;
+            }
+        }
+
+        function handleAuthFailure(message) {
+            const authMessages = [
+                'User not found',
+                'Not authorized',
+                'token invalid',
+                'no token',
+            ];
+
+            if (authMessages.some((text) => String(message || '').toLowerCase().includes(text.toLowerCase()))) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                alert('Your session has expired or your account no longer exists. Please log in again.');
+                window.location.href = '../login.html';
+                return true;
+            }
+
+            return false;
+        }
+
+        async function getErrorMessage(res) {
+            const raw = await res.text();
+            if (!raw) return `Request failed ${res.status}`;
+
+            try {
+                const parsed = JSON.parse(raw);
+                return parsed.message || raw;
+            } catch (_) {
+                return raw;
+            }
+        }
+
         async function fetchFromApi(path, options = {}) {
             const base = await getApiBase(); const token = getToken();
             if (token && !options.headers?.['Authorization']) {
                 options.headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
             }
             const res = await fetch(`${base}${path}`, options);
-            if (!res.ok) {
-                const message = await getErrorMessage(res);
-                if (handleAuthFailure(message)) {
-                    throw new Error('Session expired');
-                }
-                throw new Error(message || `Request failed ${res.status}`);
-            }
+            if (!res.ok) { const e = await res.text(); throw new Error(e || `Request failed ${res.status}`); }
             return await res.json();
         }
 
@@ -611,6 +673,7 @@
             document.getElementById('lessonOrder').value = '';
             document.getElementById('lessonVideo').value = '';
             document.getElementById('currentVideoInfo').style.display = 'none';
+            document.getElementById('uploadProgressContainer').style.display = 'none';
             document.getElementById('saveLessonBtn').textContent = 'Add Lesson';
         }
 
@@ -639,6 +702,10 @@
         async function saveLesson() {
             const moduleId = document.getElementById('lessonId').value;
             const isEdit = !!moduleId;
+            const btn = document.getElementById('saveLessonBtn');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="width: 14px; height: 14px; margin-right: 6px;"></span> Saving...';
 
             const formData = new FormData();
             formData.append('title', document.getElementById('lessonTitle').value);
@@ -647,23 +714,106 @@
             const orderVal = document.getElementById('lessonOrder').value;
             if (orderVal) formData.append('order', Number(orderVal) - 1);
             const videoFile = document.getElementById('lessonVideo').files[0];
-            if (videoFile) formData.append('video', videoFile);
+            if (videoFile) {
+                formData.append('video', videoFile);
+                console.log('[Upload] Video selected:', videoFile.name, 'Size:', (videoFile.size / 1024 / 1024).toFixed(2), 'MB');
+            }
 
-            const base = await getApiBase();
+            let base;
+            try {
+                base = await getApiBase();
+            } catch(e) {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                alert('Cannot connect to the backend API. Make sure the server is running.');
+                return;
+            }
             const token = getToken();
             const url = isEdit
                 ? `${base}/courses/${currentCourseId}/modules/${moduleId}`
                 : `${base}/courses/${currentCourseId}/modules`;
             const method = isEdit ? 'PUT' : 'POST';
 
-            try {
-                const res = await fetch(url, { method, headers: { 'Authorization': `Bearer ${token}` }, body: formData });
-                const data = await res.json();
-                if (data.success) {
-                    bootstrap.Modal.getInstance(document.getElementById('lessonModal')).hide();
-                    await loadModules();
-                } else { alert(data.message || 'Failed'); }
-            } catch (e) { alert(`Error: ${e.message}`); }
+            console.log('[Upload] Sending', method, 'to', url);
+
+            const progressContainer = document.getElementById('uploadProgressContainer');
+            const progressBar = document.getElementById('uploadProgressBar');
+            const statusText = document.getElementById('uploadStatusText');
+
+            if (videoFile) {
+                progressContainer.style.display = 'block';
+                progressBar.style.width = '0%';
+                statusText.textContent = 'Uploading video... 0%';
+            }
+
+            const xhr = new XMLHttpRequest();
+            xhr.open(method, url);
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+            xhr.timeout = 10 * 60 * 1000; // 10 minutes
+
+            xhr.upload.addEventListener('progress', (e) => {
+                if (e.lengthComputable && videoFile) {
+                    const percentComplete = Math.round((e.loaded / e.total) * 100);
+                    progressBar.style.width = percentComplete + '%';
+                    statusText.textContent = `Uploading video... ${percentComplete}%`;
+                    console.log('[Upload] Progress:', percentComplete + '%');
+                    if (percentComplete === 100) {
+                        statusText.textContent = 'Processing video on server, please wait...';
+                    }
+                }
+            });
+
+            xhr.onload = async () => {
+                console.log('[Upload] onload fired. Status:', xhr.status, 'Response:', xhr.responseText.substring(0, 500));
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                progressContainer.style.display = 'none';
+
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    try {
+                        const data = JSON.parse(xhr.responseText);
+                        if (data.success) {
+                            bootstrap.Modal.getInstance(document.getElementById('lessonModal')).hide();
+                            await loadModules();
+                        } else {
+                            alert(data.message || 'Failed to save lesson');
+                        }
+                    } catch(e) {
+                         alert('Invalid server response');
+                    }
+                } else {
+                    let msg = 'Failed to save lesson';
+                    try { msg = JSON.parse(xhr.responseText).message || msg; } catch(e) {}
+                    console.error('[Upload] Server error:', xhr.status, msg);
+                    alert(msg);
+                }
+            };
+
+            xhr.onerror = () => {
+                console.error('[Upload] XHR onerror fired - network error or CORS issue');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                progressContainer.style.display = 'none';
+                alert('Network error occurred during upload. Please check your connection and try again.');
+            };
+
+            xhr.onabort = () => {
+                console.error('[Upload] XHR onabort fired - request was aborted');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                progressContainer.style.display = 'none';
+                alert('Upload was aborted.');
+            };
+
+            xhr.ontimeout = () => {
+                console.error('[Upload] XHR ontimeout fired - request timed out after 10 minutes');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                progressContainer.style.display = 'none';
+                alert('Upload timed out. The file may be too large for the current connection speed.');
+            };
+
+            xhr.send(formData);
         }
 
         async function deleteLesson(moduleId) {

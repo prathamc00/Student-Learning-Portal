@@ -26,9 +26,13 @@ const ensureCourseOwnership = (course, user) => {
 
 const getManagedAssignments = async (req, res) => {
     try {
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 100;
+        const skip = (page - 1) * limit;
+
         const filter = req.user.role === 'admin' ? {} : { createdBy: req.user._id };
-        const assignments = await Assignment.find(filter).populate('course', 'title').sort({ createdAt: -1 });
-        res.status(200).json({ success: true, count: assignments.length, assignments });
+        const assignments = await Assignment.find(filter).populate('course', 'title').sort({ createdAt: -1 }).skip(skip).limit(limit);
+        res.status(200).json({ success: true, count: assignments.length, page, limit, assignments });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Failed to fetch managed assignments', error: error.message });
     }
@@ -39,8 +43,12 @@ const getManagedAssignments = async (req, res) => {
 // @access  Public
 const getAssignments = async (req, res) => {
     try {
-        const assignments = await Assignment.find({}).populate('course', 'title').sort({ createdAt: -1 });
-        res.status(200).json({ success: true, count: assignments.length, assignments });
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 100;
+        const skip = (page - 1) * limit;
+
+        const assignments = await Assignment.find({}).populate('course', 'title').sort({ createdAt: -1 }).skip(skip).limit(limit);
+        res.status(200).json({ success: true, count: assignments.length, page, limit, assignments });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Failed to fetch assignments', error: error.message });
     }

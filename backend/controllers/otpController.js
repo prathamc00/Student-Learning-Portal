@@ -1,8 +1,6 @@
 const nodemailer = require('nodemailer');
 const User = require('../models/userModel');
-
-// In-memory OTP store: { email: { code, expiresAt } }
-const otpStore = {};
+const Otp = require('../models/otpModel');
 
 // Educational email domain validation
 const EDUCATIONAL_DOMAINS = ['.edu', '.ac.in', '.edu.in', '.ac.uk', '.edu.au'];
@@ -58,12 +56,12 @@ const sendEmailOtp = async (req, res) => {
             return res.status(409).json({ success: false, message: 'Email is already registered' });
         }
 
-        // Generate and store OTP (5 minute expiry)
+        // Clear old OTPs
+        await Otp.deleteMany({ email: email.toLowerCase() });
+
+        // Generate and store OTP (5 minute expiry handled by TTL index)
         const code = generateOtp();
-        otpStore[email.toLowerCase()] = {
-            code,
-            expiresAt: Date.now() + 5 * 60 * 1000,
-        };
+        await Otp.create({ email: email.toLowerCase(), code });
 
         // Send email
         await transporter.sendMail({
@@ -100,22 +98,13 @@ const verifyEmailOtp = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Email and code are required' });
         }
 
-        const stored = otpStore[email.toLowerCase()];
-        if (!stored) {
-            return res.status(400).json({ success: false, message: 'No OTP found for this email. Please request a new one.' });
+        const validOtp = await Otp.findOne({ email: email.toLowerCase(), code });
+        if (!validOtp) {
+            return res.status(400).json({ success: false, message: 'Invalid or expired OTP code. Please request a new one.' });
         }
 
-        if (Date.now() > stored.expiresAt) {
-            delete otpStore[email.toLowerCase()];
-            return res.status(400).json({ success: false, message: 'OTP has expired. Please request a new one.' });
-        }
-
-        if (stored.code !== code) {
-            return res.status(400).json({ success: false, message: 'Invalid OTP code' });
-        }
-
-        // OTP valid — remove from store
-        delete otpStore[email.toLowerCase()];
+        // OTP valid — remove from DB
+        await Otp.deleteOne({ _id: validOtp._id });
 
         res.status(200).json({ success: true, message: 'Email verified successfully' });
     } catch (error) {

@@ -8,51 +8,13 @@
     <link rel="stylesheet" href="../css/theme.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: var(--font);
-            background: var(--c-bg);
-            min-height: 100vh;
-        }
-
-        .topbar {
-            background: #fff;
-            border-bottom: 1px solid #e6ecf5;
-            padding: 16px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .topbar h1 {
-            font-size: 1.3rem;
-            color: #0d1b36;
-        }
-
-        .topbar a {
-            color: #4F46E5;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 24px auto;
-            padding: 0 20px;
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            margin-bottom: 16px;
+        .assignment-card {
+            background: var(--c-surface);
+            border-radius: var(--r-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--sp-4);
             overflow: hidden;
+            border: 1px solid var(--c-border);
         }
 
         .card-header {
@@ -186,31 +148,9 @@
         }
 
         .file-drop p {
-            font-size: 13px;
-            color: #64748b;
+            font-size: var(--fs-sm);
+            color: var(--c-text-muted);
             margin-top: 6px;
-        }
-
-        .btn-submit {
-            background: #4F46E5;
-            color: #fff;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-size: 14px;
-            margin-top: 12px;
-        }
-
-        .btn-submit:hover {
-            background: #4338CA;
-        }
-
-        .btn-submit:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
         }
 
         .submission-status {
@@ -309,13 +249,13 @@
                     submitUI = `
                         <div class="submit-section">
                             <textarea id="text-${i}" placeholder="Write your case study response here..."></textarea>
-                            <button class="btn-submit" onclick="submitText('${a._id}', ${i})">Submit Response</button>
+                            <button class="btn btn-primary" style="margin-top: var(--sp-3);" onclick="submitText('${a._id}', ${i})">Submit Response</button>
                         </div>`;
                 } else if (a.type === 'code') {
                     submitUI = `
                         <div class="submit-section">
                             <textarea class="code-editor" id="code-${i}" placeholder="// Write your code here..."></textarea>
-                            <button class="btn-submit" onclick="submitCode('${a._id}', ${i})">Submit Code</button>
+                            <button class="btn btn-primary" style="margin-top: var(--sp-3);" onclick="submitCode('${a._id}', ${i})">Submit Code</button>
                         </div>`;
                 } else {
                     submitUI = `
@@ -326,12 +266,12 @@
                             </div>
                             <input type="file" id="file-${i}" style="display:none" accept=".pdf,.doc,.docx,.zip,.txt" onchange="handleFileSelect(this, ${i})">
                             <span id="filename-${i}" style="font-size:12px;color:#475569;"></span>
-                            <button class="btn-submit" id="submitBtn-${i}" onclick="submitFile('${a._id}', ${i})" disabled>Upload & Submit</button>
+                            <button class="btn btn-primary" style="margin-top: var(--sp-3);" id="submitBtn-${i}" onclick="submitFile('${a._id}', ${i})" disabled>Upload & Submit</button>
                         </div>`;
                 }
 
                 return `
-                    <div class="card">
+                    <div class="assignment-card">
                         <div class="card-header" onclick="this.nextElementSibling.classList.toggle('open')">
                             <div>
                                 <h3>${a.title}</h3>

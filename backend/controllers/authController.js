@@ -260,15 +260,17 @@ const forgotPassword = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Please provide an email address' });
         }
 
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).select('+password');
         if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: 'This email is not registered. Please check your email or create an account.',
+            // Prevent user enumeration by masking existence
+            return res.status(200).json({
+                success: true,
+                message: 'If this email is registered, you will receive a password reset link shortly.',
             });
         }
 
-        const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
+        const secret = process.env.JWT_SECRET + user.password;
+        const resetToken = jwt.sign({ id: user._id }, secret, { expiresIn: '15m' });
         const resetLink = `${getResetPageBaseUrl(req)}?token=${encodeURIComponent(resetToken)}`;
         
         console.log(`[Password Reset] Reset link for ${email}: ${resetLink}`);
@@ -322,16 +324,21 @@ const validateResetToken = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Reset token is required' });
         }
 
-        let decoded;
-        try {
-            decoded = jwt.verify(token, process.env.JWT_SECRET);
-        } catch (error) {
+        const decodedUnverified = jwt.decode(token);
+        if (!decodedUnverified || !decodedUnverified.id) {
             return res.status(400).json({ success: false, message: 'Invalid or expired reset token' });
         }
 
-        const user = await User.findById(decoded.id).select('_id');
+        const user = await User.findById(decodedUnverified.id).select('+password');
         if (!user) {
-            return res.status(404).json({ success: false, message: 'User not found' });
+            return res.status(404).json({ success: false, message: 'Invalid or expired reset token' });
+        }
+
+        try {
+            const secret = process.env.JWT_SECRET + user.password;
+            jwt.verify(token, secret);
+        } catch (error) {
+            return res.status(400).json({ success: false, message: 'Invalid or expired reset token' });
         }
 
         return res.status(200).json({ success: true, message: 'Reset token is valid' });
@@ -350,16 +357,21 @@ const resetPassword = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Token and new password are required' });
         }
 
-        let decoded;
-        try {
-            decoded = jwt.verify(token, process.env.JWT_SECRET);
-        } catch (err) {
+        const decodedUnverified = jwt.decode(token);
+        if (!decodedUnverified || !decodedUnverified.id) {
             return res.status(400).json({ success: false, message: 'Invalid or expired reset token' });
         }
 
-        const user = await User.findById(decoded.id);
+        const user = await User.findById(decodedUnverified.id).select('+password');
         if (!user) {
-            return res.status(404).json({ success: false, message: 'User not found' });
+            return res.status(404).json({ success: false, message: 'Invalid or expired reset token' });
+        }
+
+        try {
+            const secret = process.env.JWT_SECRET + user.password;
+            jwt.verify(token, secret);
+        } catch (err) {
+            return res.status(400).json({ success: false, message: 'Invalid or expired reset token' });
         }
 
         user.password = newPassword;

@@ -8,18 +8,6 @@
     <link rel="stylesheet" href="css/theme.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <style>
-        .shell {
-            min-height: 100vh;
-            display: grid;
-            grid-template-columns: 260px 1fr;
-        }
-
-        .main {
-            padding: var(--sp-6);
-            overflow-y: auto;
-            background: var(--c-bg);
-        }
-
         /* ─── Welcome Banner ─── */
         .welcome-bar {
             background: var(--c-primary-gradient);
@@ -241,18 +229,6 @@
         }
 
         @media (max-width: 768px) {
-            .shell {
-                grid-template-columns: 1fr;
-            }
-
-            .sidebar-modern {
-                display: none;
-            }
-
-            .main {
-                padding: var(--sp-4);
-            }
-
             .welcome-bar {
                 flex-direction: column;
                 gap: var(--sp-4);
@@ -294,7 +270,7 @@
             </nav>
         </aside>
 
-        <main class="main page-fade">
+        <main class="main-content page-fade">
             <!-- Welcome -->
             <section class="welcome-bar">
                 <div>

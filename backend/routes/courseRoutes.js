@@ -15,7 +15,7 @@ const videoStorage = multer.diskStorage({
 });
 const videoUpload = multer({
     storage: videoStorage,
-    limits: { fileSize: 5 * 1024 * 1024 * 1024 }, // 5GB
+    limits: { fileSize: 500 * 1024 * 1024 }, // 500MB
     fileFilter: (req, file, cb) => {
         const allowed = ['.mp4', '.mkv', '.avi', '.webm', '.mov'];
         const ext = path.extname(file.originalname).toLowerCase();

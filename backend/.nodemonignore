@@ -1,0 +1,7 @@
+backend/uploads/*
+uploads/*
+node_modules/*
+frontend/*
+*.mp4
+*.mkv
+*.webm

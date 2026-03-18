@@ -13,9 +13,13 @@ const ensureCourseAccess = (course, user) => {
 
 const getManagedCourses = async (req, res) => {
     try {
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 100;
+        const skip = (page - 1) * limit;
+
         const filter = req.user.role === 'admin' ? {} : { createdBy: req.user._id };
-        const courses = await Course.find(filter).sort({ createdAt: -1 });
-        res.status(200).json({ success: true, count: courses.length, courses });
+        const courses = await Course.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit);
+        res.status(200).json({ success: true, count: courses.length, page, limit, courses });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Failed to fetch managed courses', error: error.message });
     }
@@ -23,8 +27,12 @@ const getManagedCourses = async (req, res) => {
 
 const getCourses = async (req, res) => {
     try {
-        const courses = await Course.find({}).sort({ createdAt: -1 });
-        res.status(200).json({ success: true, count: courses.length, courses });
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 100;
+        const skip = (page - 1) * limit;
+
+        const courses = await Course.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit);
+        res.status(200).json({ success: true, count: courses.length, page, limit, courses });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Failed to fetch courses', error: error.message });
     }
@@ -144,7 +152,7 @@ const addModule = async (req, res) => {
         };
 
         if (req.file) {
-            moduleData.videoUrl = req.file.path.replace(/\\/g, '/');
+            moduleData.videoUrl = 'uploads/videos/' + req.file.filename;
         }
 
         course.modules.push(moduleData);
@@ -183,7 +191,7 @@ const updateModule = async (req, res) => {
         if (req.body.order !== undefined) mod.order = Number(req.body.order);
 
         if (req.file) {
-            mod.videoUrl = req.file.path.replace(/\\/g, '/');
+            mod.videoUrl = 'uploads/videos/' + req.file.filename;
         }
 
         await course.save();
