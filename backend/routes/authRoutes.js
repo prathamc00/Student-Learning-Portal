@@ -2,7 +2,19 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const router = express.Router();
-const { register, login, getMe, updateProfile, uploadAadhaar, enrollCourse, forgotPassword, resetPassword } = require('../controllers/authController');
+const {
+    register,
+    registerInstructor,
+    login,
+    loginInstructor,
+    getMe,
+    updateProfile,
+    uploadAadhaar,
+    enrollCourse,
+    forgotPassword,
+    validateResetToken,
+    resetPassword,
+} = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 
 // Aadhaar upload config
@@ -26,11 +38,14 @@ const aadhaarUpload = multer({
 
 router.post('/register', register);
 router.post('/login', login);
+router.post('/instructor/register', registerInstructor);
+router.post('/instructor/login', loginInstructor);
 router.get('/me', protect, getMe);
 router.put('/me', protect, updateProfile);
 router.post('/me/aadhaar', protect, aadhaarUpload.single('aadhaarCard'), uploadAadhaar);
 router.post('/me/enroll/:courseId', protect, enrollCourse);
 router.post('/forgot-password', forgotPassword);
+router.get('/reset-password/validate', validateResetToken);
 router.post('/reset-password', resetPassword);
 
 module.exports = router;

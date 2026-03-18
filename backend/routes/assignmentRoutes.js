@@ -4,6 +4,7 @@ const path = require('path');
 const router = express.Router();
 const {
     getAssignments,
+    getManagedAssignments,
     getAssignmentById,
     createAssignment,
     updateAssignment,
@@ -13,7 +14,7 @@ const {
     getMySubmissions,
     gradeSubmission,
 } = require('../controllers/assignmentController');
-const { protect, adminOnly } = require('../middleware/authMiddleware');
+const { protect, staffOnly } = require('../middleware/authMiddleware');
 
 // Assignment file upload config
 const assignmentStorage = multer.diskStorage({
@@ -35,13 +36,14 @@ const assignmentUpload = multer({
 });
 
 router.get('/', getAssignments);
+router.get('/manage', protect, staffOnly, getManagedAssignments);
 router.get('/my-submissions', protect, getMySubmissions);
 router.get('/:id', getAssignmentById);
-router.post('/', protect, adminOnly, createAssignment);
-router.put('/:id', protect, adminOnly, updateAssignment);
-router.delete('/:id', protect, adminOnly, deleteAssignment);
+router.post('/', protect, staffOnly, createAssignment);
+router.put('/:id', protect, staffOnly, updateAssignment);
+router.delete('/:id', protect, staffOnly, deleteAssignment);
 router.post('/:id/submit', protect, assignmentUpload.single('file'), submitAssignment);
-router.get('/:id/submissions', protect, adminOnly, getSubmissions);
-router.put('/submissions/:id/grade', protect, adminOnly, gradeSubmission);
+router.get('/:id/submissions', protect, staffOnly, getSubmissions);
+router.put('/submissions/:id/grade', protect, staffOnly, gradeSubmission);
 
 module.exports = router;

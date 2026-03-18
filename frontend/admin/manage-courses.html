@@ -368,6 +368,43 @@
         const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(p => `http://${window.location.hostname || 'localhost'}:${p}/api`);
         let apiBase = null, courses = [], currentCourseId = null;
 
+        function getCurrentUser() { return JSON.parse(localStorage.getItem('user') || 'null'); }
+        function isInstructorView() { return getCurrentUser()?.role === 'instructor'; }
+
+        function ensureStaffAccess() {
+            const user = getCurrentUser();
+            if (!user || !['admin', 'instructor'].includes(user.role) || (user.role === 'instructor' && user.approvalStatus !== 'approved')) {
+                window.location.href = '../login.html';
+                return false;
+            }
+            return true;
+        }
+
+        function configurePageForRole() {
+            const user = getCurrentUser();
+            if (!user) return;
+            document.querySelector('.admin-badge').textContent = user.role.toUpperCase();
+            if (user.role === 'instructor') {
+                document.title = 'Manage My Courses';
+                document.querySelector('.admin-topbar h1').textContent = 'My Courses';
+                document.querySelector('.page-header h2').textContent = 'My Courses';
+                document.querySelector('.page-header p').textContent = 'Create courses, upload videos, and manage your lesson library';
+                document.querySelector('.admin-sidebar .brand h4').innerHTML = '<i class="bi bi-easel2-fill"></i> Instructor Hub';
+                document.querySelector('.admin-sidebar nav a[href="manage-students.html"]')?.remove();
+                const dashboardLink = document.querySelector('.admin-sidebar nav a[href="admin-dashboard.html"]');
+                if (dashboardLink) {
+                    dashboardLink.href = '../instructor/dashboard.html';
+                    dashboardLink.innerHTML = '<i class="bi bi-speedometer2"></i> Dashboard';
+                }
+                const portalLink = document.querySelector('.admin-sidebar nav a[href="../dashboard.html"]');
+                if (portalLink) {
+                    portalLink.innerHTML = '<i class="bi bi-mortarboard"></i> Student View';
+                }
+                document.getElementById('courseInstructor').value = user.name;
+                document.getElementById('courseInstructor').setAttribute('disabled', 'disabled');
+            }
+        }
+
         async function getApiBase() {
             if (apiBase) return apiBase;
             for (const b of API_CANDIDATES) { try { const r = await fetch(`${b}/courses`); if (r.ok) { apiBase = b; return b; } } catch (_) { } }
@@ -375,13 +412,50 @@
         }
         function getToken() { return localStorage.getItem('token'); }
 
+        function handleAuthFailure(message) {
+            const authMessages = [
+                'User not found',
+                'Not authorized',
+                'token invalid',
+                'no token',
+            ];
+
+            if (authMessages.some((text) => String(message || '').toLowerCase().includes(text.toLowerCase()))) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                alert('Your session has expired or your account no longer exists. Please log in again.');
+                window.location.href = '../login.html';
+                return true;
+            }
+
+            return false;
+        }
+
+        async function getErrorMessage(res) {
+            const raw = await res.text();
+            if (!raw) return `Request failed ${res.status}`;
+
+            try {
+                const parsed = JSON.parse(raw);
+                return parsed.message || raw;
+            } catch (_) {
+                return raw;
+            }
+        }
+
         async function fetchFromApi(path, options = {}) {
             const base = await getApiBase(); const token = getToken();
             if (token && !options.headers?.['Authorization']) {
                 options.headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
             }
             const res = await fetch(`${base}${path}`, options);
-            if (!res.ok) { const e = await res.text(); throw new Error(e || `Request failed ${res.status}`); }
+            if (!res.ok) {
+                const message = await getErrorMessage(res);
+                if (handleAuthFailure(message)) {
+                    throw new Error('Session expired');
+                }
+                throw new Error(message || `Request failed ${res.status}`);
+            }
             return await res.json();
         }
 
@@ -417,7 +491,7 @@
         }
 
         async function loadCourses() {
-            try { const d = await fetchFromApi('/courses'); courses = Array.isArray(d.courses) ? d.courses : []; renderStats(); renderTable(); }
+            try { const d = await fetchFromApi('/courses/manage'); courses = Array.isArray(d.courses) ? d.courses : []; renderStats(); renderTable(); }
             catch (e) { console.error(e); }
         }
 
@@ -426,6 +500,9 @@
             document.getElementById('courseModalTitle').textContent = 'Add New Course';
             document.getElementById('courseId').value = '';
             document.getElementById('courseForm').reset();
+            if (isInstructorView()) {
+                document.getElementById('courseInstructor').value = getCurrentUser().name;
+            }
         }
 
         function editCourse(id) {
@@ -445,7 +522,7 @@
             const id = document.getElementById('courseId').value;
             const data = {
                 title: document.getElementById('courseTitle').value,
-                instructor: document.getElementById('courseInstructor').value,
+                instructor: isInstructorView() ? getCurrentUser().name : document.getElementById('courseInstructor').value,
                 description: document.getElementById('courseDesc').value,
                 category: document.getElementById('courseCategory').value,
                 level: document.getElementById('courseLevel').value,
@@ -635,7 +712,11 @@
             } catch (e) { console.error('Reorder failed:', e); }
         }
 
-        document.addEventListener('DOMContentLoaded', loadCourses);
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!ensureStaffAccess()) return;
+            configurePageForRole();
+            loadCourses();
+        });
     </script>
 </body>
 

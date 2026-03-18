@@ -21,6 +21,7 @@ const sampleUsers = [
         email: 'admin@crismatech.com',
         password: 'Admin@123',
         role: 'admin',
+        approvalStatus: 'approved',
         college: 'CRISMATECH Institute',
         branch: 'Administration',
         semester: 1,
@@ -31,6 +32,7 @@ const sampleUsers = [
         email: 'priya.sharma@student.com',
         password: 'Student@123',
         role: 'student',
+        approvalStatus: 'approved',
         college: 'CRISMATECH Institute',
         branch: 'Computer Science',
         semester: 5,
@@ -41,6 +43,7 @@ const sampleUsers = [
         email: 'rahul.verma@student.com',
         password: 'Student@123',
         role: 'student',
+        approvalStatus: 'approved',
         college: 'CRISMATECH Institute',
         branch: 'Information Technology',
         semester: 4,
@@ -51,76 +54,22 @@ const sampleUsers = [
         email: 'neha.rao@faculty.com',
         password: 'Faculty@123',
         role: 'instructor',
+        approvalStatus: 'approved',
         college: 'CRISMATECH Institute',    
         branch: 'Data Science',
         semester: 1,
         phone: '+919100000004',
     },
-];
-
-const sampleCourses = [
     {
-        title: 'Web Development Masterclass',
-        instructor: 'Neha Rao',
-        category: 'Development',
-        level: 'Intermediate',
-        lessons: 22,
-        durationHours: 16,
-        isActive: true,
-    },
-    {
-        title: 'Python for Data Science',
-        instructor: 'Neha Rao',
-        category: 'Data Science',
-        level: 'Advanced',
-        lessons: 18,
-        durationHours: 14,
-        isActive: true,
-    },
-    {
-        title: 'Cloud Computing Fundamentals',
-        instructor: 'Rahul Verma',
-        category: 'Cloud',
-        level: 'Intermediate',
-        lessons: 16,
-        durationHours: 12,
-        isActive: true,
-    },
-];
-
-const sampleAssignments = [
-    {
-        title: 'HTML Layout Challenge',
-        course: 'Web Development Masterclass',
-        dueDate: new Date('2026-03-15T23:59:00Z'),
-        status: 'pending',
-        maxMarks: 100,
-    },
-    {
-        title: 'Python Data Cleaning Task',
-        course: 'Python for Data Science',
-        dueDate: new Date('2026-03-20T23:59:00Z'),
-        status: 'pending',
-        maxMarks: 100,
-    },
-];
-
-const sampleTests = [
-    {
-        title: 'Web Development Mid-Term',
-        course: 'Web Development Masterclass',
-        totalQuestions: 50,
-        durationMinutes: 90,
-        status: 'upcoming',
-        scheduledDate: new Date('2026-03-18T10:00:00Z'),
-    },
-    {
-        title: 'Data Science Quiz 1',
-        course: 'Python for Data Science',
-        totalQuestions: 30,
-        durationMinutes: 60,
-        status: 'completed',
-        score: 88,
+        name: 'Arjun Mehta',
+        email: 'arjun.mehta@faculty.com',
+        password: 'Faculty@123',
+        role: 'instructor',
+        approvalStatus: 'pending',
+        college: 'CRISMATECH Institute',
+        branch: 'Cloud Computing',
+        semester: 1,
+        phone: '+919100000005',
     },
 ];
 
@@ -157,21 +106,134 @@ async function clearData() {
 }
 
 async function seedData() {
-    // Users use Mongoose model so passwords are hashed via pre-save hook.
+    const createdUsers = [];
     for (const user of sampleUsers) {
-        await User.create(user);
+        createdUsers.push(await User.create(user));
     }
 
-    await Course.insertMany(sampleCourses);
-    await Assignment.insertMany(sampleAssignments);
-    await Test.insertMany(sampleTests);
+    const adminUser = createdUsers.find((user) => user.role === 'admin');
+    const approvedInstructor = createdUsers.find((user) => user.email === 'neha.rao@faculty.com');
+    const primaryStudent = createdUsers.find((user) => user.email === 'priya.sharma@student.com');
+    const secondaryStudent = createdUsers.find((user) => user.email === 'rahul.verma@student.com');
+
+    const createdCourses = await Course.insertMany([
+        {
+            title: 'Web Development Masterclass',
+            description: 'Build modern responsive web applications with HTML, CSS, JavaScript, and project-based lessons.',
+            instructor: approvedInstructor.name,
+            category: 'Development',
+            level: 'Intermediate',
+            lessons: 3,
+            durationHours: 16,
+            isActive: true,
+            createdBy: approvedInstructor._id,
+            modules: [
+                { title: 'HTML Foundations', description: 'Semantic layout basics', duration: '18 min', order: 0 },
+                { title: 'CSS Layout Systems', description: 'Flexbox and Grid in practice', duration: '24 min', order: 1 },
+                { title: 'JavaScript Interactivity', description: 'DOM events and state', duration: '22 min', order: 2 },
+            ],
+        },
+        {
+            title: 'Python for Data Science',
+            description: 'Core Python, NumPy, pandas, and analysis workflows for practical data projects.',
+            instructor: approvedInstructor.name,
+            category: 'Data Science',
+            level: 'Advanced',
+            lessons: 2,
+            durationHours: 14,
+            isActive: true,
+            createdBy: approvedInstructor._id,
+            modules: [
+                { title: 'Data Cleaning Basics', description: 'Prepare real datasets for analysis', duration: '20 min', order: 0 },
+                { title: 'Exploratory Analysis', description: 'Work through summary statistics and visuals', duration: '26 min', order: 1 },
+            ],
+        },
+        {
+            title: 'Campus Success Blueprint',
+            description: 'A starter orientation course for all new students joining the platform.',
+            instructor: adminUser.name,
+            category: 'Career Skills',
+            level: 'Beginner',
+            lessons: 2,
+            durationHours: 4,
+            isActive: true,
+            createdBy: adminUser._id,
+            modules: [
+                { title: 'Platform Tour', description: 'Get familiar with the learning portal', duration: '10 min', order: 0 },
+                { title: 'Planning Your Week', description: 'Set learning goals and milestones', duration: '12 min', order: 1 },
+            ],
+        },
+    ]);
+
+    const webCourse = createdCourses.find((course) => course.title === 'Web Development Masterclass');
+    const dataCourse = createdCourses.find((course) => course.title === 'Python for Data Science');
+
+    primaryStudent.enrolledCourses = [webCourse._id, dataCourse._id];
+    secondaryStudent.enrolledCourses = [webCourse._id];
+    await primaryStudent.save();
+    await secondaryStudent.save();
+
+    await Assignment.insertMany([
+        {
+            title: 'HTML Layout Challenge',
+            course: webCourse._id,
+            type: 'case_study',
+            instructions: 'Design a semantic landing page layout and explain your structure decisions.',
+            module: 'HTML Foundations',
+            dueDate: new Date('2026-03-25T23:59:00Z'),
+            maxMarks: 100,
+            createdBy: approvedInstructor._id,
+        },
+        {
+            title: 'Python Data Cleaning Task',
+            course: dataCourse._id,
+            type: 'code',
+            instructions: 'Clean the given CSV file and submit your Python transformation script.',
+            module: 'Data Cleaning Basics',
+            dueDate: new Date('2026-03-28T23:59:00Z'),
+            maxMarks: 100,
+            createdBy: approvedInstructor._id,
+        },
+    ]);
+
+    await Test.insertMany([
+        {
+            title: 'Web Development Mid-Term',
+            course: webCourse._id,
+            questions: [
+                { question: 'Which HTML element is used for the main content area?', options: ['main', 'section', 'article', 'content'], correctAnswer: 0 },
+                { question: 'Which CSS module is best for one-dimensional layout?', options: ['Grid', 'Flexbox', 'Float', 'Position'], correctAnswer: 1 },
+            ],
+            totalQuestions: 2,
+            durationMinutes: 30,
+            startTime: new Date('2026-03-18T10:00:00Z'),
+            endTime: new Date('2026-03-18T10:30:00Z'),
+            status: 'upcoming',
+            createdBy: approvedInstructor._id,
+        },
+        {
+            title: 'Data Science Quiz 1',
+            course: dataCourse._id,
+            questions: [
+                { question: 'Which library is commonly used for tabular data analysis?', options: ['NumPy', 'pandas', 'Matplotlib', 'SciPy'], correctAnswer: 1 },
+                { question: 'What does CSV stand for?', options: ['Common Separated Values', 'Comma Separated Values', 'Column Standard Vector', 'Code Structured Values'], correctAnswer: 1 },
+            ],
+            totalQuestions: 2,
+            durationMinutes: 25,
+            startTime: new Date('2026-03-16T09:00:00Z'),
+            endTime: new Date('2026-03-16T09:25:00Z'),
+            status: 'completed',
+            createdBy: approvedInstructor._id,
+        },
+    ]);
+
     await Certificate.insertMany(sampleCertificates);
 
     console.log('Seed data inserted successfully');
     console.log(`Users: ${sampleUsers.length}`);
-    console.log(`Courses: ${sampleCourses.length}`);
-    console.log(`Assignments: ${sampleAssignments.length}`);
-    console.log(`Tests: ${sampleTests.length}`);
+    console.log(`Courses: ${createdCourses.length}`);
+    console.log('Assignments: 2');
+    console.log('Tests: 2');
     console.log(`Certificates: ${sampleCertificates.length}`);
 }
 

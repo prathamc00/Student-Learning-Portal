@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Students</title>
+    <title>Manage Users</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../css/theme.css">
@@ -47,7 +47,7 @@
             </div>
             <nav>
                 <a href="admin-dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
-                <a href="manage-students.html" class="active"><i class="bi bi-people"></i> Students</a>
+                <a href="manage-students.html" class="active"><i class="bi bi-people"></i> Users</a>
                 <a href="manage-courses.html"><i class="bi bi-journal-bookmark"></i> Courses</a>
                 <a href="manage-assignments.html"><i class="bi bi-clipboard-check"></i> Assignments</a>
                 <a href="quiz-scheduler.html"><i class="bi bi-ui-checks-grid"></i> Quiz Scheduler</a>
@@ -59,33 +59,40 @@
 
         <main class="admin-main page-fade">
             <div class="admin-topbar">
-                <h1>Student Management</h1><span class="admin-badge">ADMIN</span>
+                <h1>User Management</h1><span class="admin-badge">ADMIN</span>
             </div>
 
             <div class="admin-section-header">
-                <h2>Student Management</h2>
-                <p>View, search, and manage all registered students</p>
+                <h2>User Management</h2>
+                <p>Approve instructors, review roles, and manage platform accounts</p>
             </div>
 
-            <div class="admin-stats stagger" style="grid-template-columns:repeat(3,1fr);">
+            <div class="admin-stats stagger" style="grid-template-columns:repeat(4,1fr);">
                 <div class="stat-card-modern slide-up">
                     <div class="stat-icon-wrap indigo"><i class="bi bi-people"></i></div>
                     <div>
-                        <div class="stat-value" id="studentsTotal">0</div>
-                        <div class="stat-label">Total Students</div>
+                        <div class="stat-value" id="usersTotal">0</div>
+                        <div class="stat-label">Total Users</div>
                     </div>
                 </div>
                 <div class="stat-card-modern slide-up">
                     <div class="stat-icon-wrap emerald"><i class="bi bi-person-check"></i></div>
                     <div>
-                        <div class="stat-value" id="studentsActive">0</div>
-                        <div class="stat-label">Active Students</div>
+                        <div class="stat-value" id="approvedInstructors">0</div>
+                        <div class="stat-label">Approved Instructors</div>
                     </div>
                 </div>
                 <div class="stat-card-modern slide-up">
                     <div class="stat-icon-wrap amber"><i class="bi bi-person-plus"></i></div>
                     <div>
-                        <div class="stat-value" id="studentsNew">0</div>
+                        <div class="stat-value" id="pendingInstructors">0</div>
+                        <div class="stat-label">Pending Instructors</div>
+                    </div>
+                </div>
+                <div class="stat-card-modern slide-up">
+                    <div class="stat-icon-wrap cyan"><i class="bi bi-calendar-plus"></i></div>
+                    <div>
+                        <div class="stat-value" id="usersNew">0</div>
                         <div class="stat-label">New This Month</div>
                     </div>
                 </div>
@@ -93,8 +100,8 @@
 
             <div class="table-card slide-up" style="animation-delay:.2s">
                 <div class="table-card-header">
-                    <h5>All Students</h5>
-                    <span id="studentsRecordCount" class="record-count">0 Records</span>
+                    <h5>All Users</h5>
+                    <span id="usersRecordCount" class="record-count">0 Records</span>
                 </div>
                 <table class="table-modern">
                     <thead>
@@ -104,10 +111,11 @@
                             <th>Branch</th>
                             <th>Semester</th>
                             <th>Role</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="studentsTableBody"></tbody>
+                    <tbody id="usersTableBody"></tbody>
                 </table>
             </div>
         </main>
@@ -119,50 +127,105 @@
         );
         let apiBase = null, users = [];
 
+        function getToken() { return localStorage.getItem('token'); }
+
+        function ensureAdmin() {
+            const user = JSON.parse(localStorage.getItem('user') || 'null');
+            if (!user || user.role !== 'admin') {
+                window.location.href = '../login.html';
+                return false;
+            }
+            return true;
+        }
+
         async function getApiBase() {
             if (apiBase) return apiBase;
             for (const base of API_CANDIDATES) {
-                try { const res = await fetch(`${base}/users`); if (res.ok) { apiBase = base; return apiBase; } } catch (_) { }
+                try { const res = await fetch(`${base}/courses`); if (res.ok) { apiBase = base; return apiBase; } } catch (_) { }
             }
             throw new Error('Unable to connect to backend API.');
         }
 
-        async function fetchFromApi(path, options) {
+        async function fetchFromApi(path, options = {}) {
             const base = await getApiBase();
+            options.headers = {
+                ...options.headers,
+                'Authorization': `Bearer ${getToken()}`,
+            };
             const res = await fetch(`${base}${path}`, options);
             if (!res.ok) { const e = await res.text(); throw new Error(e || `Request failed ${res.status}`); }
             return await res.json();
         }
 
         function renderStats() {
-            document.getElementById('studentsTotal').textContent = users.length;
-            document.getElementById('studentsActive').textContent = users.filter((u) => u.role !== 'admin').length;
+            const instructors = users.filter((u) => u.role === 'instructor');
+            document.getElementById('usersTotal').textContent = users.length;
+            document.getElementById('approvedInstructors').textContent = instructors.filter((u) => u.approvalStatus === 'approved').length;
+            document.getElementById('pendingInstructors').textContent = instructors.filter((u) => u.approvalStatus === 'pending').length;
             const now = new Date();
-            document.getElementById('studentsNew').textContent = users.filter((u) => {
+            document.getElementById('usersNew').textContent = users.filter((u) => {
                 const c = u.createdAt ? new Date(u.createdAt) : null;
                 return c && c.getMonth() === now.getMonth() && c.getFullYear() === now.getFullYear();
             }).length;
-            document.getElementById('studentsRecordCount').textContent = `${users.length} Records`;
+            document.getElementById('usersRecordCount').textContent = `${users.length} Records`;
+        }
+
+        function getRoleBadge(role) {
+            if (role === 'admin') return 'danger';
+            if (role === 'instructor') return 'warning';
+            return 'primary';
+        }
+
+        function getStatusBadge(status) {
+            if (status === 'approved') return 'success';
+            if (status === 'rejected') return 'danger';
+            return 'warning';
+        }
+
+        function getActionButtons(user) {
+            const buttons = [];
+            if (user.role === 'instructor' && user.approvalStatus !== 'approved') {
+                buttons.push(`<button class="btn btn-sm" style="background:#D1FAE5;color:#065F46;border:none;font-weight:600;" onclick="updateInstructorStatus('${user._id}','approved')"><i class="bi bi-check-lg"></i> Approve</button>`);
+            }
+            if (user.role === 'instructor' && user.approvalStatus !== 'rejected') {
+                buttons.push(`<button class="btn btn-sm" style="background:#FEF3C7;color:#92400E;border:none;font-weight:600;" onclick="updateInstructorStatus('${user._id}','rejected')"><i class="bi bi-x-lg"></i> Reject</button>`);
+            }
+            buttons.push(`<button class="btn btn-sm" style="background:#FEE2E2;color:#EF4444;border:none;font-weight:600;" onclick="deleteUser('${user._id}')"><i class="bi bi-trash"></i> Delete</button>`);
+            return `<div style="display:flex;gap:8px;flex-wrap:wrap;">${buttons.join('')}</div>`;
         }
 
         function renderTable() {
-            const tbody = document.getElementById('studentsTableBody');
-            if (!users.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#94A3B8;padding:40px;">No students found</td></tr>'; return; }
+            const tbody = document.getElementById('usersTableBody');
+            if (!users.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#94A3B8;padding:40px;">No users found</td></tr>'; return; }
             tbody.innerHTML = users.map((u) => `
                 <tr>
                     <td><strong>${u.name || '-'}</strong></td>
                     <td>${u.email || '-'}</td>
                     <td>${u.branch || '-'}</td>
                     <td>${u.semester || '-'}</td>
-                    <td><span class="badge badge-${u.role === 'admin' ? 'danger' : 'primary'}">${u.role || 'student'}</span></td>
-                    <td><button class="btn btn-sm" style="background:#FEE2E2;color:#EF4444;border:none;font-weight:600;" onclick="deleteUser('${u._id}')"><i class="bi bi-trash"></i> Delete</button></td>
+                    <td><span class="badge badge-${getRoleBadge(u.role)}">${u.role || 'student'}</span></td>
+                    <td><span class="badge badge-${getStatusBadge(u.approvalStatus || 'approved')}">${u.approvalStatus || 'approved'}</span></td>
+                    <td>${getActionButtons(u)}</td>
                 </tr>
             `).join('');
         }
 
         async function loadUsers() {
             try { const d = await fetchFromApi('/users'); users = Array.isArray(d.users) ? d.users : []; renderStats(); renderTable(); }
-            catch (e) { console.error(e); document.getElementById('studentsTableBody').innerHTML = `<tr><td colspan="6" style="color:#EF4444;text-align:center;">${e.message}</td></tr>`; }
+            catch (e) { console.error(e); document.getElementById('usersTableBody').innerHTML = `<tr><td colspan="7" style="color:#EF4444;text-align:center;">${e.message}</td></tr>`; }
+        }
+
+        async function updateInstructorStatus(id, approvalStatus) {
+            try {
+                await fetchFromApi(`/users/${id}/approval-status`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ approvalStatus }),
+                });
+                await loadUsers();
+            } catch (e) {
+                alert(`Failed: ${e.message}`);
+            }
         }
 
         async function deleteUser(id) {
@@ -171,7 +234,10 @@
             catch (e) { alert(`Failed: ${e.message}`); }
         }
 
-        document.addEventListener('DOMContentLoaded', loadUsers);
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!ensureAdmin()) return;
+            loadUsers();
+        });
     </script>
 </body>
 

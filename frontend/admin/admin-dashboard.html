@@ -18,7 +18,7 @@
             </div>
             <nav>
                 <a href="admin-dashboard.html" class="active"><i class="bi bi-speedometer2"></i> Dashboard</a>
-                <a href="manage-students.html"><i class="bi bi-people"></i> Students</a>
+                <a href="manage-students.html"><i class="bi bi-people"></i> Users</a>
                 <a href="manage-courses.html"><i class="bi bi-journal-bookmark"></i> Courses</a>
                 <a href="manage-assignments.html"><i class="bi bi-clipboard-check"></i> Assignments</a>
                 <a href="quiz-scheduler.html"><i class="bi bi-ui-checks-grid"></i> Quiz Scheduler</a>
@@ -43,22 +43,22 @@
                 <div class="stat-card-modern slide-up">
                     <div class="stat-icon-wrap indigo"><i class="bi bi-people"></i></div>
                     <div>
-                        <div class="stat-value" id="statStudents">0</div>
-                        <div class="stat-label">Total Students</div>
+                        <div class="stat-value" id="statUsers">0</div>
+                        <div class="stat-label">Total Users</div>
                     </div>
                 </div>
                 <div class="stat-card-modern slide-up">
                     <div class="stat-icon-wrap emerald"><i class="bi bi-journal-bookmark"></i></div>
                     <div>
-                        <div class="stat-value" id="statCourses">0</div>
-                        <div class="stat-label">Total Courses</div>
+                        <div class="stat-value" id="statPendingInstructors">0</div>
+                        <div class="stat-label">Pending Instructors</div>
                     </div>
                 </div>
                 <div class="stat-card-modern slide-up">
                     <div class="stat-icon-wrap amber"><i class="bi bi-clipboard-check"></i></div>
                     <div>
-                        <div class="stat-value" id="statAssignments">0</div>
-                        <div class="stat-label">Assignments</div>
+                        <div class="stat-value" id="statCourses">0</div>
+                        <div class="stat-label">Courses</div>
                     </div>
                 </div>
                 <div class="stat-card-modern slide-up">
@@ -80,8 +80,8 @@
                     <div class="action-icon" style="background:linear-gradient(135deg,#EEF2FF,#C7D2FE);color:#4F46E5;">
                         <i class="bi bi-people"></i>
                     </div>
-                    <h6>Manage Students</h6>
-                    <p>View & edit students</p>
+                    <h6>Review Users</h6>
+                    <p>Approve instructors and manage accounts</p>
                 </a>
                 <a href="manage-courses.html" class="action-card slide-up">
                     <div class="action-icon" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0);color:#059669;">
@@ -113,9 +113,26 @@
             (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
         );
 
+        function getToken() { return localStorage.getItem('token'); }
+
+        function ensureAdmin() {
+            const user = JSON.parse(localStorage.getItem('user') || 'null');
+            if (!user || user.role !== 'admin') {
+                window.location.href = '../login.html';
+                return false;
+            }
+            return true;
+        }
+
         async function fetchFromApi(path) {
             for (const base of API_CANDIDATES) {
-                try { const res = await fetch(`${base}${path}`); if (!res.ok) continue; return await res.json(); } catch (_) { }
+                try {
+                    const res = await fetch(`${base}${path}`, {
+                        headers: { 'Authorization': `Bearer ${getToken()}` },
+                    });
+                    if (!res.ok) continue;
+                    return await res.json();
+                } catch (_) { }
             }
             throw new Error('Unable to connect to backend API.');
         }
@@ -126,14 +143,18 @@
                     fetchFromApi('/users'), fetchFromApi('/courses'),
                     fetchFromApi('/assignments'), fetchFromApi('/tests'),
                 ]);
-                document.getElementById('statStudents').textContent = usersRes.count || 0;
+                const users = Array.isArray(usersRes.users) ? usersRes.users : [];
+                document.getElementById('statUsers').textContent = users.length;
+                document.getElementById('statPendingInstructors').textContent = users.filter((u) => u.role === 'instructor' && u.approvalStatus === 'pending').length;
                 document.getElementById('statCourses').textContent = coursesRes.count || 0;
-                document.getElementById('statAssignments').textContent = assignmentsRes.count || 0;
                 document.getElementById('statQuizzes').textContent = testsRes.count || 0;
             } catch (error) { console.error('Admin dashboard data load failed:', error.message); }
         }
 
-        document.addEventListener('DOMContentLoaded', initDashboardStats);
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!ensureAdmin()) return;
+            initDashboardStats();
+        });
     </script>
 </body>
 

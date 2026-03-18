@@ -1,5 +1,38 @@
 const Test = require('../models/testModel');
+const Course = require('../models/courseModel');
 const QuizAttempt = require('../models/quizAttemptModel');
+
+const canManageTest = (test, user) => user.role === 'admin' || String(test.createdBy) === String(user._id);
+
+const ensureTestAccess = (test, user) => {
+    if (!canManageTest(test, user)) {
+        const error = new Error('You can only manage quizzes that you created');
+        error.statusCode = 403;
+        throw error;
+    }
+};
+
+const ensureCourseOwnership = (course, user) => {
+    if (user.role === 'admin') {
+        return;
+    }
+
+    if (String(course.createdBy) !== String(user._id)) {
+        const error = new Error('You can only create quizzes for your own courses');
+        error.statusCode = 403;
+        throw error;
+    }
+};
+
+const getManagedTests = async (req, res) => {
+    try {
+        const filter = req.user.role === 'admin' ? {} : { createdBy: req.user._id };
+        const tests = await Test.find(filter).populate('course', 'title').sort({ startTime: -1 });
+        res.status(200).json({ success: true, count: tests.length, tests });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to fetch managed quizzes', error: error.message });
+    }
+};
 
 // @desc    Get all tests
 // @route   GET /api/tests
@@ -48,10 +81,19 @@ const getTestById = async (req, res) => {
 const createTest = async (req, res) => {
     try {
         const data = { ...req.body };
+        const course = await Course.findById(data.course);
+        if (!course) {
+            return res.status(404).json({ success: false, message: 'Course not found' });
+        }
+
+        ensureCourseOwnership(course, req.user);
         if (req.user) data.createdBy = req.user._id;
         const test = await Test.create(data);
         res.status(201).json({ success: true, message: 'Test created', test });
     } catch (error) {
+        if (error.statusCode) {
+            return res.status(error.statusCode).json({ success: false, message: error.message });
+        }
         if (error.name === 'ValidationError') {
             const messages = Object.values(error.errors).map((e) => e.message);
             return res.status(400).json({ success: false, message: messages.join(', ') });
@@ -65,15 +107,28 @@ const createTest = async (req, res) => {
 // @access  Private (admin)
 const updateTest = async (req, res) => {
     try {
-        const test = await Test.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true,
-        });
+        const test = await Test.findById(req.params.id);
         if (!test) {
             return res.status(404).json({ success: false, message: 'Test not found' });
         }
+
+        ensureTestAccess(test, req.user);
+
+        if (req.body.course && String(req.body.course) !== String(test.course)) {
+            const course = await Course.findById(req.body.course);
+            if (!course) {
+                return res.status(404).json({ success: false, message: 'Course not found' });
+            }
+            ensureCourseOwnership(course, req.user);
+        }
+
+        Object.assign(test, req.body);
+        await test.save();
         res.status(200).json({ success: true, message: 'Test updated', test });
     } catch (error) {
+        if (error.statusCode) {
+            return res.status(error.statusCode).json({ success: false, message: error.message });
+        }
         if (error.name === 'ValidationError') {
             const messages = Object.values(error.errors).map((e) => e.message);
             return res.status(400).json({ success: false, message: messages.join(', ') });
@@ -87,13 +142,19 @@ const updateTest = async (req, res) => {
 // @access  Private (admin)
 const deleteTest = async (req, res) => {
     try {
-        const test = await Test.findByIdAndDelete(req.params.id);
+        const test = await Test.findById(req.params.id);
         if (!test) {
             return res.status(404).json({ success: false, message: 'Test not found' });
         }
+
+        ensureTestAccess(test, req.user);
+        await test.deleteOne();
         await QuizAttempt.deleteMany({ quiz: req.params.id });
         res.status(200).json({ success: true, message: 'Test deleted' });
     } catch (error) {
+        if (error.statusCode) {
+            return res.status(error.statusCode).json({ success: false, message: error.message });
+        }
         res.status(500).json({ success: false, message: 'Failed to delete test', error: error.message });
     }
 };
@@ -228,18 +289,29 @@ const getMyAttempts = async (req, res) => {
 // @access  Private (admin)
 const getQuizResults = async (req, res) => {
     try {
+        const test = await Test.findById(req.params.id);
+        if (!test) {
+            return res.status(404).json({ success: false, message: 'Quiz not found' });
+        }
+
+        ensureTestAccess(test, req.user);
+
         const attempts = await QuizAttempt.find({ quiz: req.params.id })
             .populate('student', 'name email')
             .sort({ score: -1 });
 
         res.status(200).json({ success: true, count: attempts.length, attempts });
     } catch (error) {
+        if (error.statusCode) {
+            return res.status(error.statusCode).json({ success: false, message: error.message });
+        }
         res.status(500).json({ success: false, message: 'Failed to fetch results', error: error.message });
     }
 };
 
 module.exports = {
     getTests,
+    getManagedTests,
     getTestById,
     createTest,
     updateTest,

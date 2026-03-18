@@ -1,288 +1,338 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password - CRISMATECH</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Forgot Password — CRISMATECH</title>
+    <link rel="stylesheet" href="../css/theme.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="../css/style.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #f0f3f7 100%);
+            background: var(--c-bg);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: var(--sp-5);
         }
 
-        .auth-container {
+        .bg-blobs {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: .3;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .blob-1 {
+            width: 450px;
+            height: 450px;
+            background: #6C63FF;
+            top: -10%;
+            right: -5%;
+            animation-duration: 9s;
+        }
+
+        .blob-2 {
+            width: 350px;
+            height: 350px;
+            background: #7C3AED;
+            bottom: -5%;
+            left: -5%;
+            animation-duration: 11s;
+            animation-delay: -3s;
+        }
+
+        .forgot-container {
+            position: relative;
+            z-index: 1;
             width: 100%;
-            max-width: 420px;
+            max-width: 460px;
         }
 
-        .auth-card {
-            background: white;
-            border-radius: 12px;
-            padding: 48px 40px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            animation: slideIn 0.5s ease-out;
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--sp-2);
+            font-weight: 600;
+            font-size: var(--fs-sm);
+            color: var(--c-primary);
+            margin-bottom: var(--sp-6);
+            background: var(--c-surface);
+            padding: var(--sp-2) var(--sp-4);
+            border-radius: var(--r-full);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--t-fast);
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .back-link:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
         }
 
-        .auth-header {
+        .forgot-card {
+            background: var(--c-surface);
+            border-radius: var(--r-xl);
+            padding: var(--sp-10) var(--sp-8);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--c-border-light);
+            animation: slideUp .5s var(--ease) both;
+        }
+
+        .forgot-header {
             text-align: center;
-            margin-bottom: 36px;
+            margin-bottom: var(--sp-8);
         }
 
-        .auth-label {
-            display: block;
-            text-align: center;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: var(--primary-color);
-            margin-bottom: 8px;
-        }
-
-        .auth-title {
+        .icon-circle {
+            width: 64px;
+            height: 64px;
+            background: var(--c-primary-gradient);
+            border-radius: var(--r-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--sp-4);
             font-size: 28px;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 8px;
+            color: #fff;
+            box-shadow: 0 6px 20px var(--c-primary-glow);
         }
 
-        .auth-subtitle {
-            font-size: 14px;
-            color: var(--text-light);
+        .forgot-header h1 {
+            font-size: var(--fs-2xl);
+            font-weight: 700;
+            margin-bottom: var(--sp-2);
+        }
+
+        .forgot-header p {
+            color: var(--c-text-muted);
+            font-size: var(--fs-base);
             line-height: 1.6;
         }
 
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: var(--sp-5);
         }
 
-        .form-label {
-            display: block;
-            font-size: 13px;
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--c-text-muted);
+            font-size: 16px;
+        }
+
+        .input-wrap .form-input {
+            padding-left: 44px;
+        }
+
+        .alert-box {
+            padding: var(--sp-3) var(--sp-4);
+            border-radius: var(--r-md);
+            margin-bottom: var(--sp-5);
+            font-size: var(--fs-sm);
             font-weight: 600;
-            color: var(--text-dark);
-            margin-bottom: 8px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 14px;
-            font-family: inherit;
-            transition: border-color 0.3s, box-shadow 0.3s;
-            background: #f9fafb;
-        }
-
-        .form-input::placeholder {
-            color: #999;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 86, 210, 0.1);
-            background: white;
-        }
-
-        .alert {
-            padding: 12px 14px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 13px;
-            font-weight: 500;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            animation: slideIn 0.3s ease-out;
+            gap: var(--sp-2);
+            animation: slideUp .3s var(--ease) both;
         }
 
-        .alert.success {
-            background: #ecfdf5;
-            color: #16a34a;
-            border: 1px solid #dcfce7;
+        .alert-box.success {
+            background: var(--c-success-light);
+            color: #065F46;
         }
 
-        .alert.error {
-            background: #fef2f2;
-            color: #dc2626;
-            border: 1px solid #fee2e2;
-        }
-
-        .alert-close {
-            background: none;
-            border: none;
-            color: inherit;
-            cursor: pointer;
-            font-size: 18px;
-            padding: 0;
+        .alert-box.error {
+            background: var(--c-danger-light);
+            color: var(--c-danger);
         }
 
         .btn-submit {
             width: 100%;
-            padding: 12px 16px;
-            background: var(--primary-color);
-            color: white;
+            padding: 14px;
+            background: var(--c-primary-gradient);
+            color: #fff;
             border: none;
-            border-radius: 6px;
-            font-size: 14px;
+            border-radius: var(--r-md);
+            font-family: var(--font);
+            font-size: var(--fs-md);
             font-weight: 600;
-            font-family: inherit;
             cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 8px;
+            transition: all var(--t-base);
+            box-shadow: 0 4px 14px var(--c-primary-glow);
         }
 
         .btn-submit:hover {
-            background: #003fa3;
-            box-shadow: 0 4px 12px rgba(0, 86, 210, 0.2);
-        }
-
-        .btn-submit:active {
-            transform: translateY(1px);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--c-primary-glow);
         }
 
         .btn-submit:disabled {
-            opacity: 0.6;
+            opacity: .5;
             cursor: not-allowed;
+            transform: none;
         }
 
-        .back-link {
+        .forgot-footer {
             text-align: center;
-            margin-top: 24px;
-            font-size: 14px;
-            color: var(--text-dark);
+            margin-top: var(--sp-6);
+            font-size: var(--fs-base);
+            color: var(--c-text-secondary);
         }
 
-        .back-link a {
-            color: var(--primary-color);
-            text-decoration: none;
+        .forgot-footer a {
             font-weight: 600;
-            transition: color 0.3s;
+            color: var(--c-primary);
         }
 
-        .back-link a:hover {
-            color: #003fa3;
+        /* Success state */
+        .success-view {
+            text-align: center;
+            display: none;
         }
 
-        .home-link {
-            position: absolute;
-            top: 24px;
-            left: 24px;
-            color: var(--primary-color);
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            transition: color 0.3s;
+        .success-view .check-circle {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--c-success-light);
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
+            margin: 0 auto var(--sp-5);
+            font-size: 32px;
+            color: var(--c-success);
+            animation: scaleIn .4s var(--ease-spring) both;
         }
 
-        .home-link:hover {
-            color: #003fa3;
+        .success-view h2 {
+            font-size: var(--fs-xl);
+            font-weight: 700;
+            margin-bottom: var(--sp-2);
+        }
+
+        .success-view p {
+            color: var(--c-text-muted);
+            font-size: var(--fs-base);
+            line-height: 1.6;
+            margin-bottom: var(--sp-6);
         }
 
         @media (max-width: 480px) {
-            .auth-card {
-                padding: 36px 24px;
-            }
-
-            .auth-title {
-                font-size: 24px;
+            .forgot-card {
+                padding: var(--sp-8) var(--sp-5);
             }
         }
     </style>
 </head>
+
 <body>
-    <a href="../index.html" class="home-link">← Home</a>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
 
-    <div class="auth-container">
-        <div class="auth-card">
-            <div class="auth-header">
-                <span class="auth-label">RESET PASSWORD</span>
-                <h1 class="auth-title">Forgot Password?</h1>
-                <p class="auth-subtitle">No worries! Enter your email address and we'll send you a link to reset your password.</p>
-            </div>
+    <div class="forgot-container">
+        <a href="../login.html" class="back-link"><i class="bi bi-arrow-left"></i> Back to Login</a>
 
-            <div id="alertContainer"></div>
-
-            <form id="forgotForm">
-                <div class="form-group">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" class="form-input" id="email" placeholder="Enter your registered email" required>
+        <div class="forgot-card">
+            <!-- Form View -->
+            <div id="formView">
+                <div class="forgot-header">
+                    <div class="icon-circle"><i class="bi bi-key"></i></div>
+                    <h1>Forgot Password?</h1>
+                    <p>No worries! Enter your email address and we'll send you a link to reset your password.</p>
                 </div>
 
-                <button type="submit" class="btn-submit">Send Reset Link</button>
-            </form>
+                <div id="alertContainer"></div>
 
-            <div class="back-link">
-                <a href="../login.html">← Back to Login</a>
+                <form id="forgotForm">
+                    <div class="form-group">
+                        <div class="input-wrap">
+                            <i class="bi bi-envelope"></i>
+                            <input type="email" class="form-input" id="email"
+                                placeholder="Enter your registered email" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit" id="submitBtn">Send Reset Link</button>
+                </form>
+
+                <div class="forgot-footer">
+                    Remember your password? <a href="../login.html">Sign in</a>
+                </div>
+            </div>
+
+            <!-- Success View -->
+            <div id="successView" class="success-view">
+                <div class="check-circle"><i class="bi bi-check-lg"></i></div>
+                <h2>Check Your Email</h2>
+                <p>We've sent a password reset link to <strong id="sentEmail"></strong>. The link expires in 15
+                    minutes.</p>
+                <a href="../login.html" class="btn-submit"
+                    style="display:inline-block;text-align:center;text-decoration:none;">Back to Login</a>
             </div>
         </div>
     </div>
 
     <script>
-        const API_URL = 'http://localhost:5000/api';
+        const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(
+            (port) => `http://${window.location.hostname || 'localhost'}:${port}/api`
+        );
+        let apiBase = null;
+
+        async function getApiBase() {
+            if (apiBase) return apiBase;
+            for (const base of API_CANDIDATES) {
+                try { const r = await fetch(`${base}/courses`); if (r.ok) { apiBase = base; return base; } } catch (_) { }
+            }
+            throw new Error('Unable to connect to backend API.');
+        }
 
         function showAlert(message, type) {
-            const alertHTML = `
-                <div class="alert ${type}">
-                    <span>${message}</span>
-                    <button class="alert-close" onclick="this.parentElement.style.display='none';">×</button>
+            document.getElementById('alertContainer').innerHTML = `
+                <div class="alert-box ${type}">
+                    <i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-circle-fill'}"></i>
+                    ${message}
                 </div>
             `;
-            document.getElementById('alertContainer').innerHTML = alertHTML;
         }
 
         document.getElementById('forgotForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value.trim();
-            const btn = e.target.querySelector('button');
+            const btn = document.getElementById('submitBtn');
 
             btn.disabled = true;
             btn.textContent = 'Sending...';
 
             try {
-                const res = await fetch(`${API_URL}/auth/forgot-password`, {
+                const base = await getApiBase();
+                const res = await fetch(`${base}/auth/forgot-password`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email }),
                 });
-
                 const data = await res.json();
 
                 if (data.success) {
-                    showAlert('Reset link sent! Please check your email.', 'success');
-                    document.getElementById('forgotForm').reset();
-                    setTimeout(() => {
-                        window.location.href = '../login.html';
-                    }, 3000);
+                    document.getElementById('formView').style.display = 'none';
+                    document.getElementById('successView').style.display = 'block';
+                    document.getElementById('sentEmail').textContent = email;
                 } else {
                     showAlert(data.message || 'Failed to send reset link', 'error');
                     btn.disabled = false;
@@ -296,4 +346,5 @@
         });
     </script>
 </body>
+
 </html>

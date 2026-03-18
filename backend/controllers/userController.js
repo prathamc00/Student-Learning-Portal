@@ -22,4 +22,30 @@ const deleteUser = async (req, res) => {
     }
 };
 
-module.exports = { getUsers, deleteUser };
+const updateInstructorStatus = async (req, res) => {
+    try {
+        const { approvalStatus } = req.body;
+
+        if (!['approved', 'rejected', 'pending'].includes(approvalStatus)) {
+            return res.status(400).json({ success: false, message: 'Invalid approval status' });
+        }
+
+        const user = await User.findById(req.params.id).select('-password');
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        if (user.role !== 'instructor') {
+            return res.status(400).json({ success: false, message: 'Only instructor accounts can be approved or rejected' });
+        }
+
+        user.approvalStatus = approvalStatus;
+        await user.save();
+
+        res.status(200).json({ success: true, message: `Instructor ${approvalStatus} successfully`, user });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to update instructor status', error: error.message });
+    }
+};
+
+module.exports = { getUsers, deleteUser, updateInstructorStatus };

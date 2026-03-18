@@ -2,8 +2,8 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const router = express.Router();
-const { getCourses, getCourseById, createCourse, updateCourse, deleteCourse, getModules, addModule, updateModule, deleteModule, reorderModules } = require('../controllers/courseController');
-const { protect, adminOnly } = require('../middleware/authMiddleware');
+const { getCourses, getManagedCourses, getCourseById, createCourse, updateCourse, deleteCourse, getModules, addModule, updateModule, deleteModule, reorderModules } = require('../controllers/courseController');
+const { protect, staffOnly } = require('../middleware/authMiddleware');
 
 // Video upload config
 const videoStorage = multer.diskStorage({
@@ -26,16 +26,17 @@ const videoUpload = multer({
 
 // Course CRUD
 router.get('/', getCourses);
+router.get('/manage', protect, staffOnly, getManagedCourses);
 router.get('/:id', getCourseById);
-router.post('/', protect, adminOnly, createCourse);
-router.put('/:id', protect, adminOnly, updateCourse);
-router.delete('/:id', protect, adminOnly, deleteCourse);
+router.post('/', protect, staffOnly, createCourse);
+router.put('/:id', protect, staffOnly, updateCourse);
+router.delete('/:id', protect, staffOnly, deleteCourse);
 
 // Module / Video management
 router.get('/:id/modules', getModules);
-router.post('/:id/modules', protect, adminOnly, videoUpload.single('video'), addModule);
-router.put('/:id/modules/reorder', protect, adminOnly, reorderModules);
-router.put('/:id/modules/:moduleId', protect, adminOnly, videoUpload.single('video'), updateModule);
-router.delete('/:id/modules/:moduleId', protect, adminOnly, deleteModule);
+router.post('/:id/modules', protect, staffOnly, videoUpload.single('video'), addModule);
+router.put('/:id/modules/reorder', protect, staffOnly, reorderModules);
+router.put('/:id/modules/:moduleId', protect, staffOnly, videoUpload.single('video'), updateModule);
+router.delete('/:id/modules/:moduleId', protect, staffOnly, deleteModule);
 
 module.exports = router;

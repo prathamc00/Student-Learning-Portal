@@ -153,6 +153,34 @@
         const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(p => `http://${window.location.hostname || 'localhost'}:${p}/api`);
         let apiBase = null, assignments = [], coursesList = [];
 
+        function getCurrentUser() { return JSON.parse(localStorage.getItem('user') || 'null'); }
+        function isInstructorView() { return getCurrentUser()?.role === 'instructor'; }
+
+        function ensureStaffAccess() {
+            const user = getCurrentUser();
+            if (!user || !['admin', 'instructor'].includes(user.role) || (user.role === 'instructor' && user.approvalStatus !== 'approved')) {
+                window.location.href = '../login.html';
+                return false;
+            }
+            return true;
+        }
+
+        function configurePageForRole() {
+            const user = getCurrentUser();
+            if (!user) return;
+            document.querySelector('.admin-badge').textContent = user.role.toUpperCase();
+            if (user.role === 'instructor') {
+                document.title = 'Manage Assignments';
+                document.querySelector('.admin-topbar h1').textContent = 'My Assignments';
+                document.querySelector('.page-header h2').textContent = 'Assignment Management';
+                document.querySelector('.page-header p').textContent = 'Create and review assignments for your own courses';
+                document.querySelector('.admin-sidebar .brand h4').innerHTML = '<i class="bi bi-easel2-fill"></i> Instructor Hub';
+                document.querySelector('.admin-sidebar nav a[href="manage-students.html"]')?.remove();
+                const dashboardLink = document.querySelector('.admin-sidebar nav a[href="admin-dashboard.html"]');
+                if (dashboardLink) dashboardLink.href = '../instructor/dashboard.html';
+            }
+        }
+
         async function getApiBase() {
             if (apiBase) return apiBase;
             for (const b of API_CANDIDATES) { try { const r = await fetch(`${b}/courses`); if (r.ok) { apiBase = b; return b; } } catch (_) { } }
@@ -160,16 +188,53 @@
         }
         function getToken() { return localStorage.getItem('token'); }
 
+        function handleAuthFailure(message) {
+            const authMessages = [
+                'User not found',
+                'Not authorized',
+                'token invalid',
+                'no token',
+            ];
+
+            if (authMessages.some((text) => String(message || '').toLowerCase().includes(text.toLowerCase()))) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                alert('Your session has expired or your account no longer exists. Please log in again.');
+                window.location.href = '../login.html';
+                return true;
+            }
+
+            return false;
+        }
+
+        async function getErrorMessage(res) {
+            const raw = await res.text();
+            if (!raw) return `Request failed ${res.status}`;
+
+            try {
+                const parsed = JSON.parse(raw);
+                return parsed.message || raw;
+            } catch (_) {
+                return raw;
+            }
+        }
+
         async function fetchFromApi(path, options = {}) {
             const base = await getApiBase(); const token = getToken();
             if (token) options.headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
             const res = await fetch(`${base}${path}`, options);
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                const message = await getErrorMessage(res);
+                if (handleAuthFailure(message)) {
+                    throw new Error('Session expired');
+                }
+                throw new Error(message || `Request failed ${res.status}`);
+            }
             return await res.json();
         }
 
         async function loadCourses() {
-            const d = await fetchFromApi('/courses');
+            const d = await fetchFromApi('/courses/manage');
             coursesList = Array.isArray(d.courses) ? d.courses : [];
             const sel = document.getElementById('aCourse');
             sel.innerHTML = '<option value="">Select Course</option>' + coursesList.map(c => `<option value="${c._id}">${c.title}</option>`).join('');
@@ -177,7 +242,7 @@
 
         async function loadAssignments() {
             try {
-                const d = await fetchFromApi('/assignments');
+                const d = await fetchFromApi('/assignments/manage');
                 assignments = Array.isArray(d.assignments) ? d.assignments : [];
                 document.getElementById('assignmentTotal').textContent = assignments.length;
                 document.getElementById('courseCount').textContent = new Set(assignments.map(a => a.course?._id || a.course)).size;
@@ -294,7 +359,12 @@
             } catch (e) { alert(`Failed: ${e.message}`); }
         }
 
-        document.addEventListener('DOMContentLoaded', async () => { await loadCourses(); await loadAssignments(); });
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!ensureStaffAccess()) return;
+            configurePageForRole();
+            await loadCourses();
+            await loadAssignments();
+        });
     </script>
 </body>
 

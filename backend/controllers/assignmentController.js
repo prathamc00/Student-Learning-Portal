@@ -1,5 +1,38 @@
 const Assignment = require('../models/assignmentModel');
+const Course = require('../models/courseModel');
 const Submission = require('../models/submissionModel');
+
+const canManageAssignment = (assignment, user) => user.role === 'admin' || String(assignment.createdBy) === String(user._id);
+
+const ensureAssignmentAccess = (assignment, user) => {
+    if (!canManageAssignment(assignment, user)) {
+        const error = new Error('You can only manage assignments that you created');
+        error.statusCode = 403;
+        throw error;
+    }
+};
+
+const ensureCourseOwnership = (course, user) => {
+    if (user.role === 'admin') {
+        return;
+    }
+
+    if (String(course.createdBy) !== String(user._id)) {
+        const error = new Error('You can only create assignments for your own courses');
+        error.statusCode = 403;
+        throw error;
+    }
+};
+
+const getManagedAssignments = async (req, res) => {
+    try {
+        const filter = req.user.role === 'admin' ? {} : { createdBy: req.user._id };
+        const assignments = await Assignment.find(filter).populate('course', 'title').sort({ createdAt: -1 });
+        res.status(200).json({ success: true, count: assignments.length, assignments });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to fetch managed assignments', error: error.message });
+    }
+};
 
 // @desc    Get all assignments
 // @route   GET /api/assignments
@@ -34,10 +67,19 @@ const getAssignmentById = async (req, res) => {
 const createAssignment = async (req, res) => {
     try {
         const data = { ...req.body };
+        const course = await Course.findById(data.course);
+        if (!course) {
+            return res.status(404).json({ success: false, message: 'Course not found' });
+        }
+
+        ensureCourseOwnership(course, req.user);
         if (req.user) data.createdBy = req.user._id;
         const assignment = await Assignment.create(data);
         res.status(201).json({ success: true, message: 'Assignment created', assignment });
     } catch (error) {
+        if (error.statusCode) {
+            return res.status(error.statusCode).json({ success: false, message: error.message });
+        }
         if (error.name === 'ValidationError') {
             const messages = Object.values(error.errors).map((e) => e.message);
             return res.status(400).json({ success: false, message: messages.join(', ') });
@@ -51,15 +93,28 @@ const createAssignment = async (req, res) => {
 // @access  Private (admin)
 const updateAssignment = async (req, res) => {
     try {
-        const assignment = await Assignment.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true,
-        });
+        const assignment = await Assignment.findById(req.params.id);
         if (!assignment) {
             return res.status(404).json({ success: false, message: 'Assignment not found' });
         }
+
+        ensureAssignmentAccess(assignment, req.user);
+
+        if (req.body.course && String(req.body.course) !== String(assignment.course)) {
+            const course = await Course.findById(req.body.course);
+            if (!course) {
+                return res.status(404).json({ success: false, message: 'Course not found' });
+            }
+            ensureCourseOwnership(course, req.user);
+        }
+
+        Object.assign(assignment, req.body);
+        await assignment.save();
         res.status(200).json({ success: true, message: 'Assignment updated', assignment });
     } catch (error) {
+        if (error.statusCode) {
+            return res.status(error.statusCode).json({ success: false, message: error.message });
+        }
         if (error.name === 'ValidationError') {
             const messages = Object.values(error.errors).map((e) => e.message);
             return res.status(400).json({ success: false, message: messages.join(', ') });
@@ -73,14 +128,20 @@ const updateAssignment = async (req, res) => {
 // @access  Private (admin)
 const deleteAssignment = async (req, res) => {
     try {
-        const assignment = await Assignment.findByIdAndDelete(req.params.id);
+        const assignment = await Assignment.findById(req.params.id);
         if (!assignment) {
             return res.status(404).json({ success: false, message: 'Assignment not found' });
         }
+
+        ensureAssignmentAccess(assignment, req.user);
+        await assignment.deleteOne();
         // Also delete related submissions
         await Submission.deleteMany({ assignment: req.params.id });
         res.status(200).json({ success: true, message: 'Assignment deleted' });
     } catch (error) {
+        if (error.statusCode) {
+            return res.status(error.statusCode).json({ success: false, message: error.message });
+        }
         res.status(500).json({ success: false, message: 'Failed to delete assignment', error: error.message });
     }
 };
@@ -127,12 +188,22 @@ const submitAssignment = async (req, res) => {
 // @access  Private (admin)
 const getSubmissions = async (req, res) => {
     try {
+        const assignment = await Assignment.findById(req.params.id);
+        if (!assignment) {
+            return res.status(404).json({ success: false, message: 'Assignment not found' });
+        }
+
+        ensureAssignmentAccess(assignment, req.user);
+
         const submissions = await Submission.find({ assignment: req.params.id })
             .populate('student', 'name email')
             .sort({ submittedAt: -1 });
 
         res.status(200).json({ success: true, count: submissions.length, submissions });
     } catch (error) {
+        if (error.statusCode) {
+            return res.status(error.statusCode).json({ success: false, message: error.message });
+        }
         res.status(500).json({ success: false, message: 'Failed to fetch submissions', error: error.message });
     }
 };
@@ -158,24 +229,30 @@ const getMySubmissions = async (req, res) => {
 const gradeSubmission = async (req, res) => {
     try {
         const { grade, feedback } = req.body;
-        const submission = await Submission.findByIdAndUpdate(
-            req.params.id,
-            { grade, feedback },
-            { new: true, runValidators: true }
-        );
+        const submission = await Submission.findById(req.params.id).populate('assignment');
 
         if (!submission) {
             return res.status(404).json({ success: false, message: 'Submission not found' });
         }
 
+        ensureAssignmentAccess(submission.assignment, req.user);
+
+        submission.grade = grade;
+        submission.feedback = feedback;
+        await submission.save();
+
         res.status(200).json({ success: true, message: 'Submission graded', submission });
     } catch (error) {
+        if (error.statusCode) {
+            return res.status(error.statusCode).json({ success: false, message: error.message });
+        }
         res.status(500).json({ success: false, message: 'Failed to grade submission', error: error.message });
     }
 };
 
 module.exports = {
     getAssignments,
+    getManagedAssignments,
     getAssignmentById,
     createAssignment,
     updateAssignment,

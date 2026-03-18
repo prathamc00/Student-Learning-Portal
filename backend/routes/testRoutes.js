@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
     getTests,
+    getManagedTests,
     getTestById,
     createTest,
     updateTest,
@@ -11,16 +12,17 @@ const {
     getMyAttempts,
     getQuizResults,
 } = require('../controllers/testController');
-const { protect, adminOnly } = require('../middleware/authMiddleware');
+const { protect, optionalAuth, staffOnly } = require('../middleware/authMiddleware');
 
-router.get('/', getTests);
+router.get('/', optionalAuth, getTests);
+router.get('/manage', protect, staffOnly, getManagedTests);
 router.get('/my-attempts', protect, getMyAttempts);
-router.get('/:id', getTestById);
-router.post('/', protect, adminOnly, createTest);
-router.put('/:id', protect, adminOnly, updateTest);
-router.delete('/:id', protect, adminOnly, deleteTest);
+router.get('/:id', optionalAuth, getTestById);
+router.post('/', protect, staffOnly, createTest);
+router.put('/:id', protect, staffOnly, updateTest);
+router.delete('/:id', protect, staffOnly, deleteTest);
 router.post('/:id/start', protect, startQuiz);
 router.post('/:id/submit', protect, submitQuiz);
-router.get('/:id/results', protect, adminOnly, getQuizResults);
+router.get('/:id/results', protect, staffOnly, getQuizResults);
 
 module.exports = router;

@@ -40,7 +40,7 @@
                     </div>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#quizModal"
                         onclick="resetForm()">+ Schedule Quiz</button>
-                </div>
+                </div>                                       
                 <div class="row g-4 mb-4">
                     <div class="col-lg-4 col-md-6">
                         <div class="stat-card">
@@ -69,7 +69,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> 
                 <div class="table-wrapper">
                     <div class="table-header">
                         <h5>Scheduled Quizzes</h5><span id="quizRecordCount" class="record-count">0 Records</span>
@@ -157,6 +157,33 @@
         const API_CANDIDATES = [5000, 5001, 5002, 5003, 5004, 5005].map(p => `http://${window.location.hostname || 'localhost'}:${p}/api`);
         let apiBase = null, quizzes = [], coursesList = [], questionCount = 0;
 
+        function getCurrentUser() { return JSON.parse(localStorage.getItem('user') || 'null'); }
+
+        function ensureStaffAccess() {
+            const user = getCurrentUser();
+            if (!user || !['admin', 'instructor'].includes(user.role) || (user.role === 'instructor' && user.approvalStatus !== 'approved')) {
+                window.location.href = '../login.html';
+                return false;
+            }
+            return true;
+        }
+
+        function configurePageForRole() {
+            const user = getCurrentUser();
+            if (!user) return;
+            document.querySelector('.admin-badge').textContent = user.role.toUpperCase();
+            if (user.role === 'instructor') {
+                document.title = 'Manage Quizzes';
+                document.querySelector('.admin-topbar h1').textContent = 'Quiz Manager';
+                document.querySelector('.page-header h2').textContent = 'Quiz Management';
+                document.querySelector('.page-header p').textContent = 'Create, schedule, and review quizzes for your courses';
+                document.querySelector('.admin-sidebar .brand h4').innerHTML = '<i class="bi bi-easel2-fill"></i> Instructor Hub';
+                document.querySelector('.admin-sidebar nav a[href="manage-students.html"]')?.remove();
+                const dashboardLink = document.querySelector('.admin-sidebar nav a[href="admin-dashboard.html"]');
+                if (dashboardLink) dashboardLink.href = '../instructor/dashboard.html';
+            }
+        }
+
         async function getApiBase() {
             if (apiBase) return apiBase;
             for (const b of API_CANDIDATES) { try { const r = await fetch(`${b}/courses`); if (r.ok) { apiBase = b; return b; } } catch (_) { } }
@@ -164,16 +191,53 @@
         }
         function getToken() { return localStorage.getItem('token'); }
 
+        function handleAuthFailure(message) {
+            const authMessages = [
+                'User not found',
+                'Not authorized',
+                'token invalid',
+                'no token',
+            ];
+
+            if (authMessages.some((text) => String(message || '').toLowerCase().includes(text.toLowerCase()))) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                alert('Your session has expired or your account no longer exists. Please log in again.');
+                window.location.href = '../login.html';
+                return true;
+            }
+
+            return false;
+        }
+
+        async function getErrorMessage(res) {
+            const raw = await res.text();
+            if (!raw) return `Request failed ${res.status}`;
+
+            try {
+                const parsed = JSON.parse(raw);
+                return parsed.message || raw;
+            } catch (_) {
+                return raw;
+            }
+        }
+
         async function fetchFromApi(path, options = {}) {
             const base = await getApiBase(); const token = getToken();
             if (token) options.headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
             const res = await fetch(`${base}${path}`, options);
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                const message = await getErrorMessage(res);
+                if (handleAuthFailure(message)) {
+                    throw new Error('Session expired');
+                }
+                throw new Error(message || `Request failed ${res.status}`);
+            }
             return await res.json();
         }
 
         async function loadCourses() {
-            const d = await fetchFromApi('/courses');
+            const d = await fetchFromApi('/courses/manage');
             coursesList = Array.isArray(d.courses) ? d.courses : [];
             const sel = document.getElementById('qCourse');
             sel.innerHTML = '<option value="">Select Course</option>' + coursesList.map(c => `<option value="${c._id}">${c.title}</option>`).join('');
@@ -209,7 +273,7 @@
         }
 
         async function loadQuizzes() {
-            try { const d = await fetchFromApi('/tests'); quizzes = Array.isArray(d.tests) ? d.tests : []; renderStats(); renderTable(); }
+            try { const d = await fetchFromApi('/tests/manage'); quizzes = Array.isArray(d.tests) ? d.tests : []; renderStats(); renderTable(); }
             catch (e) { console.error(e); }
         }
 
@@ -330,7 +394,12 @@
             } catch (e) { body.innerHTML = `<p class="text-danger">${e.message}</p>`; }
         }
 
-        document.addEventListener('DOMContentLoaded', async () => { await loadCourses(); await loadQuizzes(); });
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!ensureStaffAccess()) return;
+            configurePageForRole();
+            await loadCourses();
+            await loadQuizzes();
+        });
     </script>
 </body>
 

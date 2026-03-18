@@ -44,6 +44,13 @@ const userSchema = new mongoose.Schema(
             enum: ['student', 'instructor', 'admin'],
             default: 'student',
         },
+        approvalStatus: {
+            type: String,
+            enum: ['pending', 'approved', 'rejected'],
+            default: function () {
+                return this.role === 'instructor' ? 'pending' : 'approved';
+            },
+        },
         aadhaarCardPath: {
             type: String,
             default: null,

@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const path = require('path');
+const nodemailer = require('nodemailer');
 
 // Helper: generate signed JWT
 const generateToken = (id) => {
@@ -9,12 +10,52 @@ const generateToken = (id) => {
     });
 };
 
+// Email transporter (shared with otpController)
+const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: Number(process.env.SMTP_PORT) || 587,
+    secure: false,
+    auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+    },
+});
+
+const buildUserPayload = (user) => ({
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    college: user.college,
+    branch: user.branch,
+    semester: user.semester,
+    phone: user.phone,
+    role: user.role,
+    approvalStatus: user.approvalStatus || 'approved',
+    aadhaarVerified: user.aadhaarVerified,
+    createdAt: user.createdAt,
+});
+
+const trimTrailingSlash = (value = '') => value.replace(/\/+$/, '');
+
+const getResetPageBaseUrl = (req) => {
+    if (process.env.RESET_PASSWORD_URL) {
+        return trimTrailingSlash(process.env.RESET_PASSWORD_URL);
+    }
+
+    if (process.env.APP_URL) {
+        return `${trimTrailingSlash(process.env.APP_URL)}/password/reset.html`;
+    }
+
+    return `${req.protocol}://${req.get('host')}/password/reset.html`;
+};
+
 // @desc    Register a new user
 // @route   POST /api/auth/register
 // @access  Public
 const register = async (req, res) => {
     try {
         const { name, email, password, college, branch, semester, phone, role } = req.body;
+        const normalizedRole = role === 'instructor' ? 'instructor' : 'student';
 
         if (!name || !email || !password) {
             return res.status(400).json({ success: false, message: 'Please provide name, email, and password' });
@@ -25,25 +66,25 @@ const register = async (req, res) => {
             return res.status(409).json({ success: false, message: 'Email is already registered' });
         }
 
-        const user = await User.create({ name, email, password, college, branch, semester, phone, role });
+        const approvalStatus = normalizedRole === 'instructor' ? 'pending' : 'approved';
+        const user = await User.create({ name, email, password, college, branch, semester, phone, role: normalizedRole, approvalStatus });
+
+        if (normalizedRole === 'instructor') {
+            return res.status(201).json({
+                success: true,
+                message: 'Instructor registration submitted. Your account is pending admin approval.',
+                requiresApproval: true,
+                user: buildUserPayload(user),
+            });
+        }
+
         const token = generateToken(user._id);
 
         res.status(201).json({
             success: true,
             message: 'Registration successful',
             token,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                college: user.college,
-                branch: user.branch,
-                semester: user.semester,
-                phone: user.phone,
-                role: user.role,
-                aadhaarVerified: user.aadhaarVerified,
-                createdAt: user.createdAt,
-            },
+            user: buildUserPayload(user),
         });
     } catch (error) {
         if (error.name === 'ValidationError') {
@@ -75,24 +116,23 @@ const login = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Invalid email or password' });
         }
 
+        const approvalStatus = user.approvalStatus || 'approved';
+
+        if (user.role === 'instructor' && approvalStatus !== 'approved') {
+            const message = approvalStatus === 'rejected'
+                ? 'Your instructor account has been rejected. Please contact the admin.'
+                : 'Your instructor account is pending admin approval.';
+
+            return res.status(403).json({ success: false, message, approvalStatus });
+        }
+
         const token = generateToken(user._id);
 
         res.status(200).json({
             success: true,
             message: 'Login successful',
             token,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                college: user.college,
-                branch: user.branch,
-                semester: user.semester,
-                phone: user.phone,
-                role: user.role,
-                aadhaarVerified: user.aadhaarVerified,
-                createdAt: user.createdAt,
-            },
+            user: buildUserPayload(user),
         });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Server error', error: error.message });
@@ -111,18 +151,9 @@ const getMe = async (req, res) => {
         res.status(200).json({
             success: true,
             user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                college: user.college,
-                branch: user.branch,
-                semester: user.semester,
-                phone: user.phone,
-                role: user.role,
+                ...buildUserPayload(user),
                 aadhaarCardPath: user.aadhaarCardPath,
-                aadhaarVerified: user.aadhaarVerified,
                 enrolledCourses: user.enrolledCourses,
-                createdAt: user.createdAt,
             },
         });
     } catch (error) {
@@ -155,18 +186,7 @@ const updateProfile = async (req, res) => {
         res.status(200).json({
             success: true,
             message: 'Profile updated successfully',
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                college: user.college,
-                branch: user.branch,
-                semester: user.semester,
-                phone: user.phone,
-                role: user.role,
-                aadhaarVerified: user.aadhaarVerified,
-                createdAt: user.createdAt,
-            },
+            user: buildUserPayload(user),
         });
     } catch (error) {
         if (error.name === 'ValidationError') {
@@ -242,23 +262,81 @@ const forgotPassword = async (req, res) => {
 
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(200).json({
-                success: true,
-                message: 'If an account exists with that email, a password reset link has been sent.',
+            return res.status(404).json({
+                success: false,
+                message: 'This email is not registered. Please check your email or create an account.',
             });
         }
 
         const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
-        const resetLink = `http://localhost:5501/password/reset.html?token=${resetToken}`;
+        const resetLink = `${getResetPageBaseUrl(req)}?token=${encodeURIComponent(resetToken)}`;
+        
         console.log(`[Password Reset] Reset link for ${email}: ${resetLink}`);
+
+        // Send reset email
+        await transporter.sendMail({
+            from: `"CRISMATECH Portal" <${process.env.SMTP_USER}>`,
+            to: email,
+            subject: 'Reset Your CRISMATECH Password',
+            html: `
+                <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 40px 32px; background: #ffffff; border-radius: 16px;">
+                    <div style="text-align: center; margin-bottom: 32px;">
+                        <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #6C63FF, #7C3AED); border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                            <span style="color: #fff; font-size: 24px; font-weight: 800;">C</span>
+                        </div>
+                        <h2 style="color: #1A1A2E; font-size: 22px; margin: 0 0 8px;">Password Reset</h2>
+                        <p style="color: #64748b; font-size: 14px; margin: 0;">You requested a password reset for your CRISMATECH account.</p>
+                    </div>
+                    <div style="text-align: center; margin: 32px 0;">
+                        <a href="${resetLink}" style="display: inline-block; padding: 14px 36px; background: linear-gradient(135deg, #6C63FF, #7C3AED); color: #ffffff; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 14px rgba(108, 99, 255, 0.3);">
+                            Reset Password
+                        </a>
+                    </div>
+                    <p style="color: #94a3b8; font-size: 13px; text-align: center; line-height: 1.6;">
+                        This link expires in <strong>15 minutes</strong>. If you didn't request this, you can safely ignore this email.
+                    </p>
+                    <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 24px 0;">
+                    <p style="color: #cbd5e1; font-size: 12px; text-align: center;">© CRISMATECH Learning Portal</p>
+                </div>
+            `,
+        });
 
         res.status(200).json({
             success: true,
             message: 'Password reset link has been sent to your email. Link expires in 15 minutes.',
-            resetLink,
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+        console.error('[Password Reset] Error:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to send reset email. Please try again.' });
+    }
+};
+
+// @desc    Validate reset token
+// @route   GET /api/auth/reset-password/validate
+// @access  Public
+const validateResetToken = async (req, res) => {
+    try {
+        const { token } = req.query;
+
+        if (!token) {
+            return res.status(400).json({ success: false, message: 'Reset token is required' });
+        }
+
+        let decoded;
+        try {
+            decoded = jwt.verify(token, process.env.JWT_SECRET);
+        } catch (error) {
+            return res.status(400).json({ success: false, message: 'Invalid or expired reset token' });
+        }
+
+        const user = await User.findById(decoded.id).select('_id');
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        return res.status(200).json({ success: true, message: 'Reset token is valid' });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: 'Server error', error: error.message });
     }
 };
 
@@ -292,8 +370,80 @@ const resetPassword = async (req, res) => {
             message: 'Password has been reset successfully. You can now login with your new password.',
         });
     } catch (error) {
+        if (error.name === 'ValidationError') {
+            const messages = Object.values(error.errors).map((entry) => entry.message);
+            return res.status(400).json({ success: false, message: messages.join(', ') });
+        }
+
         res.status(500).json({ success: false, message: 'Server error', error: error.message });
     }
 };
 
-module.exports = { register, login, getMe, updateProfile, uploadAadhaar, enrollCourse, forgotPassword, resetPassword };
+// @desc    Register a new instructor (dedicated flow)
+// @route   POST /api/auth/instructor/register
+// @access  Public
+const registerInstructor = async (req, res) => {
+    req.body.role = 'instructor';
+    return register(req, res);
+};
+
+// @desc    Login instructor only (dedicated flow)
+// @route   POST /api/auth/instructor/login
+// @access  Public
+const loginInstructor = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({ success: false, message: 'Please provide email and password' });
+        }
+
+        const user = await User.findOne({ email }).select('+password');
+        if (!user) {
+            return res.status(401).json({ success: false, message: 'Invalid email or password' });
+        }
+
+        const isMatch = await user.matchPassword(password);
+        if (!isMatch) {
+            return res.status(401).json({ success: false, message: 'Invalid email or password' });
+        }
+
+        if (user.role !== 'instructor') {
+            return res.status(403).json({ success: false, message: 'This login is only for instructor accounts.' });
+        }
+
+        const approvalStatus = user.approvalStatus || 'approved';
+        if (approvalStatus !== 'approved') {
+            const message = approvalStatus === 'rejected'
+                ? 'Your instructor account has been rejected. Please contact the admin.'
+                : 'Your instructor account is pending admin approval.';
+
+            return res.status(403).json({ success: false, message, approvalStatus });
+        }
+
+        const token = generateToken(user._id);
+
+        res.status(200).json({
+            success: true,
+            message: 'Login successful',
+            token,
+            user: buildUserPayload(user),
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    }
+};
+
+module.exports = {
+    register,
+    registerInstructor,
+    login,
+    loginInstructor,
+    getMe,
+    updateProfile,
+    uploadAadhaar,
+    enrollCourse,
+    forgotPassword,
+    validateResetToken,
+    resetPassword,
+};

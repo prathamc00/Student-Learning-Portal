@@ -430,6 +430,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="form-group">
+                    <div class="input-wrap">
+                        <i class="bi bi-person-badge"></i>
+                        <select class="form-select" id="accountRole" required>
+                            <option value="student">Register as Student</option>
+                            <option value="instructor">Register as Instructor</option>
+                        </select>
+                    </div>
+                </div>
 
                 <!-- Academic Info -->
                 <div class="section-label" style="margin-top:var(--sp-4)"><i class="bi bi-building"></i> Academic
@@ -469,8 +478,7 @@
                 <!-- Email OTP -->
                 <div class="otp-box">
                     <div class="otp-label"><i class="bi bi-shield-check"></i> Email Verification</div>
-                    <div class="otp-info">We'll send a One-Time Password to verify your educational email. Only .edu and
-                        .ac.in emails are accepted.</div>
+                    <div class="otp-info">We'll send a One-Time Password to verify your email address.</div>
                     <button type="button" class="btn-otp" id="sendEmailOtpBtn">Send Verification Code</button>
                     <div id="emailOtpInputSection" style="display:none;">
                         <div class="otp-input-row">
@@ -509,6 +517,7 @@
             </form>
 
             <div class="reg-footer">Already have an account? <a href="login.html">Sign in here</a></div>
+            <div class="reg-footer" style="margin-top:10px;">Instructor onboarding? <a href="authentication/instructor-register.html">Open dedicated instructor registration</a></div>
         </div>
     </div>
 
@@ -613,6 +622,7 @@
                 college: document.getElementById('collegeName').value.trim(),
                 branch: document.getElementById('branch').value.trim(),
                 semester: document.getElementById('semester').value || null,
+                role: document.getElementById('accountRole').value,
                 password,
             };
             try {
@@ -623,6 +633,12 @@
                 });
                 const data = await res.json();
                 if (data.success) {
+                    if (data.requiresApproval) {
+                        alert(data.message || 'Instructor registration submitted for admin approval.');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
                     alert('Account created successfully!');
