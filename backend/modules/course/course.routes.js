@@ -2,8 +2,8 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const router = express.Router();
-const { getCourses, getManagedCourses, getCourseById, createCourse, updateCourse, deleteCourse, getModules, addModule, updateModule, deleteModule, reorderModules } = require('./course.controller');
-const { protect, staffOnly } = require('../../middlewares/auth.middleware');
+const { protect, staffOnly, optionalAuth } = require('../../middlewares/auth.middleware');
+const { getCourses, getManagedCourses, getCourseById, createCourse, updateCourse, deleteCourse, getModules, addModule, updateModule, deleteModule, reorderModules, enrollCourse, unenrollCourse, getMyEnrollments } = require('./course.controller');
 
 // Media upload config
 const mediaStorage = multer.diskStorage({
@@ -41,10 +41,15 @@ const mediaUpload = multer({
 // Course CRUD
 router.get('/', getCourses);
 router.get('/manage', protect, staffOnly, getManagedCourses);
-router.get('/:id', getCourseById);
+router.get('/my-enrollments', protect, getMyEnrollments);
+router.get('/:id', optionalAuth, getCourseById);
 router.post('/', protect, staffOnly, createCourse);
 router.put('/:id', protect, staffOnly, updateCourse);
 router.delete('/:id', protect, staffOnly, deleteCourse);
+
+// Enrollment
+router.post('/:id/enroll', protect, enrollCourse);
+router.delete('/:id/enroll', protect, unenrollCourse);
 
 // Module / Video management
 router.get('/:id/modules', getModules);

@@ -1,6 +1,7 @@
 const Test = require('./test.model');
 const Course = require('../course/course.model');
 const QuizAttempt = require('./quizAttempt.model');
+const { autoIssueCertificate } = require('../certificate/certificate.controller');
 
 const canManageTest = (test, user) => user.role === 'admin' || String(test.createdBy) === String(user._id);
 
@@ -78,6 +79,12 @@ const createTest = async (req, res) => {
 
         ensureCourseOwnership(course, req.user);
         if (req.user) data.createdBy = req.user._id;
+        
+        // Auto-compute totalQuestions based on the provided questions array
+        if (data.questions && Array.isArray(data.questions)) {
+            data.totalQuestions = data.questions.length;
+        }
+
         const test = await Test.create(data);
         res.status(201).json({ success: true, message: 'Test created', test });
     } catch (error) {
@@ -107,6 +114,11 @@ const updateTest = async (req, res) => {
                 return res.status(404).json({ success: false, message: 'Course not found' });
             }
             ensureCourseOwnership(course, req.user);
+        }
+
+        // Auto-compute totalQuestions based on the provided questions array
+        if (req.body.questions && Array.isArray(req.body.questions)) {
+            req.body.totalQuestions = req.body.questions.length;
         }
 
         Object.assign(test, req.body);
@@ -159,8 +171,29 @@ const startQuiz = async (req, res) => {
         }
 
         const existing = await QuizAttempt.findOne({ quiz: req.params.id, student: req.user._id });
+        
+        const questions = test.questions.map((q, i) => ({
+            index: i,
+            question: q.question,
+            options: q.options,
+        }));
+
         if (existing) {
-            return res.status(409).json({ success: false, message: 'You have already attempted this quiz', attempt: existing });
+            if (existing.completedAt) {
+                return res.status(409).json({ success: false, message: 'You have already completed this quiz.', attempt: existing });
+            }
+            // Resume active attempt
+            return res.status(200).json({
+                success: true,
+                message: 'Quiz resumed',
+                attemptId: existing._id,
+                startedAt: existing.startedAt,
+                quizTitle: test.title,
+                courseName: test.course ? test.course.title : '',
+                durationMinutes: test.durationMinutes,
+                endTime: test.endTime,
+                questions,
+            });
         }
 
         const attempt = await QuizAttempt.create({
@@ -169,16 +202,11 @@ const startQuiz = async (req, res) => {
             startedAt: new Date(),
         });
 
-        const questions = test.questions.map((q, i) => ({
-            index: i,
-            question: q.question,
-            options: q.options,
-        }));
-
         res.status(200).json({
             success: true,
             message: 'Quiz started',
             attemptId: attempt._id,
+            startedAt: attempt.startedAt,
             quizTitle: test.title,
             courseName: test.course ? test.course.title : '',
             durationMinutes: test.durationMinutes,
@@ -226,16 +254,45 @@ const submitQuiz = async (req, res) => {
         attempt.completedAt = new Date();
         await attempt.save();
 
+        // Auto-issue certificate if score >= 40%
+        let certificate = null;
+        const percentage = totalMarks > 0 ? Math.round((score / totalMarks) * 100) : 0;
+        if (percentage >= 40) {
+            certificate = await autoIssueCertificate(req.user._id, req.params.id);
+        }
+
         res.status(200).json({
             success: true,
             message: 'Quiz submitted successfully',
             score,
             totalMarks,
-            percentage: totalMarks > 0 ? Math.round((score / totalMarks) * 100) : 0,
+            percentage,
             tabSwitchCount: attempt.tabSwitchCount,
+            certificate: certificate ? { id: certificate._id, certificateId: certificate.certificateId, grade: certificate.grade } : null,
         });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Failed to submit quiz', error: error.message });
+    }
+};
+
+const retakeQuiz = async (req, res) => {
+    try {
+        const attempt = await QuizAttempt.findOne({ quiz: req.params.id, student: req.user._id }).sort({ completedAt: -1 });
+        if (!attempt || !attempt.completedAt) {
+            return res.status(400).json({ success: false, message: 'No completed attempt found to retake' });
+        }
+        
+        const percentage = attempt.totalMarks > 0 ? (attempt.score / attempt.totalMarks) * 100 : 0;
+        if (percentage >= 45) {
+            return res.status(403).json({ success: false, message: 'You scored 45% or higher and cannot reattempt this quiz.' });
+        }
+
+        // Allow retake by deleting previous attempts
+        await QuizAttempt.deleteMany({ quiz: req.params.id, student: req.user._id });
+        
+        res.status(200).json({ success: true, message: 'Previous attempt cleared. You can now retake the quiz.' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to process retake request', error: error.message });
     }
 };
 
@@ -286,6 +343,7 @@ module.exports = {
     deleteTest,
     startQuiz,
     submitQuiz,
+    retakeQuiz,
     getMyAttempts,
     getQuizResults,
 };

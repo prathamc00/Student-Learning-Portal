@@ -2,6 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const compression = require('compression');
 const { errorHandler } = require('./middlewares/error.middleware');
 
 // Module routes
@@ -20,8 +23,16 @@ const app = express();
 const frontendDir = path.join(__dirname, '..', 'frontend');
 
 // --- Middleware ---
-const allowedOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : '*';
-app.use(cors({ origin: allowedOrigins }));
+app.use(helmet({
+    crossOriginResourcePolicy: false, // Allow serving uploads cross-origin
+}));
+app.use(mongoSanitize());
+app.use(compression());
+
+const allowedOrigins = process.env.FRONTEND_URL && process.env.NODE_ENV === 'production' 
+    ? process.env.FRONTEND_URL.split(',') 
+    : '*';
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 

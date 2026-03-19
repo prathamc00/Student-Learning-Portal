@@ -1,5 +1,6 @@
 const Course = require('./course.model');
 const path = require('path');
+const Attendance = require('../attendance/attendance.model');
 
 const canManageCourse = (course, user) => user.role === 'admin' || String(course.createdBy) === String(user._id);
 
@@ -44,7 +45,13 @@ const getCourseById = async (req, res) => {
         if (!course) {
             return res.status(404).json({ success: false, message: 'Course not found' });
         }
-        res.status(200).json({ success: true, course });
+        const obj = course.toObject();
+        // Attach isEnrolled flag for authenticated students
+        if (req.user) {
+            obj.isEnrolled = course.enrolledStudents.some(sid => String(sid) === String(req.user._id));
+            obj.enrolledCount = course.enrolledStudents.length;
+        }
+        res.status(200).json({ success: true, course: obj });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Failed to fetch course', error: error.message });
     }
@@ -256,4 +263,54 @@ const reorderModules = async (req, res) => {
     }
 };
 
-module.exports = { getCourses, getManagedCourses, getCourseById, createCourse, updateCourse, deleteCourse, getModules, addModule, updateModule, deleteModule, reorderModules };
+const enrollCourse = async (req, res) => {
+    try {
+        const course = await Course.findById(req.params.id);
+        if (!course) {
+            return res.status(404).json({ success: false, message: 'Course not found' });
+        }
+        const alreadyEnrolled = course.enrolledStudents.some(s => String(s) === String(req.user._id));
+        if (alreadyEnrolled) {
+            return res.status(409).json({ success: false, message: 'Already enrolled in this course' });
+        }
+        course.enrolledStudents.push(req.user._id);
+        await course.save();
+
+        // Track attendance for this enrollment event
+        await Attendance.create({
+            student: req.user._id,
+            course: course._id,
+            activityType: 'login',
+            details: `Enrolled in course: ${course.title}`,
+        });
+
+        res.status(200).json({ success: true, message: 'Enrolled successfully', enrolledCount: course.enrolledStudents.length });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to enroll', error: error.message });
+    }
+};
+
+const unenrollCourse = async (req, res) => {
+    try {
+        const course = await Course.findById(req.params.id);
+        if (!course) {
+            return res.status(404).json({ success: false, message: 'Course not found' });
+        }
+        course.enrolledStudents = course.enrolledStudents.filter(s => String(s) !== String(req.user._id));
+        await course.save();
+        res.status(200).json({ success: true, message: 'Unenrolled successfully' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to unenroll', error: error.message });
+    }
+};
+
+const getMyEnrollments = async (req, res) => {
+    try {
+        const courses = await Course.find({ enrolledStudents: req.user._id }).sort({ createdAt: -1 });
+        res.status(200).json({ success: true, count: courses.length, courses });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to fetch enrollments', error: error.message });
+    }
+};
+
+module.exports = { getCourses, getManagedCourses, getCourseById, createCourse, updateCourse, deleteCourse, getModules, addModule, updateModule, deleteModule, reorderModules, enrollCourse, unenrollCourse, getMyEnrollments };

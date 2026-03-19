@@ -59,14 +59,14 @@ const exportUsersCSV = async (req, res) => {
         let csv = 'Name,Email,Role,College,Branch,Semester,Phone,Status,Joined Date\n';
 
         users.forEach((u) => {
-            const name = `"${(u.name || '').replace(/"/g, '""')}"`;
-            const email = `"${(u.email || '').replace(/"/g, '""')}"`;
-            const role = `"${(u.role || '').replace(/"/g, '""')}"`;
-            const college = `"${(u.college || '').replace(/"/g, '""')}"`;
-            const branch = `"${(u.branch || '').replace(/"/g, '""')}"`;
-            const semester = `"${(u.semester || '').replace(/"/g, '""')}"`;
-            const phone = `"${(u.phone || '').replace(/"/g, '""')}"`;
-            const status = `"${(u.approvalStatus || '').replace(/"/g, '""')}"`;
+            const name = `"${String(u.name || '').replace(/"/g, '""')}"`;
+            const email = `"${String(u.email || '').replace(/"/g, '""')}"`;
+            const role = `"${String(u.role || '').replace(/"/g, '""')}"`;
+            const college = `"${String(u.college || '').replace(/"/g, '""')}"`;
+            const branch = `"${String(u.branch || '').replace(/"/g, '""')}"`;
+            const semester = `"${String(u.semester || '').replace(/"/g, '""')}"`;
+            const phone = `"${String(u.phone || '').replace(/"/g, '""')}"`;
+            const status = `"${String(u.approvalStatus || '').replace(/"/g, '""')}"`;
             const date = u.createdAt ? new Date(u.createdAt).toISOString().split('T')[0] : '';
 
             csv += `${name},${email},${role},${college},${branch},${semester},${phone},${status},${date}\n`;
@@ -80,5 +80,20 @@ const exportUsersCSV = async (req, res) => {
     }
 };
 
-module.exports = { getUsers, deleteUser, updateInstructorStatus, exportUsersCSV };
+const verifyAadhaar = async (req, res) => {
+    try {
+        const { aadhaarVerified } = req.body;
+        const user = await User.findById(req.params.id).select('-password');
+        if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+        
+        user.aadhaarVerified = aadhaarVerified;
+        await user.save();
+        
+        res.status(200).json({ success: true, message: 'Aadhaar status updated', user });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to update Aadhaar status', error: error.message });
+    }
+};
+
+module.exports = { getUsers, deleteUser, updateInstructorStatus, exportUsersCSV, verifyAadhaar };
 

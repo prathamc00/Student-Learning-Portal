@@ -43,10 +43,10 @@ const getResetPageBaseUrl = (req) => {
     }
 
     if (process.env.APP_URL) {
-        return `${trimTrailingSlash(process.env.APP_URL)}/password/reset.html`;
+        return `${trimTrailingSlash(process.env.APP_URL)}/reset-password`;
     }
 
-    return `${req.protocol}://${req.get('host')}/password/reset.html`;
+    return `${req.protocol}://${req.get('host')}/reset-password`;
 };
 
 const register = async (req, res) => {

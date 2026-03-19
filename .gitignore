@@ -27,3 +27,4 @@ coverage/
 *recovery_code*.txt
 *.zip
 *.msi
+backend/uploads/
