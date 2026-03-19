@@ -23,6 +23,7 @@ import ManageUsers from './pages/admin/ManageUsers';
 import ManageCourses from './pages/admin/ManageCourses';
 import ManageAssignments from './pages/admin/ManageAssignments';
 import QuizScheduler from './pages/admin/QuizScheduler';
+import QuizResults from './pages/admin/QuizResults';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 
@@ -64,6 +65,7 @@ export default function App() {
               <Route path="courses" element={<ManageCourses />} />
               <Route path="assignments" element={<ManageAssignments />} />
               <Route path="quiz" element={<QuizScheduler />} />
+              <Route path="quiz-results" element={<QuizResults />} />
             </Route>
           </Routes>
         </Router>

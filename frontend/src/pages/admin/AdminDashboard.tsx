@@ -84,6 +84,7 @@ export default function AdminDashboard() {
               { label: 'Manage Courses', desc: 'Create courses, upload videos and PDF notes', href: '/admin/courses' },
               { label: 'Assignments', desc: 'Create assignments and grade submissions', href: '/admin/assignments' },
               { label: 'Quiz Scheduler', desc: 'Create and schedule quizzes for students', href: '/admin/quiz' },
+              { label: 'Quiz Results', desc: 'View student attempts and export results', href: '/admin/quiz-results' },
             ].map((action) => (
               <a key={action.href} href={action.href} className="flex items-center justify-between p-6 bg-slate-50 dark:bg-slate-800/50 rounded-3xl hover:bg-brand-50 dark:hover:bg-brand-900/10 transition-all group">
                 <div>

@@ -8,7 +8,8 @@ import {
   ClipboardCheck, 
   LogOut,
   GraduationCap,
-  ArrowLeft
+  ArrowLeft,
+  Award
 } from 'lucide-react';
 import { cn } from '../../utils';
 
@@ -18,6 +19,7 @@ const adminItems = [
   { icon: BookOpen, label: 'Manage Courses', path: '/admin/courses' },
   { icon: FileText, label: 'Manage Assignments', path: '/admin/assignments' },
   { icon: ClipboardCheck, label: 'Quiz Scheduler', path: '/admin/quiz' },
+  { icon: Award, label: 'Quiz Results', path: '/admin/quiz-results' },
 ];
 
 interface AdminSidebarProps {
