@@ -17,17 +17,32 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [coursesData, assignmentsData, attemptsData] = await Promise.all([
-          apiFetch('/courses'),
-          apiFetch('/assignments/my-submissions'),
-          apiFetch('/tests/my-attempts'),
+        const [allCoursesData, enrollmentsData, assignmentsData, attemptsData] = await Promise.all([
+          apiFetch('/courses').catch(() => ({ courses: [] })),
+          apiFetch('/courses/my-enrollments').catch(() => ({ courses: [] })),
+          apiFetch('/assignments/my-submissions').catch(() => ({ submissions: [] })),
+          apiFetch('/tests/my-attempts').catch(() => ({ attempts: [] })),
         ]);
 
-        const allCourses = coursesData.courses || [];
+        const allCourses = allCoursesData.courses || [];
+        const enrolledCourses = enrollmentsData.courses || [];
         const submissions = assignmentsData.submissions || [];
         const attempts = attemptsData.attempts || [];
 
-        setCourses(allCourses.slice(0, 3));
+        const topCourses = enrolledCourses.slice(0, 3);
+        const progressPromises = topCourses.map(c => 
+          apiFetch(`/courses/${c._id}/progress`).catch(() => ({ completedModules: [] }))
+        );
+        const progressResults = await Promise.all(progressPromises);
+
+        const coursesWithProgress = topCourses.map((c, i) => {
+          const completedCount = progressResults[i]?.completedModules?.length || 0;
+          const totalCount = c.modules?.length || 0;
+          const progressPercentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+          return { ...c, progressPercentage, completedCount, totalCount };
+        });
+
+        setCourses(coursesWithProgress);
         setStats({
           totalCourses: allCourses.length,
           pendingAssignments: 0,
@@ -140,24 +155,34 @@ export default function DashboardPage() {
             </div>
             <div className="grid gap-10">
               {courses.length === 0 ? (
-                <p className="text-slate-500 text-center py-10">No courses available yet.</p>
+                <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-16 px-4 bg-white/5 rounded-[2.5rem] border border-white/10 border-dashed">
+                  <div className="w-20 h-20 bg-brand-purple/10 rounded-full flex items-center justify-center mx-auto mb-6 glow-shadow border border-brand-purple/20">
+                    <BookOpen className="w-8 h-8 text-brand-purple" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">Your learning journey awaits</h3>
+                  <p className="text-slate-400 mb-8 max-w-sm mx-auto font-medium leading-relaxed">Explore our catalog and enroll in your first course to start earning achievements.</p>
+                  <a href="/courses" className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-brand-purple to-brand-blue text-white rounded-2xl font-bold hover:scale-105 transition-all shadow-lg glow-shadow active:scale-95 group">
+                    Explore Catalog <ArrowUpRight className="w-5 h-5 group-hover:translate-y-[-2px] group-hover:translate-x-[2px] transition-transform" />
+                  </a>
+                </motion.div>
               ) : courses.map((course, i) => (
-                <div key={course._id} className="space-y-5">
+                <div key={course._id} className="space-y-5 cursor-pointer group hover:bg-white/5 p-4 -m-4 rounded-3xl transition-all" onClick={() => window.location.href = `/courses/${course._id}`}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Activity className="w-5 h-5 text-slate-500" />
-                      <span className="font-bold text-slate-300 text-lg tracking-tight">{course.title}</span>
+                      <Activity className="w-5 h-5 text-slate-500 group-hover:text-brand-blue transition-colors" />
+                      <span className="font-bold text-slate-300 text-lg tracking-tight group-hover:text-white transition-colors">{course.title}</span>
                     </div>
-                    <span className="text-xs font-bold text-slate-500">{course.modules?.length || 0} lessons</span>
+                    <span className="text-xs font-bold text-slate-500">{course.completedCount}/{course.totalCount} lessons ({course.progressPercentage}%)</span>
                   </div>
                   <div className="h-5 bg-white/5 rounded-full overflow-hidden border border-white/5 p-1">
-                    <motion.div initial={{ width: 0 }} animate={{ width: '0%' }} transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 * i }}
+                    <motion.div initial={{ width: 0 }} animate={{ width: `${course.progressPercentage}%` }} transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 * i }}
                       className="h-full bg-gradient-to-r from-brand-purple to-brand-blue rounded-full shadow-lg relative overflow-hidden">
                       <div className="absolute inset-0 bg-white/20 animate-[shimmer_2s_infinite]" />
                     </motion.div>
                   </div>
                 </div>
               ))}
+              <a href="/courses" className="text-center font-bold text-sm text-brand-blue hover:text-brand-purple transition-all pt-4 border-t border-white/5 uppercase tracking-[0.2em] block">View All Courses</a>
             </div>
           </motion.div>
         </div>
@@ -178,7 +203,13 @@ export default function DashboardPage() {
             </div>
             <div className="space-y-8">
               {pendingTasks.length === 0 ? (
-                <p className="text-slate-500 text-center py-6">No pending tasks 🎉</p>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-8">
+                  <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/20 glow-shadow">
+                    <Sparkles className="w-6 h-6 text-emerald-400" />
+                  </div>
+                  <p className="text-white font-bold text-lg">No pending tasks</p>
+                  <p className="text-slate-500 text-sm mt-1 font-medium">You're all caught up! 🎉</p>
+                </motion.div>
               ) : pendingTasks.map((item, i) => (
                 <motion.div key={i} whileHover={{ x: 5 }}
                   className="flex items-start gap-6 p-2 rounded-2xl hover:bg-white/5 transition-all cursor-pointer group">

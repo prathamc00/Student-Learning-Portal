@@ -4,6 +4,8 @@ import { Search, PlayCircle, FileText, BookOpen, Sparkles, ChevronRight, CheckCi
 import { motion } from 'framer-motion';
 import { Skeleton } from '../components/Loading';
 import { apiFetch } from '../utils/api';
+import AnimatedTiltCard from '../components/ui/AnimatedTiltCard';
+import RippleButton from '../components/ui/RippleButton';
 
 const gradientColors = [
   'from-brand-purple to-brand-blue',
@@ -89,13 +91,12 @@ export default function CoursesPage() {
             const isEnrolled = enrolledIds.has(course._id);
             const isEnrolling = enrollingId === course._id;
             return (
+              <AnimatedTiltCard key={course._id} intensity={8}>
               <motion.div
-                key={course._id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                whileHover={{ y: -10 }}
-                className="glass-panel rounded-[2.5rem] border-white/5 overflow-hidden hover:border-brand-purple/20 transition-all group relative"
+                className="glass-panel rounded-[2.5rem] border-white/5 overflow-hidden hover:border-brand-purple/20 transition-all group relative h-full"
               >
                 <div className={`relative aspect-video overflow-hidden bg-gradient-to-br ${gradientColors[i % gradientColors.length]} flex items-center justify-center`}>
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors" />
@@ -136,17 +137,18 @@ export default function CoursesPage() {
                       <PlayCircle className="w-5 h-5" /> Continue Learning <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                     </Link>
                   ) : (
-                    <button
+                    <RippleButton
                       onClick={() => handleEnroll(course._id)}
                       disabled={isEnrolling}
                       className="w-full py-4 bg-gradient-to-r from-brand-purple to-brand-blue text-white text-center rounded-2xl text-sm font-bold hover:scale-[1.02] transition-all shadow-lg glow-shadow active:scale-95 flex items-center justify-center gap-2 disabled:opacity-60"
                     >
                       <Lock className="w-4 h-4" />
                       {isEnrolling ? 'Enrolling...' : 'Enroll Now — Free'}
-                    </button>
+                    </RippleButton>
                   )}
                 </div>
               </motion.div>
+              </AnimatedTiltCard>
             );
           })
         )}

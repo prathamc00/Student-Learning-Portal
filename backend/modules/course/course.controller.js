@@ -1,4 +1,5 @@
 const Course = require('./course.model');
+const CourseProgress = require('./courseProgress.model');
 const path = require('path');
 const Attendance = require('../attendance/attendance.model');
 
@@ -46,11 +47,27 @@ const getCourseById = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Course not found' });
         }
         const obj = course.toObject();
+        const isStaff = req.user && (req.user.role === 'admin' || req.user.role === 'instructor');
+        const isEnrolled = req.user ? course.enrolledStudents.some(sid => String(sid) === String(req.user._id)) : false;
+
         // Attach isEnrolled flag for authenticated students
         if (req.user) {
-            obj.isEnrolled = course.enrolledStudents.some(sid => String(sid) === String(req.user._id));
+            obj.isEnrolled = isEnrolled;
             obj.enrolledCount = course.enrolledStudents.length;
         }
+
+        // Strip video/notes URLs for non-enrolled, non-staff users
+        if (!isStaff && !isEnrolled) {
+            obj.modules = obj.modules.map(m => ({
+                _id: m._id,
+                title: m.title,
+                description: m.description,
+                duration: m.duration,
+                order: m.order,
+                // videoUrl and notesUrl intentionally omitted
+            }));
+        }                                                 
+
         res.status(200).json({ success: true, course: obj });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Failed to fetch course', error: error.message });
@@ -284,6 +301,16 @@ const enrollCourse = async (req, res) => {
             details: `Enrolled in course: ${course.title}`,
         });
 
+        // Fire Real-Time Notification via WebSockets
+        const { createNotification } = require('../notification/notification.controller');
+        await createNotification(
+            req.user._id, 
+            'Course Enrolled 🎉', 
+            `You have successfully enrolled in ${course.title}. Start learning now!`,
+            'success',
+            `/courses/${course._id}`
+        );
+
         res.status(200).json({ success: true, message: 'Enrolled successfully', enrolledCount: course.enrolledStudents.length });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Failed to enroll', error: error.message });
@@ -312,5 +339,41 @@ const getMyEnrollments = async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to fetch enrollments', error: error.message });
     }
 };
+const getCourseProgress = async (req, res) => {
+    try {
+        const progress = await CourseProgress.findOne({ student: req.user._id, course: req.params.id });
+        res.status(200).json({ success: true, completedModules: progress ? progress.completedModules : [] });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to fetch progress', error: error.message });
+    }
+};
 
-module.exports = { getCourses, getManagedCourses, getCourseById, createCourse, updateCourse, deleteCourse, getModules, addModule, updateModule, deleteModule, reorderModules, enrollCourse, unenrollCourse, getMyEnrollments };
+const markModuleComplete = async (req, res) => {
+    try {
+        const course = await Course.findById(req.params.id);
+        if (!course) {
+            return res.status(404).json({ success: false, message: 'Course not found' });
+        }
+        const mod = course.modules.id(req.params.moduleId);
+        if (!mod) {
+            return res.status(404).json({ success: false, message: 'Module not found' });
+        }
+
+        let progress = await CourseProgress.findOne({ student: req.user._id, course: req.params.id });
+        if (!progress) {
+            progress = await CourseProgress.create({ student: req.user._id, course: req.params.id, completedModules: [] });
+        }
+
+        const alreadyDone = progress.completedModules.some(mid => String(mid) === String(req.params.moduleId));
+        if (!alreadyDone) {
+            progress.completedModules.push(req.params.moduleId);
+            await progress.save();
+        }
+
+        res.status(200).json({ success: true, message: 'Module marked as complete', completedModules: progress.completedModules });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to mark module complete', error: error.message });
+    }
+};
+
+module.exports = { getCourses, getManagedCourses, getCourseById, createCourse, updateCourse, deleteCourse, getModules, addModule, updateModule, deleteModule, reorderModules, enrollCourse, unenrollCourse, getMyEnrollments, getCourseProgress, markModuleComplete };

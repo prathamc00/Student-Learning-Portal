@@ -8,10 +8,14 @@ connectDB();
 
 const PORT = Number(process.env.PORT) || 5000;
 
+const { initSocket } = require('./socketManager');
+
 function startServer(port) {
     const server = app.listen(port, () => {
         console.log(`Server running on http://localhost:${port}`);
     });
+
+    initSocket(server);
 
     // Allow large uploads (77MB+) to complete without timing out
     server.timeout = 10 * 60 * 1000;          // 10 min overall

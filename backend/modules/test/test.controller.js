@@ -259,6 +259,14 @@ const submitQuiz = async (req, res) => {
         const percentage = totalMarks > 0 ? Math.round((score / totalMarks) * 100) : 0;
         if (percentage >= 40) {
             certificate = await autoIssueCertificate(req.user._id, req.params.id);
+            const { createNotification } = require('../notification/notification.controller');
+            await createNotification(
+                req.user._id,
+                'Certificate Earned 🏆',
+                `Congratulations! You passed the quiz for ${test.title} with a score of ${percentage}%. Your certificate is ready.`,
+                'success',
+                '/certificate'
+            );
         }
 
         res.status(200).json({

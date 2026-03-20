@@ -86,7 +86,20 @@ export default function AssignmentsPage() {
               {loading ? (
                 <tr><td colSpan={5} className="px-10 py-16 text-center text-slate-400 font-medium">Loading assignments...</td></tr>
               ) : assignments.length === 0 ? (
-                <tr><td colSpan={5} className="px-10 py-16 text-center text-slate-400 font-medium">No assignments yet</td></tr>
+                <tr>
+                  <td colSpan={5} className="px-10 py-24 text-center border-b-0">
+                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center">
+                      <div className="w-24 h-24 bg-brand-blue/10 rounded-full flex items-center justify-center mb-6 glow-shadow border border-brand-blue/20">
+                        <FileText className="w-10 h-10 text-brand-blue" />
+                      </div>
+                      <h3 className="text-3xl font-bold text-white mb-3 tracking-tight">You're all caught up!</h3>
+                      <p className="text-slate-400 font-medium max-w-sm mx-auto leading-relaxed">There are no assignments pending for your courses at this time. Enjoy your free time or explore new courses.</p>
+                      <Link to="/courses" className="mt-8 inline-flex items-center gap-2 px-8 py-4 bg-white/5 text-white rounded-2xl font-bold hover:bg-white/10 hover:border-white/20 transition-all border border-white/10 active:scale-95 group">
+                         Browse Courses <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </Link>
+                    </motion.div>
+                  </td>
+                </tr>
               ) : assignments.map((item, i) => {
                 const status = getStatus(item);
                 return (

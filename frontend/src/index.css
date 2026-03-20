@@ -91,3 +91,24 @@
 :root:not(.dark) .student-theme video {
   filter: invert(1) hue-rotate(180deg);
 }
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes ripple {
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(30); opacity: 0; }
+}
+
+.animate-ripple {
+  animation: ripple 0.6s linear forwards;
+}
+
+@keyframes spin-slow {
+  100% { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 4s linear infinite;
+}

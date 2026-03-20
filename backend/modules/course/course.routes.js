@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const router = express.Router();
 const { protect, staffOnly, optionalAuth } = require('../../middlewares/auth.middleware');
-const { getCourses, getManagedCourses, getCourseById, createCourse, updateCourse, deleteCourse, getModules, addModule, updateModule, deleteModule, reorderModules, enrollCourse, unenrollCourse, getMyEnrollments } = require('./course.controller');
+const { getCourses, getManagedCourses, getCourseById, createCourse, updateCourse, deleteCourse, getModules, addModule, updateModule, deleteModule, reorderModules, enrollCourse, unenrollCourse, getMyEnrollments, getCourseProgress, markModuleComplete } = require('./course.controller');
 
 // Media upload config
 const mediaStorage = multer.diskStorage({
@@ -50,6 +50,10 @@ router.delete('/:id', protect, staffOnly, deleteCourse);
 // Enrollment
 router.post('/:id/enroll', protect, enrollCourse);
 router.delete('/:id/enroll', protect, unenrollCourse);
+
+// Progress tracking
+router.get('/:id/progress', protect, getCourseProgress);
+router.post('/:id/modules/:moduleId/complete', protect, markModuleComplete);
 
 // Module / Video management
 router.get('/:id/modules', getModules);

@@ -43,7 +43,7 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Admin Dashboard</h1>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">{user?.role === 'admin' ? 'Admin' : 'Instructor'} Dashboard</h1>
           <p className="text-slate-500 dark:text-slate-400 font-medium">Welcome back{user ? `, ${user.name}` : ''}. Here's what's happening today.</p>
         </div>
         <div className="flex items-center gap-3">
@@ -80,12 +80,12 @@ export default function AdminDashboard() {
           </div>
           <div className="p-6 space-y-4">
             {[
-              { label: 'Manage Users', desc: 'View, approve, and manage all platform users', href: '/admin/users' },
-              { label: 'Manage Courses', desc: 'Create courses, upload videos and PDF notes', href: '/admin/courses' },
-              { label: 'Assignments', desc: 'Create assignments and grade submissions', href: '/admin/assignments' },
-              { label: 'Quiz Scheduler', desc: 'Create and schedule quizzes for students', href: '/admin/quiz' },
-              { label: 'Quiz Results', desc: 'View student attempts and export results', href: '/admin/quiz-results' },
-            ].map((action) => (
+              { label: 'Manage Users', desc: 'View, approve, and manage all platform users', href: '/admin/users', adminOnly: true },
+              { label: 'Manage Courses', desc: 'Create courses, upload videos and PDF notes', href: '/admin/courses', adminOnly: false },
+              { label: 'Assignments', desc: 'Create assignments and grade submissions', href: '/admin/assignments', adminOnly: false },
+              { label: 'Quiz Scheduler', desc: 'Create and schedule quizzes for students', href: '/admin/quiz', adminOnly: false },
+              { label: 'Quiz Results', desc: 'View student attempts and export results', href: '/admin/quiz-results', adminOnly: true },
+            ].filter(action => user?.role === 'admin' || !action.adminOnly).map((action) => (
               <a key={action.href} href={action.href} className="flex items-center justify-between p-6 bg-slate-50 dark:bg-slate-800/50 rounded-3xl hover:bg-brand-50 dark:hover:bg-brand-900/10 transition-all group">
                 <div>
                   <h4 className="font-bold text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">{action.label}</h4>

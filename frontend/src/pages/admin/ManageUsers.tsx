@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Users, Search, Filter, Download, CheckCircle, XCircle, Trash2, Mail, ChevronLeft, ChevronRight, ShieldCheck, FileText
+  Users, Search, Filter, Download, CheckCircle, XCircle, Trash2, Mail, ChevronLeft, ChevronRight, ShieldCheck, FileText, Plus
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { apiFetch, downloadBlob } from '../../utils/api';
@@ -24,6 +24,9 @@ export default function ManageUsers() {
   const [searchTerm, setSearchTerm] = useState('');
   const [users, setUsers] = useState<UserRecord[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newInstructor, setNewInstructor] = useState({ name: '', email: '', password: '', phone: '' });
+  const [adding, setAdding] = useState(false);
 
   const loadUsers = async () => {
     try {
@@ -84,6 +87,22 @@ export default function ManageUsers() {
     } catch (err: any) { alert('Export failed: ' + err.message); }
   };
 
+  const handleAddInstructor = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setAdding(true);
+      await apiFetch('/users/instructor', { method: 'POST', body: JSON.stringify(newInstructor) });
+      setShowAddModal(false);
+      setNewInstructor({ name: '', email: '', password: '', phone: '' });
+      await loadUsers();
+      alert('Instructor added successfully!');
+    } catch (err: any) {
+      alert(err.message || 'Failed to add instructor');
+    } finally {
+      setAdding(false);
+    }
+  };
+
   const getInitials = (name: string) => name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
   const getStatus = (u: UserRecord) => {
@@ -103,6 +122,10 @@ export default function ManageUsers() {
           <p className="text-slate-500 dark:text-slate-400 font-medium">Manage all students and instructors in one place.</p>
         </div>
         <div className="flex items-center gap-3">
+          <button onClick={() => setShowAddModal(true)} className="px-4 py-2.5 bg-brand-600 border border-brand-500 rounded-2xl text-sm font-bold text-white hover:bg-brand-700 transition-all flex items-center gap-2">
+            <Plus className="w-4 h-4" />
+            Add Instructor
+          </button>
           <button onClick={handleExport} className="px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center gap-2">
             <Download className="w-4 h-4" />
             Export CSV
@@ -179,7 +202,9 @@ export default function ManageUsers() {
                           {getInitials(user.name)}
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-slate-900 dark:text-white">{user.name}</p>
+                          <p className="text-sm font-bold text-slate-900 dark:text-white">
+                            <a href={`/admin/users/${user._id}`} className="hover:text-brand-500 transition-colors underline decoration-transparent hover:decoration-brand-500 underline-offset-4">{user.name}</a>
+                          </p>
                           <p className="text-xs font-medium text-slate-500 dark:text-slate-400">{user.email}</p>
                         </div>
                       </div>
@@ -206,7 +231,13 @@ export default function ManageUsers() {
                     <td className="px-6 py-4">
                       {user.aadhaarCardPath ? (
                         <div className="flex items-center gap-2">
-                          <a href={`/${user.aadhaarCardPath}`} target="_blank" rel="noreferrer" className="p-2 bg-brand-50 text-brand-600 rounded-xl hover:bg-brand-100 dark:bg-brand-900/20 dark:text-brand-400 dark:hover:bg-brand-900/40 transition-colors" title="View Document">
+                          <a 
+                            href={`${(import.meta as any).env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}/${user.aadhaarCardPath}`} 
+                            target="_blank" 
+                            rel="noreferrer" 
+                            className="p-2 bg-brand-50 text-brand-600 rounded-xl hover:bg-brand-100 dark:bg-brand-900/20 dark:text-brand-400 dark:hover:bg-brand-900/40 transition-colors" 
+                            title="View Document"
+                          >
                             <FileText className="w-4 h-4" />
                           </a>
                           {user.aadhaarVerified ? (
@@ -250,6 +281,44 @@ export default function ManageUsers() {
           <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Showing {filteredUsers.length} of {totalUsers} users</p>
         </div>
       </div>
+
+      {/* Add Instructor Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-2xl w-full max-w-md overflow-hidden">
+            <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">Add Instructor</h3>
+              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                <XCircle className="w-6 h-6" />
+              </button>
+            </div>
+            <form onSubmit={handleAddInstructor} className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Name</label>
+                <input required type="text" value={newInstructor.name} onChange={(e) => setNewInstructor({...newInstructor, name: e.target.value})} className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500" placeholder="John Doe" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Email</label>
+                <input required type="email" value={newInstructor.email} onChange={(e) => setNewInstructor({...newInstructor, email: e.target.value})} className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500" placeholder="john@example.com" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Password</label>
+                <input required type="password" value={newInstructor.password} onChange={(e) => setNewInstructor({...newInstructor, password: e.target.value})} className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500" placeholder="••••••••" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-1">Phone (Optional)</label>
+                <input type="text" value={newInstructor.phone} onChange={(e) => setNewInstructor({...newInstructor, phone: e.target.value})} className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500" placeholder="+1234567890" />
+              </div>
+              <div className="pt-4 flex justify-end gap-3">
+                <button type="button" onClick={() => setShowAddModal(false)} className="px-5 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all">Cancel</button>
+                <button type="submit" disabled={adding} className="px-5 py-2.5 bg-brand-600 text-white text-sm font-bold rounded-xl hover:bg-brand-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                  {adding ? 'Adding...' : 'Add Instructor'}
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

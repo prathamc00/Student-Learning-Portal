@@ -1,10 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, FileText, ClipboardCheck, Award, Mail, MapPin, Github, Twitter, Linkedin, ArrowRight, Play, Sparkles } from 'lucide-react';
+import { BookOpen, FileText, ClipboardCheck, Award, Mail, MapPin, Github, Twitter, Linkedin, ArrowRight, Play, Sparkles, LayoutDashboard } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { useAuth } from '../context/AuthContext';
 
 export default function HomePage() {
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen bg-[#030014] text-slate-100 selection:bg-brand-purple/30 selection:text-brand-purple student-theme">
       {/* Animated Background Elements */}
@@ -24,8 +27,16 @@ export default function HomePage() {
           <div className="hidden md:flex items-center gap-8">
             <Link to="/" className="text-sm font-semibold text-slate-300 hover:text-white transition-colors">Home</Link>
             <Link to="/courses" className="text-sm font-semibold text-slate-300 hover:text-white transition-colors">Courses</Link>
-            <Link to="/login" className="text-sm font-semibold text-slate-300 hover:text-white transition-colors">Login</Link>
-            <Link to="/register" className="px-6 py-2.5 bg-gradient-to-r from-brand-purple to-brand-blue text-white rounded-xl font-bold text-sm hover:opacity-90 transition-all glow-shadow active:scale-95">Register</Link>
+            {user ? (
+              <Link to={user.role === 'admin' || user.role === 'instructor' ? '/admin/dashboard' : '/dashboard'} className="px-6 py-2.5 bg-gradient-to-r from-brand-purple to-brand-blue text-white rounded-xl font-bold text-sm hover:opacity-90 transition-all glow-shadow active:scale-95 flex items-center gap-2">
+                <LayoutDashboard className="w-4 h-4" /> Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link to="/login" className="text-sm font-semibold text-slate-300 hover:text-white transition-colors">Login</Link>
+                <Link to="/register" className="px-6 py-2.5 bg-gradient-to-r from-brand-purple to-brand-blue text-white rounded-xl font-bold text-sm hover:opacity-90 transition-all glow-shadow active:scale-95">Register</Link>
+              </>
+            )}
             <ThemeToggle />
           </div>
           
@@ -58,8 +69,8 @@ export default function HomePage() {
             </p>
             
             <div className="flex flex-wrap gap-6">
-              <Link to="/login" className="group px-8 py-4 bg-gradient-to-r from-brand-purple to-brand-blue text-white rounded-2xl font-bold text-lg hover:opacity-90 transition-all glow-shadow active:scale-95 flex items-center gap-3">
-                Get Started 
+              <Link to={user ? (user.role === 'admin' || user.role === 'instructor' ? '/admin/dashboard' : '/dashboard') : '/login'} className="group px-8 py-4 bg-gradient-to-r from-brand-purple to-brand-blue text-white rounded-2xl font-bold text-lg hover:opacity-90 transition-all glow-shadow active:scale-95 flex items-center gap-3">
+                {user ? 'Go to Dashboard' : 'Get Started'}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
@@ -114,10 +125,10 @@ export default function HomePage() {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { icon: BookOpen, title: 'Course Materials', desc: 'Access high-quality video lectures and PDF notes anytime.', color: 'brand-purple' },
-              { icon: FileText, title: 'Assignments', desc: 'Submit and track your assignments with ease.', color: 'brand-blue' },
-              { icon: ClipboardCheck, title: 'Online Tests', desc: 'Take MCQ and descriptive tests to evaluate your progress.', color: 'brand-purple' },
-              { icon: Award, title: 'Certificates', desc: 'Earn verified certificates upon course completion.', color: 'brand-blue' }
+              { icon: BookOpen, title: 'Course Materials', desc: 'Access high-quality video lectures and PDF notes anytime.', bgGradient: 'from-brand-purple/10', bgColor: 'bg-brand-purple/10', textColor: 'text-brand-purple' },
+              { icon: FileText, title: 'Assignments', desc: 'Submit and track your assignments with ease.', bgGradient: 'from-brand-blue/10', bgColor: 'bg-brand-blue/10', textColor: 'text-brand-blue' },
+              { icon: ClipboardCheck, title: 'Online Tests', desc: 'Take MCQ and descriptive tests to evaluate your progress.', bgGradient: 'from-brand-purple/10', bgColor: 'bg-brand-purple/10', textColor: 'text-brand-purple' },
+              { icon: Award, title: 'Certificates', desc: 'Earn verified certificates upon course completion.', bgGradient: 'from-brand-blue/10', bgColor: 'bg-brand-blue/10', textColor: 'text-brand-blue' }
             ].map((feature, i) => (
               <motion.div 
                 key={i}
@@ -127,9 +138,9 @@ export default function HomePage() {
                 transition={{ delay: i * 0.1 }}
                 className="glass-card p-8 rounded-[2.5rem] group relative overflow-hidden"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br from-${feature.color}/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity`} />
+                <div className={`absolute inset-0 bg-gradient-to-br ${feature.bgGradient} to-transparent opacity-0 group-hover:opacity-100 transition-opacity`} />
                 
-                <div className={`w-14 h-14 bg-${feature.color}/10 rounded-2xl flex items-center justify-center text-${feature.color} mb-8 group-hover:scale-110 transition-transform`}>
+                <div className={`w-14 h-14 ${feature.bgColor} rounded-2xl flex items-center justify-center ${feature.textColor} mb-8 group-hover:scale-110 transition-transform`}>
                   <feature.icon className="w-7 h-7" />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-4">{feature.title}</h3>

@@ -9,17 +9,27 @@ import {
   LogOut,
   GraduationCap,
   ArrowLeft,
-  Award
+  Award,
+  ScrollText,
+  Activity,
+  BarChart,
+  Star
 } from 'lucide-react';
 import { cn } from '../../utils';
+import { useAuth } from '../../context/AuthContext';
 
-const adminItems = [
-  { icon: LayoutDashboard, label: 'Admin Dashboard', path: '/admin/dashboard' },
-  { icon: Users, label: 'Manage Users', path: '/admin/users' },
-  { icon: BookOpen, label: 'Manage Courses', path: '/admin/courses' },
-  { icon: FileText, label: 'Manage Assignments', path: '/admin/assignments' },
-  { icon: ClipboardCheck, label: 'Quiz Scheduler', path: '/admin/quiz' },
-  { icon: Award, label: 'Quiz Results', path: '/admin/quiz-results' },
+// All sidebar items with optional "adminOnly" flag
+const allItems = [
+  { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard', adminOnly: false },
+  { icon: Users, label: 'Manage Users', path: '/admin/users', adminOnly: true },
+  { icon: BookOpen, label: 'Manage Courses', path: '/admin/courses', adminOnly: false },
+  { icon: FileText, label: 'Manage Assignments', path: '/admin/assignments', adminOnly: false },
+  { icon: ClipboardCheck, label: 'Quiz Scheduler', path: '/admin/quiz', adminOnly: false },
+  { icon: Award, label: 'Quiz Results', path: '/admin/quiz-results', adminOnly: true },
+  { icon: ScrollText, label: 'Certificates', path: '/admin/certificates', adminOnly: true },
+  { icon: Activity, label: 'Activity Feed', path: '/admin/activity', adminOnly: true },
+  { icon: BarChart, label: 'Analytics', path: '/admin/analytics', adminOnly: true },
+  { icon: Star, label: 'Grading Queue', path: '/admin/grading', adminOnly: false },
 ];
 
 interface AdminSidebarProps {
@@ -29,6 +39,13 @@ interface AdminSidebarProps {
 
 export default function AdminSidebar({ isOpen, setIsOpen }: AdminSidebarProps) {
   const location = useLocation();
+  const { user, logout } = useAuth();
+  const isAdmin = user?.role === 'admin';
+
+  // Filter items based on role
+  const sidebarItems = allItems.filter(item => isAdmin || !item.adminOnly);
+  const panelTitle = isAdmin ? 'Admin Panel' : 'Instructor Panel';
+  const panelInitial = isAdmin ? 'A' : 'I';
 
   return (
     <>
@@ -47,9 +64,9 @@ export default function AdminSidebar({ isOpen, setIsOpen }: AdminSidebarProps) {
         <div className="flex flex-col h-full">
           <div className="p-6">
             <Link to="/admin/dashboard" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-brand-500/20">A</div>
+              <div className="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-brand-500/20">{panelInitial}</div>
               <div className="flex flex-col">
-                <span className="font-bold text-lg leading-none tracking-tight text-white">Admin Panel</span>
+                <span className="font-bold text-lg leading-none tracking-tight text-white">{panelTitle}</span>
                 <span className="text-[10px] uppercase tracking-widest font-bold text-brand-400 mt-1">Crismatech</span>
               </div>
             </Link>
@@ -59,7 +76,7 @@ export default function AdminSidebar({ isOpen, setIsOpen }: AdminSidebarProps) {
             <div className="mb-4 px-4">
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Management</p>
             </div>
-            {adminItems.map((item) => (
+            {sidebarItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
@@ -92,7 +109,10 @@ export default function AdminSidebar({ isOpen, setIsOpen }: AdminSidebarProps) {
           </nav>
 
           <div className="p-4 mt-auto border-t border-slate-800">
-            <button className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-sm font-bold text-red-400 hover:bg-red-400/10 transition-all">
+            <button 
+              onClick={logout}
+              className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-sm font-bold text-red-400 hover:bg-red-400/10 transition-all"
+            >
               <LogOut className="w-5 h-5" />
               Logout
             </button>

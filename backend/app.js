@@ -18,6 +18,7 @@ const quizAttemptRoutes = require('./modules/test/quizAttempt.routes');
 const certificateRoutes = require('./modules/certificate/certificate.routes');
 const userRoutes = require('./modules/user/user.routes');
 const attendanceRoutes = require('./modules/attendance/attendance.routes');
+const notificationRoutes = require('./modules/notification/notification.routes');
 
 const app = express();
 const frontendDir = path.join(__dirname, '..', 'frontend');
@@ -58,6 +59,7 @@ app.use('/api/quiz-attempts', quizAttemptRoutes);
 app.use('/api/certificates', certificateRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/attendance', attendanceRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // --- Static Pages ---
 app.get('/password/forgot.html', (req, res) => {

@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { Outlet, Link, useLocation, Navigate } from 'react-router-dom';
-import { Bell, User, Menu, Search, Sparkles } from 'lucide-react';
+import { Bell, User, Menu, Search, Sparkles, Flame } from 'lucide-react';
+import { motion } from 'framer-motion';
 import Sidebar from './Sidebar';
 import { ThemeToggle } from './ThemeToggle';
 import { useAuth } from '../context/AuthContext';
+import CursorGlow from './ui/CursorGlow';
+import { SocketProvider } from '../context/SocketContext';
+import NotificationBell from './ui/NotificationBell';
 
 export default function DashboardLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -20,11 +24,21 @@ export default function DashboardLayout() {
   const getInitials = (name: string) => name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
   return (
+    <SocketProvider>
     <div className="min-h-screen bg-[#030014] text-slate-100 selection:bg-brand-purple/30 selection:text-brand-purple transition-colors student-theme">
-      {/* Background Glows */}
+      <CursorGlow />
+      {/* Background Glows (Animated) */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand-purple/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-brand-blue/10 rounded-full blur-[120px]" />
+        <motion.div 
+          animate={{ x: [0, 50, 0], y: [0, 30, 0], scale: [1, 1.1, 1] }} 
+          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand-purple/10 rounded-full blur-[120px]" 
+        />
+        <motion.div 
+          animate={{ x: [0, -50, 0], y: [0, -30, 0], scale: [1, 1.2, 1] }} 
+          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-brand-blue/10 rounded-full blur-[120px]" 
+        />
       </div>
 
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
@@ -50,15 +64,13 @@ export default function DashboardLayout() {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-brand-purple/10 rounded-full border border-brand-purple/20">
-              <Sparkles className="w-3.5 h-3.5 text-brand-purple" />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-brand-purple">Student</span>
+            {/* Gamification: Daily Streak */}
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-orange-500/10 rounded-full border border-orange-500/20 group cursor-default">
+              <Flame className="w-4 h-4 text-orange-500 group-hover:scale-125 transition-transform" />
+              <span className="text-xs font-bold text-orange-500">3 Day Streak</span>
             </div>
             
-            <button className="relative p-2.5 text-slate-400 hover:bg-white/5 rounded-xl transition-all group">
-              <Bell className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-brand-purple rounded-full border-2 border-[#030014] glow-shadow"></span>
-            </button>
+            <NotificationBell />
             
             <div className="flex items-center gap-4 pl-4 ml-1 border-l border-white/10">
               <ThemeToggle />
@@ -79,5 +91,6 @@ export default function DashboardLayout() {
         </main>
       </div>
     </div>
+    </SocketProvider>
   );
 }

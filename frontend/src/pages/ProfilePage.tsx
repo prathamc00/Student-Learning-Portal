@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { User, Mail, Phone, MapPin, Calendar, GraduationCap, Camera, Edit3, Save, Sparkles, ShieldCheck, BadgeCheck, Upload, FileText } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Calendar, GraduationCap, Camera, Edit3, Save, Sparkles, ShieldCheck, BadgeCheck, Upload, FileText, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../utils/api';
@@ -156,10 +156,11 @@ export default function ProfilePage() {
           </motion.div>
         </div>
 
-        {/* Details Form */}
-        <div className="lg:col-span-2">
+        {/* Details Form UI & Gamification Badges */}
+        <div className="lg:col-span-2 space-y-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             className="glass-panel p-10 md:p-14 rounded-[3rem] border-white/5 shadow-2xl backdrop-blur-3xl">
+            <h3 className="text-2xl font-bold text-white tracking-tight mb-8">Personal Details</h3>
             <div className="grid md:grid-cols-2 gap-10">
               {[
                 { label: 'Full Name', icon: User, value: profile.name, type: 'text' },
@@ -176,6 +177,32 @@ export default function ProfilePage() {
                     <input type={field.type} disabled={!isEditing} defaultValue={field.value}
                       className="bg-transparent border-none outline-none text-white font-bold w-full disabled:text-slate-400 placeholder:text-slate-600" />
                   </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Gamification: Achievements/Badges */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+            className="glass-panel p-10 md:p-14 rounded-[3rem] border-white/5 shadow-2xl backdrop-blur-3xl">
+            <h3 className="text-2xl font-bold text-white tracking-tight mb-8 flex items-center gap-3">
+              <Award className="w-6 h-6 text-brand-purple" /> Your Achievements
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {[
+                { label: 'First Goal', icon: Sparkles, color: 'text-brand-purple', bg: 'bg-brand-purple/10', border: 'border-brand-purple/20', unlocked: true },
+                { label: 'Fast Learner', icon: Award, color: 'text-brand-blue', bg: 'bg-brand-blue/10', border: 'border-brand-blue/20', unlocked: true },
+                { label: 'Perfect Score', icon: ShieldCheck, color: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/20', unlocked: false },
+                { label: 'Top 10%', icon: User, color: 'text-amber-400', bg: 'bg-amber-400/10', border: 'border-amber-400/20', unlocked: false }
+              ].map((badge, i) => (
+                <div key={i} className={`flex flex-col items-center justify-center p-6 rounded-3xl border transition-all ${
+                  badge.unlocked ? `${badge.bg} ${badge.border} glow-shadow hover:scale-105 cursor-pointer` : 'bg-white/5 border-white/5 opacity-50 grayscale'
+                }`}>
+                  <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 border ${badge.unlocked ? `${badge.bg} ${badge.border}` : 'bg-white/10 border-transparent'}`}>
+                    <badge.icon className={`w-7 h-7 ${badge.unlocked ? badge.color : 'text-slate-500'}`} />
+                  </div>
+                  <span className="text-sm font-bold text-white text-center leading-tight">{badge.label}</span>
+                  {!badge.unlocked && <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-2">Locked</span>}
                 </div>
               ))}
             </div>

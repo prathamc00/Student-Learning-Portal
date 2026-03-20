@@ -191,7 +191,7 @@ const uploadAadhaar = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Please upload an Aadhaar card file' });
         }
 
-        const filePath = req.file.path.replace(/\\/g, '/');
+        const filePath = 'uploads/aadhaar/' + req.file.filename;
         const user = await User.findByIdAndUpdate(
             req.user.id,
             { aadhaarCardPath: filePath, aadhaarVerified: false },

@@ -3,6 +3,8 @@ import { Award, Download, Share2, ShieldCheck, Sparkles, Trophy, ExternalLink, A
 import { motion } from 'framer-motion';
 import { apiFetch } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+import Skeleton from '../components/ui/Skeleton';
+import AnimatedTiltCard from '../components/ui/AnimatedTiltCard';
 
 interface CertRecord {
   _id: string;
@@ -186,9 +188,9 @@ export default function CertificatePage() {
       ) : (
         <div className="grid lg:grid-cols-2 gap-10">
           {certificates.map((cert, i) => (
-            <motion.div
-              key={cert._id}
-              initial={{ opacity: 0, y: 30 }}
+            <AnimatedTiltCard key={cert._id}>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.15 }}
               whileHover={{ y: -10 }}
@@ -245,6 +247,7 @@ export default function CertificatePage() {
                 </div>
               </div>
             </motion.div>
+          </AnimatedTiltCard>
           ))}
 
           <motion.div

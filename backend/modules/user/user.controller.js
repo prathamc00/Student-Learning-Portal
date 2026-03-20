@@ -95,5 +95,41 @@ const verifyAadhaar = async (req, res) => {
     }
 };
 
-module.exports = { getUsers, deleteUser, updateInstructorStatus, exportUsersCSV, verifyAadhaar };
+const addInstructor = async (req, res) => {
+    try {
+        const { name, email, password, phone } = req.body;
 
+        if (!name || !email || !password) {
+            return res.status(400).json({ success: false, message: 'Please provide name, email, and password' });
+        }
+
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            return res.status(400).json({ success: false, message: 'User already exists' });
+        }
+
+        const instructor = await User.create({
+            name,
+            email,
+            password,
+            phone,
+            role: 'instructor',
+            approvalStatus: 'approved'
+        });
+
+        res.status(201).json({
+            success: true,
+            message: 'Instructor created successfully',
+            instructor: {
+                _id: instructor._id,
+                name: instructor.name,
+                email: instructor.email,
+                role: instructor.role
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to create instructor', error: error.message });
+    }
+};
+
+module.exports = { getUsers, deleteUser, updateInstructorStatus, exportUsersCSV, verifyAadhaar, addInstructor };
