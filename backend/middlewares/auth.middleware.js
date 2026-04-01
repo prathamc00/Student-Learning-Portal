@@ -78,12 +78,30 @@ const adminOnly = (req, res, next) => {
 
 const staffOnly = (req, res, next) => {
     const approvalStatus = req.user?.approvalStatus || 'approved';
-
     if (req.user && (req.user.role === 'admin' || (req.user.role === 'instructor' && approvalStatus === 'approved'))) {
         return next();
     }
-
     return res.status(403).json({ success: false, message: 'Access denied. Approved instructors or admins only.' });
 };
 
-module.exports = { protect, optionalAuth, adminOnly, staffOnly };
+const instructorOnly = (req, res, next) => {
+    if (req.user && req.user.role === 'instructor') {
+        return next();
+    }
+    return res.status(403).json({ success: false, message: 'Access denied. Instructors only.' });
+};
+
+/**
+ * Flexible role guard factory.
+ * Usage: router.get('/path', protect, roleIn('admin', 'instructor'), handler)
+ */
+const roleIn = (...roles) => (req, res, next) => {
+    if (req.user && roles.includes(req.user.role)) {
+        return next();
+    }
+    return res.status(403).json({ success: false, message: `Access denied. Required role(s): ${roles.join(', ')}.` });
+};
+
+module.exports = { protect, optionalAuth, adminOnly, staffOnly, instructorOnly, roleIn };
+
+

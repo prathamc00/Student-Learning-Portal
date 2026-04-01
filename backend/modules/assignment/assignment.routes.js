@@ -28,10 +28,11 @@ const assignmentUpload = multer({
     storage: assignmentStorage,
     limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
     fileFilter: (req, file, cb) => {
-        const allowed = ['.pdf', '.doc', '.docx', '.txt', '.zip', '.py', '.js', '.java', '.cpp', '.c'];
+        // Only allow document and archive types — NO executable code files
+        const allowed = ['.pdf', '.doc', '.docx', '.txt', '.zip'];
         const ext = path.extname(file.originalname).toLowerCase();
         if (allowed.includes(ext)) cb(null, true);
-        else cb(new Error('File type not allowed'));
+        else cb(new Error('File type not allowed. Accepted: PDF, DOC, DOCX, TXT, ZIP'));
     },
 });
 

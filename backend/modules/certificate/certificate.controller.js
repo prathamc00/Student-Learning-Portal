@@ -1,22 +1,22 @@
-const Certificate = require('./certificate.model');
+﻿const Certificate = require('./certificate.model');
 const QuizAttempt = require('../test/quizAttempt.model');
 const Test = require('../test/test.model');
 const Course = require('../course/course.model');
 
 // Student: get my certificates
-const getMyCertificates = async (req, res) => {
+const getMyCertificates = async (req, res, next) => {
     try {
         const certificates = await Certificate.find({ user: req.user.id })
             .populate('course', 'title category instructor level')
             .sort({ earnedDate: -1 });
         res.status(200).json({ success: true, count: certificates.length, certificates });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch certificates', error: error.message });
+        next(error);
     }
 };
 
 // Admin: get all certificates
-const getCertificates = async (req, res) => {
+const getCertificates = async (req, res, next) => {
     try {
         const certificates = await Certificate.find({})
             .populate('user', 'name email')
@@ -24,11 +24,11 @@ const getCertificates = async (req, res) => {
             .sort({ createdAt: -1 });
         res.status(200).json({ success: true, count: certificates.length, certificates });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch certificates', error: error.message });
+        next(error);
     }
 };
 
-const getCertificateById = async (req, res) => {
+const getCertificateById = async (req, res, next) => {
     try {
         const certificate = await Certificate.findById(req.params.id)
             .populate('user', 'name email college branch')
@@ -38,12 +38,12 @@ const getCertificateById = async (req, res) => {
         }
         res.status(200).json({ success: true, certificate });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch certificate', error: error.message });
+        next(error);
     }
 };
 
 // Verify a certificate by its public certificateId
-const verifyCertificate = async (req, res) => {
+const verifyCertificate = async (req, res, next) => {
     try {
         const certificate = await Certificate.findOne({ certificateId: req.params.certId })
             .populate('user', 'name email college')
@@ -53,7 +53,7 @@ const verifyCertificate = async (req, res) => {
         }
         res.status(200).json({ success: true, certificate });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Verification failed', error: error.message });
+        next(error);
     }
 };
 
@@ -109,7 +109,7 @@ const autoIssueCertificate = async (userId, quizId) => {
 };
 
 // Admin: manually create certificate
-const createCertificate = async (req, res) => {
+const createCertificate = async (req, res, next) => {
     try {
         const certificate = await Certificate.create(req.body);
         res.status(201).json({ success: true, message: 'Certificate created', certificate });
@@ -121,11 +121,11 @@ const createCertificate = async (req, res) => {
         if (error.code === 11000) {
             return res.status(409).json({ success: false, message: 'Certificate already exists for this user/course/type' });
         }
-        res.status(500).json({ success: false, message: 'Failed to create certificate', error: error.message });
+        next(error);
     }
 };
 
-const deleteCertificate = async (req, res) => {
+const deleteCertificate = async (req, res, next) => {
     try {
         const certificate = await Certificate.findByIdAndDelete(req.params.id);
         if (!certificate) {
@@ -133,7 +133,7 @@ const deleteCertificate = async (req, res) => {
         }
         res.status(200).json({ success: true, message: 'Certificate deleted' });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to delete certificate', error: error.message });
+        next(error);
     }
 };
 

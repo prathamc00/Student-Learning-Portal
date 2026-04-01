@@ -1,4 +1,4 @@
-const Test = require('./test.model');
+﻿const Test = require('./test.model');
 const Course = require('../course/course.model');
 const QuizAttempt = require('./quizAttempt.model');
 const { autoIssueCertificate } = require('../certificate/certificate.controller');
@@ -25,17 +25,17 @@ const ensureCourseOwnership = (course, user) => {
     }
 };
 
-const getManagedTests = async (req, res) => {
+const getManagedTests = async (req, res, next) => {
     try {
         const filter = req.user.role === 'admin' ? {} : { createdBy: req.user._id };
         const tests = await Test.find(filter).populate('course', 'title').sort({ startTime: -1 });
         res.status(200).json({ success: true, count: tests.length, tests });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch managed quizzes', error: error.message });
+        next(error);
     }
 };
 
-const getTests = async (req, res) => {
+const getTests = async (req, res, next) => {
     try {
         const tests = await Test.find({}).populate('course', 'title').sort({ startTime: -1 });
         const isAdmin = req.user && req.user.role === 'admin';
@@ -48,11 +48,11 @@ const getTests = async (req, res) => {
         });
         res.status(200).json({ success: true, count: sanitized.length, tests: sanitized });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch tests', error: error.message });
+        next(error);
     }
 };
 
-const getTestById = async (req, res) => {
+const getTestById = async (req, res, next) => {
     try {
         const test = await Test.findById(req.params.id).populate('course', 'title');
         if (!test) {
@@ -65,11 +65,11 @@ const getTestById = async (req, res) => {
         }
         res.status(200).json({ success: true, test: obj });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch test', error: error.message });
+        next(error);
     }
 };
 
-const createTest = async (req, res) => {
+const createTest = async (req, res, next) => {
     try {
         const data = { ...req.body };
         const course = await Course.findById(data.course);
@@ -95,11 +95,11 @@ const createTest = async (req, res) => {
             const messages = Object.values(error.errors).map((e) => e.message);
             return res.status(400).json({ success: false, message: messages.join(', ') });
         }
-        res.status(500).json({ success: false, message: 'Failed to create test', error: error.message });
+        next(error);
     }
 };
 
-const updateTest = async (req, res) => {
+const updateTest = async (req, res, next) => {
     try {
         const test = await Test.findById(req.params.id);
         if (!test) {
@@ -132,11 +132,11 @@ const updateTest = async (req, res) => {
             const messages = Object.values(error.errors).map((e) => e.message);
             return res.status(400).json({ success: false, message: messages.join(', ') });
         }
-        res.status(500).json({ success: false, message: 'Failed to update test', error: error.message });
+        next(error);
     }
 };
 
-const deleteTest = async (req, res) => {
+const deleteTest = async (req, res, next) => {
     try {
         const test = await Test.findById(req.params.id);
         if (!test) {
@@ -151,11 +151,11 @@ const deleteTest = async (req, res) => {
         if (error.statusCode) {
             return res.status(error.statusCode).json({ success: false, message: error.message });
         }
-        res.status(500).json({ success: false, message: 'Failed to delete test', error: error.message });
+        next(error);
     }
 };
 
-const startQuiz = async (req, res) => {
+const startQuiz = async (req, res, next) => {
     try {
         const test = await Test.findById(req.params.id).populate('course', 'title');
         if (!test) {
@@ -214,11 +214,11 @@ const startQuiz = async (req, res) => {
             questions,
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to start quiz', error: error.message });
+        next(error);
     }
 };
 
-const submitQuiz = async (req, res) => {
+const submitQuiz = async (req, res, next) => {
     try {
         const { answers, tabSwitchCount } = req.body;
 
@@ -279,11 +279,11 @@ const submitQuiz = async (req, res) => {
             certificate: certificate ? { id: certificate._id, certificateId: certificate.certificateId, grade: certificate.grade } : null,
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to submit quiz', error: error.message });
+        next(error);
     }
 };
 
-const retakeQuiz = async (req, res) => {
+const retakeQuiz = async (req, res, next) => {
     try {
         const attempt = await QuizAttempt.findOne({ quiz: req.params.id, student: req.user._id }).sort({ completedAt: -1 });
         if (!attempt || !attempt.completedAt) {
@@ -300,11 +300,11 @@ const retakeQuiz = async (req, res) => {
         
         res.status(200).json({ success: true, message: 'Previous attempt cleared. You can now retake the quiz.' });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to process retake request', error: error.message });
+        next(error);
     }
 };
 
-const getMyAttempts = async (req, res) => {
+const getMyAttempts = async (req, res, next) => {
     try {
         const attempts = await QuizAttempt.find({ student: req.user._id })
             .populate({
@@ -316,11 +316,11 @@ const getMyAttempts = async (req, res) => {
 
         res.status(200).json({ success: true, count: attempts.length, attempts });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch attempts', error: error.message });
+        next(error);
     }
 };
 
-const getQuizResults = async (req, res) => {
+const getQuizResults = async (req, res, next) => {
     try {
         const test = await Test.findById(req.params.id);
         if (!test) {
@@ -338,7 +338,7 @@ const getQuizResults = async (req, res) => {
         if (error.statusCode) {
             return res.status(error.statusCode).json({ success: false, message: error.message });
         }
-        res.status(500).json({ success: false, message: 'Failed to fetch results', error: error.message });
+        next(error);
     }
 };
 

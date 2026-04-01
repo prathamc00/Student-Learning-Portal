@@ -2,6 +2,7 @@ const User = require('./auth.model');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const nodemailer = require('nodemailer');
+const logger = require('../../config/logger');
 
 // Helper: generate signed JWT
 const generateToken = (id) => {
@@ -49,7 +50,7 @@ const getResetPageBaseUrl = (req) => {
     return `${req.protocol}://${req.get('host')}/reset-password`;
 };
 
-const register = async (req, res) => {
+const register = async (req, res, next) => {
     try {
         const { name, email, password, college, branch, semester, phone, role } = req.body;
         const normalizedRole = role === 'instructor' ? 'instructor' : 'student';
@@ -88,11 +89,11 @@ const register = async (req, res) => {
             const messages = Object.values(error.errors).map((e) => e.message);
             return res.status(400).json({ success: false, message: messages.join(', ') });
         }
-        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+        next(error);
     }
 };
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
@@ -129,11 +130,11 @@ const login = async (req, res) => {
             user: buildUserPayload(user),
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+        next(error);
     }
 };
 
-const getMe = async (req, res) => {
+const getMe = async (req, res, next) => {
     try {
         const user = await User.findById(req.user.id).populate('enrolledCourses', 'title category level');
         if (!user) {
@@ -148,11 +149,11 @@ const getMe = async (req, res) => {
             },
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+        next(error);
     }
 };
 
-const updateProfile = async (req, res) => {
+const updateProfile = async (req, res, next) => {
     try {
         const allowedFields = ['name', 'phone', 'college', 'branch', 'semester'];
         const updates = {};
@@ -181,11 +182,11 @@ const updateProfile = async (req, res) => {
             const messages = Object.values(error.errors).map((e) => e.message);
             return res.status(400).json({ success: false, message: messages.join(', ') });
         }
-        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+        next(error);
     }
 };
 
-const uploadAadhaar = async (req, res) => {
+const uploadAadhaar = async (req, res, next) => {
     try {
         if (!req.file) {
             return res.status(400).json({ success: false, message: 'Please upload an Aadhaar card file' });
@@ -208,11 +209,11 @@ const uploadAadhaar = async (req, res) => {
             aadhaarCardPath: filePath,
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+        next(error);
     }
 };
 
-const enrollCourse = async (req, res) => {
+const enrollCourse = async (req, res, next) => {
     try {
         const user = await User.findById(req.user.id);
         if (!user) {
@@ -228,11 +229,11 @@ const enrollCourse = async (req, res) => {
 
         res.status(200).json({ success: true, message: 'Enrolled successfully' });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+        next(error);
     }
 };
 
-const forgotPassword = async (req, res) => {
+const forgotPassword = async (req, res, next) => {
     try {
         const { email } = req.body;
         if (!email) {
@@ -241,6 +242,7 @@ const forgotPassword = async (req, res) => {
 
         const user = await User.findOne({ email }).select('+password');
         if (!user) {
+            // Always return 200 to prevent email enumeration
             return res.status(200).json({
                 success: true,
                 message: 'If this email is registered, you will receive a password reset link shortly.',
@@ -250,8 +252,8 @@ const forgotPassword = async (req, res) => {
         const secret = process.env.JWT_SECRET + user.password;
         const resetToken = jwt.sign({ id: user._id }, secret, { expiresIn: '15m' });
         const resetLink = `${getResetPageBaseUrl(req)}?token=${encodeURIComponent(resetToken)}`;
-        
-        console.log(`[Password Reset] Reset link for ${email}: ${resetLink}`);
+
+        logger.debug(`[Password Reset] Reset link generated for ${email}`);
 
         await transporter.sendMail({
             from: `"CRISMATECH Portal" <${process.env.SMTP_USER}>`,
@@ -285,12 +287,12 @@ const forgotPassword = async (req, res) => {
             message: 'Password reset link has been sent to your email. Link expires in 15 minutes.',
         });
     } catch (error) {
-        console.error('[Password Reset] Error:', error.message);
+        logger.error('[Password Reset] Error sending email:', { message: error.message });
         res.status(500).json({ success: false, message: 'Failed to send reset email. Please try again.' });
     }
 };
 
-const validateResetToken = async (req, res) => {
+const validateResetToken = async (req, res, next) => {
     try {
         const { token } = req.query;
 
@@ -317,11 +319,11 @@ const validateResetToken = async (req, res) => {
 
         return res.status(200).json({ success: true, message: 'Reset token is valid' });
     } catch (error) {
-        return res.status(500).json({ success: false, message: 'Server error', error: error.message });
+        next(error);
     }
 };
 
-const resetPassword = async (req, res) => {
+const resetPassword = async (req, res, next) => {
     try {
         const { token, newPassword } = req.body;
         if (!token || !newPassword) {
@@ -357,17 +359,16 @@ const resetPassword = async (req, res) => {
             const messages = Object.values(error.errors).map((entry) => entry.message);
             return res.status(400).json({ success: false, message: messages.join(', ') });
         }
-
-        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+        next(error);
     }
 };
 
-const registerInstructor = async (req, res) => {
+const registerInstructor = async (req, res, next) => {
     req.body.role = 'instructor';
-    return register(req, res);
+    return register(req, res, next);
 };
 
-const loginInstructor = async (req, res) => {
+const loginInstructor = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
@@ -407,7 +408,7 @@ const loginInstructor = async (req, res) => {
             user: buildUserPayload(user),
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+        next(error);
     }
 };
 

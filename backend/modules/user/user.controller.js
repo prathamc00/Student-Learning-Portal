@@ -1,6 +1,6 @@
-const User = require('../auth/auth.model');
+﻿const User = require('../auth/auth.model');
 
-const getUsers = async (req, res) => {
+const getUsers = async (req, res, next) => {
     try {
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 100;
@@ -9,11 +9,11 @@ const getUsers = async (req, res) => {
         const users = await User.find({}).select('-password').sort({ createdAt: -1 }).skip(skip).limit(limit);
         res.status(200).json({ success: true, count: users.length, page, limit, users });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch users', error: error.message });
+        next(error);
     }
 };
 
-const deleteUser = async (req, res) => {
+const deleteUser = async (req, res, next) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
         if (!user) {
@@ -22,11 +22,11 @@ const deleteUser = async (req, res) => {
 
         res.status(200).json({ success: true, message: 'User deleted successfully' });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to delete user', error: error.message });
+        next(error);
     }
 };
 
-const updateInstructorStatus = async (req, res) => {
+const updateInstructorStatus = async (req, res, next) => {
     try {
         const { approvalStatus } = req.body;
 
@@ -48,11 +48,11 @@ const updateInstructorStatus = async (req, res) => {
 
         res.status(200).json({ success: true, message: `Instructor ${approvalStatus} successfully`, user });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to update instructor status', error: error.message });
+        next(error);
     }
 };
 
-const exportUsersCSV = async (req, res) => {
+const exportUsersCSV = async (req, res, next) => {
     try {
         const users = await User.find({}).select('-password').sort({ createdAt: -1 });
 
@@ -76,11 +76,11 @@ const exportUsersCSV = async (req, res) => {
         res.setHeader('Content-Disposition', 'attachment; filename=users_export.csv');
         res.status(200).send(csv);
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to export users', error: error.message });
+        next(error);
     }
 };
 
-const verifyAadhaar = async (req, res) => {
+const verifyAadhaar = async (req, res, next) => {
     try {
         const { aadhaarVerified } = req.body;
         const user = await User.findById(req.params.id).select('-password');
@@ -91,11 +91,11 @@ const verifyAadhaar = async (req, res) => {
         
         res.status(200).json({ success: true, message: 'Aadhaar status updated', user });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to update Aadhaar status', error: error.message });
+        next(error);
     }
 };
 
-const addInstructor = async (req, res) => {
+const addInstructor = async (req, res, next) => {
     try {
         const { name, email, password, phone } = req.body;
 
@@ -128,7 +128,7 @@ const addInstructor = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to create instructor', error: error.message });
+        next(error);
     }
 };
 

@@ -19,24 +19,36 @@ const mediaStorage = multer.diskStorage({
         cb(null, `${file.fieldname}_${Date.now()}${ext}`);
     },
 });
+const ALLOWED_MEDIA = {
+    video: {
+        extensions: ['.mp4', '.mkv', '.avi', '.webm', '.mov'],
+        mimes: ['video/mp4', 'video/x-matroska', 'video/x-msvideo', 'video/webm', 'video/quicktime'],
+    },
+    notes: {
+        extensions: ['.pdf'],
+        mimes: ['application/pdf'],
+    },
+};
+
 const mediaUpload = multer({
     storage: mediaStorage,
     limits: { fileSize: 500 * 1024 * 1024 }, // 500MB
     fileFilter: (req, file, cb) => {
+        const fieldConfig = ALLOWED_MEDIA[file.fieldname];
+        if (!fieldConfig) return cb(new Error('Invalid field name'));
+
         const ext = path.extname(file.originalname).toLowerCase();
-        if (file.fieldname === 'video') {
-            const allowed = ['.mp4', '.mkv', '.avi', '.webm', '.mov'];
-            if (allowed.includes(ext)) cb(null, true);
-            else cb(new Error('Only video files are allowed'));
-        } else if (file.fieldname === 'notes') {
-            const allowed = ['.pdf'];
-            if (allowed.includes(ext)) cb(null, true);
-            else cb(new Error('Only PDF files are allowed for notes'));
+        const extOk = fieldConfig.extensions.includes(ext);
+        const mimeOk = fieldConfig.mimes.includes(file.mimetype);
+
+        if (extOk && mimeOk) {
+            cb(null, true);
         } else {
-            cb(new Error('Invalid field name'));
+            cb(new Error(`Invalid file type for ${file.fieldname}. Allowed: ${fieldConfig.extensions.join(', ')}`));
         }
     },
 });
+
 
 // Course CRUD
 router.get('/', getCourses);

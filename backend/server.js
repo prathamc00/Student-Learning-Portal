@@ -3,6 +3,7 @@ dotenv.config();
 
 const app = require('./app');
 const connectDB = require('./config/db');
+const logger = require('./config/logger');
 
 connectDB();
 
@@ -12,7 +13,7 @@ const { initSocket } = require('./socketManager');
 
 function startServer(port) {
     const server = app.listen(port, () => {
-        console.log(`Server running on http://localhost:${port}`);
+        logger.info(`Server running on http://localhost:${port} [${process.env.NODE_ENV || 'development'}]`);
     });
 
     initSocket(server);
@@ -26,14 +27,15 @@ function startServer(port) {
     server.on('error', (error) => {
         if (error.code === 'EADDRINUSE') {
             const nextPort = port + 1;
-            console.warn(`Port ${port} is in use. Retrying on ${nextPort}...`);
+            logger.warn(`Port ${port} is in use. Retrying on ${nextPort}...`);
             startServer(nextPort);
             return;
         }
 
-        console.error('Failed to start server:', error.message);
+        logger.error('Failed to start server:', { message: error.message });
         process.exit(1);
     });
 }
 
 startServer(PORT);
+

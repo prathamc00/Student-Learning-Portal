@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const MAX_OTP_ATTEMPTS = 5;
+
 const otpSchema = new mongoose.Schema({
     email: {
         type: String,
@@ -11,6 +13,10 @@ const otpSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    attempts: {
+        type: Number,
+        default: 0,
+    },
     createdAt: {
         type: Date,
         default: Date.now,
@@ -19,3 +25,4 @@ const otpSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('Otp', otpSchema);
+module.exports.MAX_OTP_ATTEMPTS = MAX_OTP_ATTEMPTS;

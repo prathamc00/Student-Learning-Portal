@@ -1,6 +1,9 @@
+const { randomInt } = require('crypto');
 const nodemailer = require('nodemailer');
 const User = require('../auth/auth.model');
 const Otp = require('./otp.model');
+const { MAX_OTP_ATTEMPTS } = require('./otp.model');
+const logger = require('../../config/logger');
 
 // Educational email domain validation
 const EDUCATIONAL_DOMAINS = ['.edu', '.ac.in', '.edu.in', '.ac.uk', '.edu.au'];
@@ -21,12 +24,12 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-// Generate 6-digit OTP
+// Generate cryptographically secure 6-digit OTP
 function generateOtp() {
-    return String(Math.floor(100000 + Math.random() * 900000));
+    return String(randomInt(100000, 1000000));
 }
 
-const sendEmailOtp = async (req, res) => {
+const sendEmailOtp = async (req, res, next) => {
     try {
         const { email } = req.body;
 
@@ -51,6 +54,7 @@ const sendEmailOtp = async (req, res) => {
             return res.status(409).json({ success: false, message: 'Email is already registered' });
         }
 
+        // Delete any previous OTPs for this email before issuing a fresh one
         await Otp.deleteMany({ email: email.toLowerCase() });
 
         const code = generateOtp();
@@ -74,12 +78,12 @@ const sendEmailOtp = async (req, res) => {
 
         res.status(200).json({ success: true, message: 'OTP sent to your email' });
     } catch (error) {
-        console.error('OTP send error:', error.message);
-        res.status(500).json({ success: false, message: 'Failed to send OTP: ' + error.message });
+        logger.error('OTP send error', { message: error.message });
+        res.status(500).json({ success: false, message: 'Failed to send OTP. Please try again.' });
     }
 };
 
-const verifyEmailOtp = async (req, res) => {
+const verifyEmailOtp = async (req, res, next) => {
     try {
         const { email, code } = req.body;
 
@@ -87,17 +91,38 @@ const verifyEmailOtp = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Email and code are required' });
         }
 
-        const validOtp = await Otp.findOne({ email: email.toLowerCase(), code });
-        if (!validOtp) {
+        const otpRecord = await Otp.findOne({ email: email.toLowerCase() });
+
+        if (!otpRecord) {
             return res.status(400).json({ success: false, message: 'Invalid or expired OTP code. Please request a new one.' });
         }
 
-        await Otp.deleteOne({ _id: validOtp._id });
+        // Increment attempt counter
+        otpRecord.attempts += 1;
 
+        // Lockout after max attempts — destroy the OTP so attacker cannot keep guessing
+        if (otpRecord.attempts > MAX_OTP_ATTEMPTS) {
+            await Otp.deleteOne({ _id: otpRecord._id });
+            return res.status(429).json({
+                success: false,
+                message: 'Too many incorrect attempts. Please request a new OTP.',
+            });
+        }
+
+        if (otpRecord.code !== code) {
+            await otpRecord.save();
+            const remaining = MAX_OTP_ATTEMPTS - otpRecord.attempts;
+            return res.status(400).json({
+                success: false,
+                message: `Invalid OTP code. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`,
+            });
+        }
+
+        // Correct code — delete the OTP record and return success
+        await Otp.deleteOne({ _id: otpRecord._id });
         res.status(200).json({ success: true, message: 'Email verified successfully' });
     } catch (error) {
-        console.error('OTP verify error:', error.message);
-        res.status(500).json({ success: false, message: 'Verification failed: ' + error.message });
+        next(error);
     }
 };
 

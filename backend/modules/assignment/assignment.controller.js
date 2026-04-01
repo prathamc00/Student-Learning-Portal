@@ -1,4 +1,4 @@
-const Assignment = require('./assignment.model');
+﻿const Assignment = require('./assignment.model');
 const Course = require('../course/course.model');
 const Submission = require('./submission.model');
 
@@ -24,7 +24,7 @@ const ensureCourseOwnership = (course, user) => {
     }
 };
 
-const getManagedAssignments = async (req, res) => {
+const getManagedAssignments = async (req, res, next) => {
     try {
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 100;
@@ -34,11 +34,11 @@ const getManagedAssignments = async (req, res) => {
         const assignments = await Assignment.find(filter).populate('course', 'title').sort({ createdAt: -1 }).skip(skip).limit(limit);
         res.status(200).json({ success: true, count: assignments.length, page, limit, assignments });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch managed assignments', error: error.message });
+        next(error);
     }
 };
 
-const getAssignments = async (req, res) => {
+const getAssignments = async (req, res, next) => {
     try {
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 100;
@@ -47,11 +47,11 @@ const getAssignments = async (req, res) => {
         const assignments = await Assignment.find({}).populate('course', 'title').sort({ createdAt: -1 }).skip(skip).limit(limit);
         res.status(200).json({ success: true, count: assignments.length, page, limit, assignments });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch assignments', error: error.message });
+        next(error);
     }
 };
 
-const getAssignmentById = async (req, res) => {
+const getAssignmentById = async (req, res, next) => {
     try {
         const assignment = await Assignment.findById(req.params.id).populate('course', 'title');
         if (!assignment) {
@@ -59,11 +59,11 @@ const getAssignmentById = async (req, res) => {
         }
         res.status(200).json({ success: true, assignment });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch assignment', error: error.message });
+        next(error);
     }
 };
 
-const createAssignment = async (req, res) => {
+const createAssignment = async (req, res, next) => {
     try {
         const data = { ...req.body };
         const course = await Course.findById(data.course);
@@ -83,11 +83,11 @@ const createAssignment = async (req, res) => {
             const messages = Object.values(error.errors).map((e) => e.message);
             return res.status(400).json({ success: false, message: messages.join(', ') });
         }
-        res.status(500).json({ success: false, message: 'Failed to create assignment', error: error.message });
+        next(error);
     }
 };
 
-const updateAssignment = async (req, res) => {
+const updateAssignment = async (req, res, next) => {
     try {
         const assignment = await Assignment.findById(req.params.id);
         if (!assignment) {
@@ -115,11 +115,11 @@ const updateAssignment = async (req, res) => {
             const messages = Object.values(error.errors).map((e) => e.message);
             return res.status(400).json({ success: false, message: messages.join(', ') });
         }
-        res.status(500).json({ success: false, message: 'Failed to update assignment', error: error.message });
+        next(error);
     }
 };
 
-const deleteAssignment = async (req, res) => {
+const deleteAssignment = async (req, res, next) => {
     try {
         const assignment = await Assignment.findById(req.params.id);
         if (!assignment) {
@@ -134,11 +134,11 @@ const deleteAssignment = async (req, res) => {
         if (error.statusCode) {
             return res.status(error.statusCode).json({ success: false, message: error.message });
         }
-        res.status(500).json({ success: false, message: 'Failed to delete assignment', error: error.message });
+        next(error);
     }
 };
 
-const submitAssignment = async (req, res) => {
+const submitAssignment = async (req, res, next) => {
     try {
         const assignment = await Assignment.findById(req.params.id);
         if (!assignment) {
@@ -167,11 +167,11 @@ const submitAssignment = async (req, res) => {
         const submission = await Submission.create(submissionData);
         res.status(201).json({ success: true, message: 'Assignment submitted successfully', submission });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to submit assignment', error: error.message });
+        next(error);
     }
 };
 
-const getSubmissions = async (req, res) => {
+const getSubmissions = async (req, res, next) => {
     try {
         const assignment = await Assignment.findById(req.params.id);
         if (!assignment) {
@@ -189,11 +189,11 @@ const getSubmissions = async (req, res) => {
         if (error.statusCode) {
             return res.status(error.statusCode).json({ success: false, message: error.message });
         }
-        res.status(500).json({ success: false, message: 'Failed to fetch submissions', error: error.message });
+        next(error);
     }
 };
 
-const getMySubmissions = async (req, res) => {
+const getMySubmissions = async (req, res, next) => {
     try {
         const submissions = await Submission.find({ student: req.user._id })
             .populate('assignment', 'title course type dueDate maxMarks')
@@ -201,11 +201,11 @@ const getMySubmissions = async (req, res) => {
 
         res.status(200).json({ success: true, count: submissions.length, submissions });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch submissions', error: error.message });
+        next(error);
     }
 };
 
-const gradeSubmission = async (req, res) => {
+const gradeSubmission = async (req, res, next) => {
     try {
         const { grade, feedback } = req.body;
         const submission = await Submission.findById(req.params.id).populate('assignment');
@@ -225,7 +225,7 @@ const gradeSubmission = async (req, res) => {
         if (error.statusCode) {
             return res.status(error.statusCode).json({ success: false, message: error.message });
         }
-        res.status(500).json({ success: false, message: 'Failed to grade submission', error: error.message });
+        next(error);
     }
 };
 

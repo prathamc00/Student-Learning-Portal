@@ -1,6 +1,6 @@
 const Attendance = require('./attendance.model');
 
-const trackActivity = async (req, res) => {
+const trackActivity = async (req, res, next) => {
     try {
         const { courseId, activityType, details } = req.body;
 
@@ -12,7 +12,8 @@ const trackActivity = async (req, res) => {
             student: req.user._id,
             course: courseId || null,
             activityType,
-            details: details || '',
+            // Coerce to string and cap length to prevent NoSQL injection / oversized payloads
+            details: typeof details === 'string' ? details.trim().substring(0, 500) : '',
         });
 
         res.status(201).json({ success: true, message: 'Activity tracked', record });
@@ -21,11 +22,11 @@ const trackActivity = async (req, res) => {
             const messages = Object.values(error.errors).map((e) => e.message);
             return res.status(400).json({ success: false, message: messages.join(', ') });
         }
-        res.status(500).json({ success: false, message: 'Failed to track activity', error: error.message });
+        next(error);
     }
 };
 
-const getMyAttendance = async (req, res) => {
+const getMyAttendance = async (req, res, next) => {
     try {
         const records = await Attendance.find({ student: req.user._id })
             .populate('course', 'title')
@@ -33,11 +34,11 @@ const getMyAttendance = async (req, res) => {
 
         res.status(200).json({ success: true, count: records.length, records });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch attendance', error: error.message });
+        next(error);
     }
 };
 
-const getCourseAttendance = async (req, res) => {
+const getCourseAttendance = async (req, res, next) => {
     try {
         const records = await Attendance.find({ course: req.params.courseId })
             .populate('student', 'name email')
@@ -46,11 +47,11 @@ const getCourseAttendance = async (req, res) => {
 
         res.status(200).json({ success: true, count: records.length, records });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch course attendance', error: error.message });
+        next(error);
     }
 };
 
-const getAllAttendance = async (req, res) => {
+const getAllAttendance = async (req, res, next) => {
     try {
         const records = await Attendance.find({})
             .populate('student', 'name email')
@@ -59,7 +60,7 @@ const getAllAttendance = async (req, res) => {
 
         res.status(200).json({ success: true, count: records.length, records });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch attendance', error: error.message });
+        next(error);
     }
 };
 

@@ -1,4 +1,4 @@
-const Course = require('./course.model');
+﻿const Course = require('./course.model');
 const CourseProgress = require('./courseProgress.model');
 const path = require('path');
 const Attendance = require('../attendance/attendance.model');
@@ -13,7 +13,7 @@ const ensureCourseAccess = (course, user) => {
     }
 };
 
-const getManagedCourses = async (req, res) => {
+const getManagedCourses = async (req, res, next) => {
     try {
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 100;
@@ -23,11 +23,11 @@ const getManagedCourses = async (req, res) => {
         const courses = await Course.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit);
         res.status(200).json({ success: true, count: courses.length, page, limit, courses });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch managed courses', error: error.message });
+        next(error);
     }
 };
 
-const getCourses = async (req, res) => {
+const getCourses = async (req, res, next) => {
     try {
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 100;
@@ -36,11 +36,11 @@ const getCourses = async (req, res) => {
         const courses = await Course.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit);
         res.status(200).json({ success: true, count: courses.length, page, limit, courses });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch courses', error: error.message });
+        next(error);
     }
 };
 
-const getCourseById = async (req, res) => {
+const getCourseById = async (req, res, next) => {
     try {
         const course = await Course.findById(req.params.id);
         if (!course) {
@@ -70,11 +70,11 @@ const getCourseById = async (req, res) => {
 
         res.status(200).json({ success: true, course: obj });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch course', error: error.message });
+        next(error);
     }
 };
 
-const createCourse = async (req, res) => {
+const createCourse = async (req, res, next) => {
     try {
         const data = { ...req.body };
         if (req.user) {
@@ -90,11 +90,11 @@ const createCourse = async (req, res) => {
             const messages = Object.values(error.errors).map((e) => e.message);
             return res.status(400).json({ success: false, message: messages.join(', ') });
         }
-        res.status(500).json({ success: false, message: 'Failed to create course', error: error.message });
+        next(error);
     }
 };
 
-const updateCourse = async (req, res) => {
+const updateCourse = async (req, res, next) => {
     try {
         const course = await Course.findById(req.params.id);
         if (!course) {
@@ -118,11 +118,11 @@ const updateCourse = async (req, res) => {
             const messages = Object.values(error.errors).map((e) => e.message);
             return res.status(400).json({ success: false, message: messages.join(', ') });
         }
-        res.status(500).json({ success: false, message: 'Failed to update course', error: error.message });
+        next(error);
     }
 };
 
-const deleteCourse = async (req, res) => {
+const deleteCourse = async (req, res, next) => {
     try {
         const course = await Course.findById(req.params.id);
         if (!course) {
@@ -136,11 +136,11 @@ const deleteCourse = async (req, res) => {
         if (error.statusCode) {
             return res.status(error.statusCode).json({ success: false, message: error.message });
         }
-        res.status(500).json({ success: false, message: 'Failed to delete course', error: error.message });
+        next(error);
     }
 };
 
-const getModules = async (req, res) => {
+const getModules = async (req, res, next) => {
     try {
         const course = await Course.findById(req.params.id).select('title modules');
         if (!course) {
@@ -149,11 +149,11 @@ const getModules = async (req, res) => {
         const sorted = [...course.modules].sort((a, b) => a.order - b.order);
         res.status(200).json({ success: true, courseTitle: course.title, count: sorted.length, modules: sorted });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch modules', error: error.message });
+        next(error);
     }
 };
 
-const addModule = async (req, res) => {
+const addModule = async (req, res, next) => {
     try {
         const course = await Course.findById(req.params.id);
         if (!course) {
@@ -186,11 +186,11 @@ const addModule = async (req, res) => {
         if (error.statusCode) {
             return res.status(error.statusCode).json({ success: false, message: error.message });
         }
-        res.status(500).json({ success: false, message: 'Failed to add lesson', error: error.message });
+        next(error);
     }
 };
 
-const updateModule = async (req, res) => {
+const updateModule = async (req, res, next) => {
     try {
         const course = await Course.findById(req.params.id);
         if (!course) {
@@ -223,11 +223,11 @@ const updateModule = async (req, res) => {
         if (error.statusCode) {
             return res.status(error.statusCode).json({ success: false, message: error.message });
         }
-        res.status(500).json({ success: false, message: 'Failed to update lesson', error: error.message });
+        next(error);
     }
 };
 
-const deleteModule = async (req, res) => {
+const deleteModule = async (req, res, next) => {
     try {
         const course = await Course.findById(req.params.id);
         if (!course) {
@@ -246,11 +246,11 @@ const deleteModule = async (req, res) => {
         if (error.statusCode) {
             return res.status(error.statusCode).json({ success: false, message: error.message });
         }
-        res.status(500).json({ success: false, message: 'Failed to delete lesson', error: error.message });
+        next(error);
     }
 };
 
-const reorderModules = async (req, res) => {
+const reorderModules = async (req, res, next) => {
     try {
         const course = await Course.findById(req.params.id);
         if (!course) {
@@ -276,11 +276,11 @@ const reorderModules = async (req, res) => {
         if (error.statusCode) {
             return res.status(error.statusCode).json({ success: false, message: error.message });
         }
-        res.status(500).json({ success: false, message: 'Failed to reorder lessons', error: error.message });
+        next(error);
     }
 };
 
-const enrollCourse = async (req, res) => {
+const enrollCourse = async (req, res, next) => {
     try {
         const course = await Course.findById(req.params.id);
         if (!course) {
@@ -313,11 +313,11 @@ const enrollCourse = async (req, res) => {
 
         res.status(200).json({ success: true, message: 'Enrolled successfully', enrolledCount: course.enrolledStudents.length });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to enroll', error: error.message });
+        next(error);
     }
 };
 
-const unenrollCourse = async (req, res) => {
+const unenrollCourse = async (req, res, next) => {
     try {
         const course = await Course.findById(req.params.id);
         if (!course) {
@@ -327,28 +327,28 @@ const unenrollCourse = async (req, res) => {
         await course.save();
         res.status(200).json({ success: true, message: 'Unenrolled successfully' });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to unenroll', error: error.message });
+        next(error);
     }
 };
 
-const getMyEnrollments = async (req, res) => {
+const getMyEnrollments = async (req, res, next) => {
     try {
         const courses = await Course.find({ enrolledStudents: req.user._id }).sort({ createdAt: -1 });
         res.status(200).json({ success: true, count: courses.length, courses });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch enrollments', error: error.message });
+        next(error);
     }
 };
-const getCourseProgress = async (req, res) => {
+const getCourseProgress = async (req, res, next) => {
     try {
         const progress = await CourseProgress.findOne({ student: req.user._id, course: req.params.id });
         res.status(200).json({ success: true, completedModules: progress ? progress.completedModules : [] });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch progress', error: error.message });
+        next(error);
     }
 };
 
-const markModuleComplete = async (req, res) => {
+const markModuleComplete = async (req, res, next) => {
     try {
         const course = await Course.findById(req.params.id);
         if (!course) {
@@ -372,7 +372,7 @@ const markModuleComplete = async (req, res) => {
 
         res.status(200).json({ success: true, message: 'Module marked as complete', completedModules: progress.completedModules });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to mark module complete', error: error.message });
+        next(error);
     }
 };
 

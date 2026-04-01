@@ -15,11 +15,21 @@ if (!MONGO_URI) {
     process.exit(1);
 }
 
+const crypto = require('crypto');
+
+const defaultAdminPassword = process.env.ADMIN_SETUP_PASSWORD || crypto.randomBytes(8).toString('hex');
+console.log('');
+console.log('=============================================');
+console.log(`🔑 ADMIN SETUP PASSWORD: ${defaultAdminPassword}`);
+console.log('   (Save this if you are seeding a new db!)');
+console.log('=============================================');
+console.log('');
+
 const sampleUsers = [
     {
         name: 'Admin User',
         email: 'admin@crismatech.com',
-        password: 'Admin@123',
+        password: defaultAdminPassword,
         role: 'admin',
         approvalStatus: 'approved',
         college: 'CRISMATECH Institute',

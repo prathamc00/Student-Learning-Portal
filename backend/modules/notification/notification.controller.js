@@ -1,4 +1,4 @@
-const Notification = require('./notification.model');
+﻿const Notification = require('./notification.model');
 const { sendNotificationToUser } = require('../../socketManager');
 
 // Helper to create & send a real-time notification
@@ -21,7 +21,7 @@ exports.createNotification = async (userId, title, message, type = 'info', link 
   }
 };
 
-exports.getMyNotifications = async (req, res) => {
+exports.getMyNotifications = async (req, res, next) => {
   try {
     // Fetch last 50 notifications, latest first
     const notifications = await Notification.find({ userId: req.user.id })
@@ -32,11 +32,11 @@ exports.getMyNotifications = async (req, res) => {
 
     res.json({ success: true, notifications, unreadCount });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Server error fetching notifications' });
+    next(error);
   }
 };
 
-exports.markAsRead = async (req, res) => {
+exports.markAsRead = async (req, res, next) => {
   try {
     const notification = await Notification.findOneAndUpdate(
       { _id: req.params.id, userId: req.user.id },
@@ -49,11 +49,11 @@ exports.markAsRead = async (req, res) => {
     }
     res.json({ success: true, notification });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Server error marking notification as read' });
+    next(error);
   }
 };
 
-exports.markAllAsRead = async (req, res) => {
+exports.markAllAsRead = async (req, res, next) => {
   try {
     await Notification.updateMany(
       { userId: req.user.id, isRead: false },
@@ -61,6 +61,6 @@ exports.markAllAsRead = async (req, res) => {
     );
     res.json({ success: true, message: 'All notifications marked as read' });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Server error marking all as read' });
+    next(error);
   }
 };
