@@ -42,7 +42,7 @@ export async function apiFetch(path: string, options: RequestInit = {}): Promise
 
   const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
 
-  if (res.status === 401) {
+  if (res.status === 401 && !path.includes('/login') && !path.includes('/register') && !path.includes('/forgot-password')) {
     clearAuth();
     window.location.href = '/login';
     throw new Error('Session expired. Please login again.');
