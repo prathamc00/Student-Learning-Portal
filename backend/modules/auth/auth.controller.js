@@ -242,10 +242,9 @@ const forgotPassword = async (req, res, next) => {
 
         const user = await User.findOne({ email }).select('+password');
         if (!user) {
-            // Always return 200 to prevent email enumeration
-            return res.status(200).json({
-                success: true,
-                message: 'If this email is registered, you will receive a password reset link shortly.',
+            return res.status(404).json({ 
+                success: false, 
+                message: 'No account found with that email address. Please check for typos or register a new account.' 
             });
         }
 
