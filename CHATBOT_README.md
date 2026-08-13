@@ -1,3 +1,4 @@
+
 # Crismatech AI — RAG-Powered Study & Platform Assistant
 
 An enterprise-grade, **Retrieval-Augmented Generation (RAG)** AI Study Assistant and Platform Advisor integrated into the **Student Learning Portal**.
@@ -119,9 +120,9 @@ Log in with admin credentials (e.g. `admin@crismatech.com` / `Admin@123`).
 
 | User Role | Accessible Knowledge & Context | Restrictions |
 | :--- | :--- | :--- |
-| **Student** | Enrolled courses, course module topics, lecture notes, assigned homework, submission statuses, quiz attempt scores, personal attendance summary. | ❌ Blocked from platform user counts, student rosters, user emails, and admin system metrics. |
-| **Instructor** | Teaching courses, course syllabi, student assignment submissions for taught courses, quiz statistics, and class attendance summaries. | ❌ Restricted to taught course domains. |
-| **Admin** | Full platform statistics (Total users, student/instructor counts, course catalog, active enrollments, system analytics). | ✅ Unrestricted platform access. |
+| **Student** | Enrolled courses, course module topics, lecture notes, assigned homework, submission statuses, quiz attempt scores, personal attendance summary. | Blocked from platform user counts, student rosters, user emails, and admin system metrics. |
+| **Instructor** | Teaching courses, course syllabi, student assignment submissions for taught courses, quiz statistics, and class attendance summaries. |  Restricted to taught course domains. |
+| **Admin** | Full platform statistics (Total users, student/instructor counts, course catalog, active enrollments, system analytics). |  Unrestricted platform access. |
 
 ---
 
