@@ -19,6 +19,7 @@ const certificateRoutes = require('./modules/certificate/certificate.routes');
 const userRoutes = require('./modules/user/user.routes');
 const attendanceRoutes = require('./modules/attendance/attendance.routes');
 const notificationRoutes = require('./modules/notification/notification.routes');
+const chatbotRoutes = require('./modules/chatbot/chatbot.routes');
 
 const app = express();
 const frontendDir = path.join(__dirname, '..', 'frontend');
@@ -88,6 +89,7 @@ app.use('/api/certificates', certificateRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/chatbot', chatbotRoutes);
 
 // --- Static Pages ---
 app.get('/password/forgot.html', (req, res) => {

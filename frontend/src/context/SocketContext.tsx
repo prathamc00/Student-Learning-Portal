@@ -45,8 +45,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     if (!user) return;
 
     const token = localStorage.getItem('token');
-    const apiUrl = (import.meta as any).env.VITE_API_URL || 'http://localhost:5000/api';
-    const baseUrl = apiUrl.replace('/api', '');
+    const baseUrl = (import.meta as any).env.VITE_BACKEND_URL || window.location.origin;
 
     const newSocket = io(baseUrl, {
       auth: { token },

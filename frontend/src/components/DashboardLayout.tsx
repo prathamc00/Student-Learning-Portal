@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext';
 import CursorGlow from './ui/CursorGlow';
 import { SocketProvider } from '../context/SocketContext';
 import NotificationBell from './ui/NotificationBell';
+import ChatbotWidget from './chatbot/ChatbotWidget';
 
 export default function DashboardLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -90,6 +91,9 @@ export default function DashboardLayout() {
           <Outlet />
         </main>
       </div>
+
+      {/* Global RAG AI Chatbot Assistant Widget */}
+      <ChatbotWidget />
     </div>
     </SocketProvider>
   );

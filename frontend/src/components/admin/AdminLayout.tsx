@@ -4,6 +4,8 @@ import AdminSidebar from './AdminSidebar';
 import { Menu, Bell, Search, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
+import { ThemeToggle } from '../ThemeToggle';
+import ChatbotWidget from '../chatbot/ChatbotWidget';
 
 export default function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -44,6 +46,8 @@ export default function AdminLayout() {
               <span className="absolute top-2 right-2 w-2 h-2 bg-brand-500 rounded-full border-2 border-white dark:border-slate-900" />
             </button>
             
+            <ThemeToggle />
+            
             <div className="flex items-center gap-3 pl-3 sm:pl-6 border-l border-slate-200 dark:border-slate-800">
               <div className="hidden sm:flex flex-col items-end">
                 <span className="text-sm font-bold text-slate-900 dark:text-white">{user.name}</span>
@@ -71,6 +75,9 @@ export default function AdminLayout() {
           </AnimatePresence>
         </main>
       </div>
+
+      {/* Global RAG AI Chatbot Assistant Widget */}
+      <ChatbotWidget />
     </div>
   );
 }

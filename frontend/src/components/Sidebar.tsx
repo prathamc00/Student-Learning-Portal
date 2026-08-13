@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
-  LayoutDashboard, BookOpen, FileText, ClipboardCheck, Calendar, User, Award, LogOut, X, Sparkles
+  LayoutDashboard, BookOpen, FileText, ClipboardCheck, Calendar, User, Award, LogOut, X, Sparkles, Bot
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '../utils';

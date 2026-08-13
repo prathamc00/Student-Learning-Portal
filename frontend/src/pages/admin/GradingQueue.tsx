@@ -195,7 +195,7 @@ export default function GradingQueue() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         {sub.filePath && (
-                          <a href={`http://localhost:5000/${sub.filePath}`} target="_blank" rel="noreferrer"
+                          <a href={`${(import.meta as any).env.VITE_BACKEND_URL || ''}/${sub.filePath}`} target="_blank" rel="noreferrer"
                             className="p-2 bg-sky-50 dark:bg-sky-900/20 text-sky-500 rounded-xl hover:bg-sky-100 transition-colors" title="View File">
                             <ExternalLink className="w-4 h-4" />
                           </a>

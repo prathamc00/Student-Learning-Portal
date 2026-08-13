@@ -232,7 +232,7 @@ export default function ManageUsers() {
                       {user.aadhaarCardPath ? (
                         <div className="flex items-center gap-2">
                           <a 
-                            href={`${(import.meta as any).env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}/${user.aadhaarCardPath}`} 
+                            href={`${(import.meta as any).env.VITE_BACKEND_URL || ''}/${user.aadhaarCardPath}`} 
                             target="_blank" 
                             rel="noreferrer" 
                             className="p-2 bg-brand-50 text-brand-600 rounded-xl hover:bg-brand-100 dark:bg-brand-900/20 dark:text-brand-400 dark:hover:bg-brand-900/40 transition-colors" 
