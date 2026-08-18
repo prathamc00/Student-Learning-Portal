@@ -256,27 +256,27 @@ export default function ChatbotWidget() {
     <>
       {/* Floating Launcher Button */}
       <motion.div 
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2"
+        className="fixed bottom-4 right-4 sm:bottom-5 sm:right-5 z-50 flex items-center gap-2"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 260, damping: 20 }}
       >
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="group relative flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-purple via-indigo-600 to-brand-blue text-white shadow-2xl glow-shadow hover:scale-105 active:scale-95 transition-transform duration-300"
+          className="group relative flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-brand-purple via-indigo-600 to-brand-blue text-white shadow-2xl glow-shadow hover:scale-105 active:scale-95 transition-transform duration-300"
           title="Open AI Assistant (Alt + C)"
         >
-          <div className="absolute inset-0 rounded-2xl bg-brand-purple/40 blur-lg group-hover:blur-xl transition-all" />
+          <div className="absolute inset-0 rounded-xl bg-brand-purple/40 blur-md group-hover:blur-lg transition-all" />
           {isOpen ? (
-            <X className="w-6 h-6 relative z-10" />
+            <X className="w-5 h-5 relative z-10" />
           ) : (
-            <MessageSquareCode className="w-7 h-7 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
+            <MessageSquareCode className="w-5 h-5 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
           )}
 
           {/* Pulse ring indicator */}
-          <span className="absolute top-1 right-1 flex h-3 w-3">
+          <span className="absolute top-1 right-1 flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
           </span>
         </button>
       </motion.div>
@@ -290,24 +290,24 @@ export default function ChatbotWidget() {
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
             className={cn(
-              "fixed z-50 glass-panel border border-brand-purple/20 shadow-2xl flex flex-col overflow-hidden transition-all duration-300 backdrop-blur-2xl bg-[#07041a]/95 rounded-3xl",
+              "fixed z-50 glass-panel border border-brand-purple/20 shadow-2xl flex flex-col overflow-hidden transition-all duration-300 backdrop-blur-2xl bg-[#07041a]/95 rounded-2xl",
               isExpanded 
-                ? "inset-4 md:inset-8 w-auto h-auto" 
-                : "bottom-24 right-4 md:right-6 w-[92vw] sm:w-[440px] h-[640px] max-h-[82vh]"
+                ? "inset-2 sm:inset-4 md:inset-8 w-auto h-auto" 
+                : "inset-x-2 bottom-2 top-14 sm:top-auto sm:inset-auto sm:bottom-20 sm:right-5 sm:w-[360px] sm:h-[500px] sm:max-h-[75vh]"
             )}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 bg-white/5">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-brand-purple to-brand-blue flex items-center justify-center text-white shadow-md glow-shadow">
-                  <Sparkles className="w-5 h-5 animate-pulse" />
+            <div className="flex items-center justify-between px-3.5 sm:px-4 py-3 border-b border-white/10 bg-white/5">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-purple to-brand-blue flex items-center justify-center text-white shadow-md glow-shadow">
+                  <Sparkles className="w-4 h-4 animate-pulse" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-white text-base leading-none">Crismatech AI</h3>
+                  <h3 className="font-semibold text-white text-sm leading-none">Crismatech AI</h3>
                 </div>
               </div>
 
-              <div className="flex items-center gap-1 text-slate-400">
+              <div className="flex items-center gap-1 sm:gap-0.5 text-slate-400">
                 {/* TTS Toggle */}
                 <button
                   onClick={() => {
@@ -315,64 +315,64 @@ export default function ChatbotWidget() {
                     if (isTtsActive && 'speechSynthesis' in window) window.speechSynthesis.cancel();
                   }}
                   className={cn(
-                    "p-2 rounded-xl hover:bg-white/10 transition-colors",
+                    "p-2 sm:p-1.5 rounded-lg hover:bg-white/10 transition-colors touch-manipulation",
                     isTtsActive ? "text-brand-purple bg-brand-purple/10" : "hover:text-white"
                   )}
                   title={isTtsActive ? "Mute Voice Read-out" : "Enable Voice Read-out"}
                 >
-                  {isTtsActive ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+                  {isTtsActive ? <Volume2 className="w-4 h-4 sm:w-3.5 sm:h-3.5" /> : <VolumeX className="w-4 h-4 sm:w-3.5 sm:h-3.5" />}
                 </button>
 
                 {/* Clear Chat */}
                 <button
                   onClick={handleClearHistory}
-                  className="p-2 rounded-xl hover:bg-white/10 hover:text-rose-400 transition-colors"
+                  className="p-2 sm:p-1.5 rounded-lg hover:bg-white/10 hover:text-rose-400 transition-colors touch-manipulation"
                   title="Clear Chat History"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
                 </button>
 
                 {/* Expand / Minimize Toggle */}
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="p-2 rounded-xl hover:bg-white/10 hover:text-white transition-colors hidden sm:flex"
+                  className="p-2 sm:p-1.5 rounded-lg hover:bg-white/10 hover:text-white transition-colors hidden sm:flex touch-manipulation"
                   title={isExpanded ? "Restore View" : "Expand Hub View"}
                 >
-                  {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                  {isExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
                 </button>
 
                 {/* Close Button */}
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-2 rounded-xl hover:bg-white/10 hover:text-white transition-colors"
+                  className="p-2 sm:p-1.5 rounded-lg hover:bg-white/10 hover:text-white transition-colors touch-manipulation"
                   title="Close Assistant"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
                 </button>
               </div>
             </div>
 
             {/* Chat Body */}
-            <div className="flex-1 p-4 overflow-y-auto space-y-4 custom-scrollbar">
+            <div className="flex-1 p-3 overflow-y-auto space-y-3 custom-scrollbar">
               {messages.map((msg) => (
                 <motion.div
                   key={msg.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className={cn(
-                    "flex gap-3 text-sm",
+                    "flex gap-2.5 text-xs",
                     msg.sender === 'user' ? "flex-row-reverse" : "flex-row"
                   )}
                 >
                   {msg.sender === 'ai' && (
-                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-purple to-indigo-600 flex items-center justify-center text-white shrink-0 mt-0.5 shadow-md">
-                      <BrainCircuit className="w-4 h-4 text-purple-200" />
+                    <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-purple to-indigo-600 flex items-center justify-center text-white shrink-0 mt-0.5 shadow-md">
+                      <BrainCircuit className="w-3.5 h-3.5 text-purple-200" />
                     </div>
                   )}
 
                   <div
                     className={cn(
-                      "max-w-[85%] rounded-2xl p-4 shadow-md",
+                      "max-w-[88%] sm:max-w-[85%] rounded-xl p-3 shadow-md",
                       msg.sender === 'user'
                         ? "bg-gradient-to-r from-brand-purple to-indigo-600 text-white rounded-tr-xs"
                         : "bg-white/5 border border-white/10 text-slate-200 rounded-tl-xs backdrop-blur-md"
@@ -382,12 +382,12 @@ export default function ChatbotWidget() {
 
                     {/* Cited Sources Badge */}
                     {msg.sender === 'ai' && msg.citedSources && msg.citedSources.length > 0 && (
-                      <div className="mt-3 pt-2.5 border-t border-white/10 flex flex-wrap items-center gap-1.5">
-                        <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Context Sources:</span>
+                      <div className="mt-2 pt-2 border-t border-white/10 flex flex-wrap items-center gap-1">
+                        <span className="text-[9px] uppercase font-bold tracking-wider text-slate-400">Sources:</span>
                         {msg.citedSources.map((src, sIdx) => (
                           <span
                             key={sIdx}
-                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-brand-purple/15 text-brand-purple border border-brand-purple/20 text-[10px] font-semibold"
+                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-brand-purple/15 text-brand-purple border border-brand-purple/20 text-[9px] font-semibold"
                           >
                             <BookOpen className="w-2.5 h-2.5" />
                             {src.name}
@@ -398,8 +398,8 @@ export default function ChatbotWidget() {
 
                     {/* Footer bar for AI message */}
                     {msg.sender === 'ai' && (
-                      <div className="mt-2.5 flex items-center justify-between text-[11px] text-slate-400">
-                        <span className="text-[10px] font-medium opacity-70">
+                      <div className="mt-2 flex items-center justify-between text-[10px] text-slate-400">
+                        <span className="text-[9px] font-medium opacity-70">
                           {msg.timestamp}
                         </span>
 
@@ -407,20 +407,20 @@ export default function ChatbotWidget() {
                           <button
                             onClick={() => handleFeedback(msg.id, 'like')}
                             className={cn(
-                              "p-1 rounded hover:bg-white/10 transition-colors",
+                              "p-1 sm:p-0.5 rounded hover:bg-white/10 transition-colors touch-manipulation",
                               msg.feedback === 'like' && "text-emerald-400 font-bold"
                             )}
                           >
-                            <ThumbsUp className="w-3.5 h-3.5" />
+                            <ThumbsUp className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
                           </button>
                           <button
                             onClick={() => handleFeedback(msg.id, 'dislike')}
                             className={cn(
-                              "p-1 rounded hover:bg-white/10 transition-colors",
+                              "p-1 sm:p-0.5 rounded hover:bg-white/10 transition-colors touch-manipulation",
                               msg.feedback === 'dislike' && "text-rose-400 font-bold"
                             )}
                           >
-                            <ThumbsDown className="w-3.5 h-3.5" />
+                            <ThumbsDown className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
                           </button>
                         </div>
                       </div>
@@ -434,16 +434,16 @@ export default function ChatbotWidget() {
                 <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="flex items-center gap-3 text-slate-400 text-sm"
+                  className="flex items-center gap-2 text-slate-400 text-xs"
                 >
-                  <div className="w-8 h-8 rounded-xl bg-brand-purple/20 flex items-center justify-center text-brand-purple animate-spin">
-                    <RefreshCw className="w-4 h-4" />
+                  <div className="w-7 h-7 rounded-lg bg-brand-purple/20 flex items-center justify-center text-brand-purple animate-spin">
+                    <RefreshCw className="w-3.5 h-3.5" />
                   </div>
-                  <div className="flex items-center gap-1.5 px-4 py-3 bg-white/5 border border-white/10 rounded-2xl">
-                    <span className="w-2 h-2 rounded-full bg-brand-purple animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-2 h-2 rounded-full bg-brand-purple animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-2 h-2 rounded-full bg-brand-purple animate-bounce" style={{ animationDelay: '300ms' }} />
-                    <span className="text-xs text-slate-400 font-medium ml-2">Retrieving portal context & generating...</span>
+                  <div className="flex items-center gap-1.5 px-3 py-2 bg-white/5 border border-white/10 rounded-xl">
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-purple animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-purple animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-purple animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <span className="text-[11px] text-slate-400 font-medium ml-1">Generating response...</span>
                   </div>
                 </motion.div>
               )}
@@ -453,13 +453,13 @@ export default function ChatbotWidget() {
 
             {/* Dynamic Suggestion Chips */}
             {suggestions.length > 0 && (
-              <div className="px-4 py-2 border-t border-white/5 bg-white/[0.02] flex gap-2 overflow-x-auto custom-scrollbar">
+              <div className="px-3 py-1.5 border-t border-white/5 bg-white/[0.02] flex gap-1.5 overflow-x-auto custom-scrollbar touch-pan-x">
                 {suggestions.map((chip, idx) => (
                   <button
                     key={idx}
                     onClick={() => handleSend(chip)}
                     disabled={loading}
-                    className="whitespace-nowrap px-3 py-1.5 rounded-xl bg-white/5 hover:bg-brand-purple/20 hover:text-white border border-white/10 hover:border-brand-purple/30 text-slate-300 text-xs font-medium transition-all shrink-0"
+                    className="whitespace-nowrap px-2.5 py-1.5 sm:py-1 rounded-lg bg-white/5 hover:bg-brand-purple/20 hover:text-white border border-white/10 hover:border-brand-purple/30 text-slate-300 text-[11px] font-medium transition-all shrink-0 active:scale-95 touch-manipulation"
                   >
                     {chip}
                   </button>
@@ -468,27 +468,27 @@ export default function ChatbotWidget() {
             )}
 
             {/* Input Box Area */}
-            <div className="p-4 border-t border-white/10 bg-white/5">
+            <div className="p-2.5 sm:p-3 border-t border-white/10 bg-white/5">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
                   handleSend();
                 }}
-                className="flex items-center gap-2"
+                className="flex items-center gap-1.5"
               >
                 {/* Voice Input */}
                 <button
                   type="button"
                   onClick={toggleSpeechRecognition}
                   className={cn(
-                    "p-3 rounded-2xl transition-all",
+                    "p-2.5 rounded-xl transition-all min-w-[40px] min-h-[40px] flex items-center justify-center touch-manipulation",
                     isListening
                       ? "bg-rose-500 text-white animate-pulse"
                       : "bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border border-white/10"
                   )}
                   title={isListening ? "Listening... Speak now" : "Voice Input"}
                 >
-                  {isListening ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
+                  {isListening ? <Mic className="w-4 h-4 sm:w-3.5 sm:h-3.5" /> : <MicOff className="w-4 h-4 sm:w-3.5 sm:h-3.5" />}
                 </button>
 
                 <input
@@ -496,21 +496,21 @@ export default function ChatbotWidget() {
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask anything about courses, assignments, code, attendance..."
+                  placeholder="Ask anything..."
                   disabled={loading}
-                  className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-purple/60 transition-all font-medium"
+                  className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-base sm:text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-purple/60 transition-all font-medium"
                 />
 
                 <button
                   type="submit"
                   disabled={!input.trim() || loading}
-                  className="p-3 rounded-2xl bg-gradient-to-r from-brand-purple to-indigo-600 text-white shadow-lg glow-shadow hover:scale-105 active:scale-95 disabled:opacity-40 disabled:hover:scale-100 transition-all"
+                  className="p-2.5 rounded-xl bg-gradient-to-r from-brand-purple to-indigo-600 text-white shadow-md glow-shadow hover:scale-105 active:scale-95 disabled:opacity-40 disabled:hover:scale-100 transition-all min-w-[40px] min-h-[40px] flex items-center justify-center touch-manipulation"
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
                 </button>
               </form>
-              <div className="flex items-center justify-between mt-2 px-1 text-[10px] text-slate-500 font-medium">
-                <span>Press <strong>Alt + C</strong> or <strong>Ctrl + K</strong> to toggle</span>
+              <div className="flex items-center justify-between mt-1 px-1 text-[9px] text-slate-500 font-medium">
+                <span className="hidden sm:inline">Press <strong>Alt + C</strong> or <strong>Ctrl + K</strong></span>
               </div>
             </div>
           </motion.div>
